@@ -1,0 +1,22 @@
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  user-select: none;
+}
+
+body {
+  background: #101113;
+  color: #FFFFFF;
+}
+
+:root {
+  --font-sm: 12px;
+  --font-md: 16px;
+  --font-lg: 20px;
+  --icon-sm: 16px;
+  --icon-md: 20px;
+  --icon-lg: 26px;
+}

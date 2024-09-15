@@ -1,12 +1,12 @@
 import React from "react";
-import Image from "../custom/Image";
-import WebIcon from "../logo/web";
-import "./style.css";
+import "./style.scss";
+import ImageLoader from "../../ui/Image";
+import WebIcon from "../../../icons/web";
 
 export default function SideBar() {
 	return (
-		<section className="side-bar">
-			<Image
+		<aside className="side-bar">
+			<ImageLoader
 				className="logo"
 				src={"./img/fides-logo.png"}
 				alt={"FidesInnova Logo"}
@@ -15,6 +15,6 @@ export default function SideBar() {
 				<WebIcon />
 				<p>Dashboard</p>
 			</div>
-		</section>
+		</aside>
 	);
 }

@@ -1,8 +1,9 @@
 .dashboard {
 	display: flex;
 	flex-direction: column;
-	width: 100%;
+	flex-grow: 1;
 	height: 100%;
 	padding-block: 26px;
 	padding-inline: 50px;
+	gap: 25px;
 }

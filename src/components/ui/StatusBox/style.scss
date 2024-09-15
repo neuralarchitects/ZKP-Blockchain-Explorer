@@ -1,0 +1,29 @@
+.status-box-container {
+	display: flex;
+	width: 100%;
+	height: 100%;
+	background: #1e1f21;
+    border-radius: 10px;
+    place-items: center;
+    gap: 16px;
+
+	.icon {
+        margin-left: 10%;
+		width: var(--icon-xlg);
+		height: var(--icon-xlg);
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+
+		.title {
+			font-size: var(--font-md);
+		}
+
+		.value {
+            font-weight: 700;
+			font-size: var(--font-2xl);
+		}
+	}
+}

@@ -1,0 +1,36 @@
+.transaction-box-container {
+	display: flex;
+	padding: 20px;
+	width: 100%;
+	gap: 16px;
+
+	.left-data {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+
+		.badge {
+			display: flex;
+			gap: 8px;
+		}
+
+		.transaction-hash {
+			display: flex;
+			gap: 8px;
+
+			p {
+				font-size: var(--font-lg);
+				font-weight: 700;
+				color: #0ea1ca;
+			}
+		}
+	}
+
+	.transaction-time {
+		margin-top: auto;
+		margin-bottom: 0.35%;
+		font-weight: 700;
+		color: #8A97A6;
+		font-size: var(--font-md);
+	}
+}

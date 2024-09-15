@@ -1,0 +1,25 @@
+.transactions-container {
+    display: flex;
+    flex-direction: column;
+	width: 100%;
+
+	.title {
+        margin-bottom: 16px;;
+		font-weight: 700;
+		font-size: var(--font-2xl);
+	}
+
+	.scanning-title {
+		width: 100%;
+		padding: 10px;
+		background: #343025;
+        padding-left: 1%;
+		border-top-left-radius: 15px;
+		border-top-right-radius: 15px;
+        p {
+            color: #8a97a6;
+            font-weight: 700;
+            font-size: var(--font-md);
+        }
+	}
+}

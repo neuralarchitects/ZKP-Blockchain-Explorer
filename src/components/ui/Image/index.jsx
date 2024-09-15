@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import "./style.css";
+import "./style.scss";
 import { Skeleton } from "@mui/material";
 
-const Image = ({ src, alt, className = "" }) => {
+const ImageLoader = ({ src, alt, className = "" }) => {
 	const [loading, setLoading] = useState(true);
 
 	const handleImageLoaded = () => {
@@ -31,4 +31,4 @@ const Image = ({ src, alt, className = "" }) => {
 	);
 };
 
-export default Image;
+export default ImageLoader;

@@ -1,22 +1,26 @@
-
 * {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  user-select: none;
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	user-select: none;
 }
 
 body {
-  background: #101113;
-  color: #FFFFFF;
+	background: #101113;
+	color: #ffffff;
 }
 
 :root {
-  --font-sm: 12px;
-  --font-md: 16px;
-  --font-lg: 20px;
-  --icon-sm: 16px;
-  --icon-md: 20px;
-  --icon-lg: 26px;
+	--font-xsm: clamp(8px, 1vw, 12px);
+	--font-sm: clamp(10px, 1.5vw, 14px);
+	--font-md: clamp(15px, 1vw, 18px);
+	--font-lg: clamp(18px, 1.3vw, 20px);
+	--font-xlg: clamp(22px, 1.5vw, 24px);
+	--font-2xl: clamp(26px, 1.5vw, 28px);
+	--icon-sm: 18px;
+	--icon-md: 24px;
+	--icon-lg: 30px;
+	--icon-xlg: clamp(40px, 2.5vw, 50px);
+	transition: 0.5s ease-in;
 }

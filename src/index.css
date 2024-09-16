@@ -22,5 +22,4 @@ body {
 	--icon-md: 24px;
 	--icon-lg: 30px;
 	--icon-xlg: clamp(40px, 2.5vw, 50px);
-	transition: 0.5s ease-in;
 }

@@ -2,10 +2,12 @@ import React from "react";
 import "./style.scss";
 import ImageLoader from "../../ui/Image";
 import WebIcon from "../../../icons/web";
+import AnimatedComponent from "../../ui/Animated/Component";
+import { fadeInLeft } from "../../../utility/framer-transitions";
 
 export default function SideBar() {
 	return (
-		<aside className="side-bar">
+		<AnimatedComponent animation={fadeInLeft(1, 200)} className="side-bar">
 			<ImageLoader
 				className="logo"
 				src={"./img/fides-logo.png"}
@@ -15,6 +17,6 @@ export default function SideBar() {
 				<WebIcon />
 				<p>Dashboard</p>
 			</div>
-		</aside>
+		</AnimatedComponent>
 	);
 }

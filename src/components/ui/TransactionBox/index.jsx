@@ -12,6 +12,8 @@ import CopyIcon from "../../../icons/copy";
 import DocumentIcon from "../../../icons/document";
 import toast from "react-hot-toast";
 import Button from "../Button";
+import AnimatedComponent from "../Animated/Component";
+import { iphoneAnimation } from "../../../utility/framer-transitions";
 
 function formatBigInt(bigIntValue) {
 	if (bigIntValue === 0n) {
@@ -23,22 +25,30 @@ function formatBigInt(bigIntValue) {
 }
 
 function formatWalletAddress(address) {
-	return address.slice(0, 4) + ".." + address.slice(-4);
+	try {
+		return address.slice(0, 4) + ".." + address.slice(-4);
+	} catch (error) {
+		return address;
+	}
 }
 
 function formatTransactionHash(str, length) {
-	if (str.length <= length) {
+	const string = String(str);
+	try {
+		if (string.length <= length) {
+			return str;
+		}
+
+		const start = str.substring(0, Math.ceil(length / 2));
+		const end = str.substring(str.length - Math.floor(length / 2));
+
+		return `${start}...${end}`;
+	} catch (error) {
 		return str;
 	}
-
-	const start = str.substring(0, Math.ceil(length / 2));
-	const end = str.substring(str.length - Math.floor(length / 2));
-
-	return `${start}...${end}`;
 }
 
 export default function TransactionBox({ data }) {
-	const containerRef = useRef(null);
 	const {
 		from: fromWallet,
 		to: intoWallet,
@@ -56,7 +66,10 @@ export default function TransactionBox({ data }) {
 	}
 
 	return (
-		<div ref={containerRef} className="transaction-box-container">
+		<AnimatedComponent
+			animation={iphoneAnimation(0.5)}
+			className="transaction-box-container"
+		>
 			<div className="left-data">
 				<div className="badge">
 					<Badge
@@ -101,7 +114,7 @@ export default function TransactionBox({ data }) {
 				<Button className={"button"}>Data</Button>
 				<Button className={"button"}>Verify Proof</Button>
 			</div>
-			<p className="unix-time">{timestamp}</p>
+
 			<div className="transaction-value">
 				<div className="holder">
 					<p>
@@ -112,6 +125,6 @@ export default function TransactionBox({ data }) {
 					</p>
 				</div>
 			</div>
-		</div>
+		</AnimatedComponent>
 	);
 }

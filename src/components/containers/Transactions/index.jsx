@@ -4,14 +4,17 @@ import TransactionBox from "../../ui/TransactionBox";
 import TransactionText from "../../ui/TransactionText";
 import { useSocketConnection } from "../../../services/socket.io";
 import { Toaster } from "react-hot-toast";
+import AnimatedComponent from "../../ui/Animated/Component";
+import { iphoneAnimation } from "../../../utility/framer-transitions";
 
 export default function LatestTransactions() {
-	const [latestTransactions, setLatestTransactions] = useState([]);
-
-	useSocketConnection(setLatestTransactions);
+	const { latestTransactions } = useSocketConnection();
 
 	return (
-		<section className="transactions-container">
+		<AnimatedComponent
+			animation={iphoneAnimation(1)}
+			className="transactions-container"
+		>
 			<Toaster />
 			<h3 className="title">Latest Transactions</h3>
 			<div className="scanning-title">
@@ -19,8 +22,8 @@ export default function LatestTransactions() {
 			</div>
 
 			{latestTransactions.reverse().map((item, index) => {
-				return <TransactionBox data={item} />;
+				return <TransactionBox key={index} data={item} />;
 			})}
-		</section>
+		</AnimatedComponent>
 	);
 }

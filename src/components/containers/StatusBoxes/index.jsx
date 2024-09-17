@@ -1,20 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import "./style.scss";
 import StatusBox from "../../ui/StatusBox";
 import BoxIcon from "../../../icons/box";
 import TransactionIcon from "../../../icons/transaction";
 import { HiCheck } from "react-icons/hi";
+import { useSocketConnection } from "../../../services/socket.io";
 
 export default function StatusBoxes() {
+	const { serviceDeviceCount, zkpCount } = useSocketConnection();
+
 	return (
 		<section className="status-container">
 			<StatusBox
+				loading={!serviceDeviceCount ? true : false}
 				Icon={TransactionIcon}
-				title={"Total Transactions in Smart Contracts"}
-				value={"541,019"}
+				title={"Transactions in Smart Contracts"}
+				value={serviceDeviceCount + zkpCount}
 			/>
-			<StatusBox Icon={BoxIcon} title={"Total ZKPs"} value={"1,241"} />
-			<StatusBox Icon={HiCheck} title={"Verified ZKPs"} value={"751"} />
+			<StatusBox
+				loading={!serviceDeviceCount ? true : false}
+				Icon={BoxIcon}
+				title={"ZKPs"}
+				value={zkpCount}
+			/>
+			<StatusBox
+				loading={!serviceDeviceCount ? true : false}
+				Icon={HiCheck}
+				title={"Commitments"}
+				value={15}
+			/>
 		</section>
 	);
 }

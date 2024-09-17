@@ -1,56 +1,73 @@
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import io from "socket.io-client";
 
-export function useSocketConnection(setData) {
+export function useSocketConnection() {
 	const [latestTransactions, setLatestTransactions] = useState([]);
+	const [contractCounts, setContractCounts] = useState({});
 
 	useEffect(() => {
 		const socket = io("http://developer.fidesinnova.io:3000");
 
-		socket.on("connect", () => {
-			console.log("Connected to the server");
-			socket.emit("requestLastObjects");
-			toast.success("Services fetched from backend");
-		});
-
-		socket.on("disconnect", () => {
-			console.log("Disconnected from the server");
-		});
-
-		socket.on("lastObjects", (objects) => {
-			console.log("Received last objects:", objects);
-
-			setLatestTransactions(() => {
-				return objects
-					.sort((a, b) => b.timestamp - a.timestamp)
-					.slice(0, 10);
+		// Set up socket listeners only once
+		if (!socket.hasListeners("connect")) {
+			socket.on("connect", () => {
+				console.log("Connected to the server");
+				socket.emit("requestLastObjects");
+				socket.emit("requestCollectionCounts");
 			});
-		});
+		}
 
-		socket.on("dbChange", (newData) => {
-			console.log("Database change detected:", newData);
-			toast.success("Database changed");
-
-			setLatestTransactions((prevTransactions) => {
-				return [...prevTransactions, newData]
-					.sort((a, b) => b.timestamp - a.timestamp)
-					.slice(0, 10);
+		if (!socket.hasListeners("disconnect")) {
+			socket.on("disconnect", () => {
+				console.log("Disconnected from the server");
 			});
-		});
+		}
 
+		if (!socket.hasListeners("lastObjects")) {
+			socket.on("lastObjects", (objects) => {
+				console.log("Received last objects:", objects);
+				setLatestTransactions(() =>
+					objects
+						.sort((a, b) => b.timestamp - a.timestamp)
+						.slice(0, 10)
+				);
+			});
+		}
+
+		if (!socket.hasListeners("collectionCounts")) {
+			socket.on("collectionCounts", (objects) => {
+				console.log("Received collection counts:", objects);
+				setContractCounts({
+					serviceDeviceCount: objects.serviceDeviceCount,
+					zkpCount: objects.zkpCount,
+				});
+			});
+		}
+
+		if (!socket.hasListeners("dbChange")) {
+			socket.on("dbChange", (newData) => {
+				console.log("Database change detected:", newData);
+				setLatestTransactions((prevTransactions) =>
+					[...prevTransactions, newData]
+						.sort((a, b) => b.timestamp - a.timestamp)
+						.slice(0, 10)
+				);
+			});
+		}
+
+		// Cleanup the listeners when the component unmounts
 		return () => {
 			socket.off("connect");
 			socket.off("disconnect");
-			socket.off("dbChange");
 			socket.off("lastObjects");
-			socket.disconnect();
+			socket.off("collectionCounts");
+			socket.off("dbChange");
 		};
 	}, []);
 
-	useEffect(() => {
-		if (setData) {
-			setData(latestTransactions);
-		}
-	}, [latestTransactions, setData]);
+	return {
+		serviceDeviceCount: contractCounts.serviceDeviceCount,
+		zkpCount: contractCounts.zkpCount,
+		latestTransactions: latestTransactions,
+	};
 }

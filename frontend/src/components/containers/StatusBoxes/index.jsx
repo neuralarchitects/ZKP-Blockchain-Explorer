@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./style.scss";
 import StatusBox from "../../ui/StatusBox";
 import BoxIcon from "../../../icons/box";

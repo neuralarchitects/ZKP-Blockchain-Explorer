@@ -1,3 +1,36 @@
+.zkp-modal {
+	width: 50%;
+}
+
+.data-modal {
+	width: 50%;
+	padding-bottom: 30px !important;
+
+	.data-holder {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+
+		.img {
+			align-self: center;
+			width: 200px;
+			height: auto;
+			border-radius: 10px;
+			overflow: hidden;
+		}
+
+		p {
+			text-align: center;
+			font-weight: 700;
+			color: white;
+
+			span {
+				color: #8a97a6;
+			}
+		}
+	}
+}
+
 .transaction-box-container {
 	display: flex;
 	flex-wrap: wrap;
@@ -43,7 +76,7 @@
 		text-align: center;
 		text-wrap: nowrap;
 		margin-top: auto;
-		margin-bottom: 0.35%;
+		margin-bottom: 1%;
 		font-weight: 700;
 		color: #8a97a6;
 		font-size: var(--font-md);
@@ -111,7 +144,6 @@
 		justify-content: center;
 		place-items: center;
 		font-weight: 700;
-	
 
 		.holder {
 			display: flex;

@@ -15,6 +15,7 @@ import Button from "../Button";
 import AnimatedComponent from "../Animated/Component";
 import { iphoneAnimation } from "../../../utility/framer-transitions";
 import EModal from "../Modal";
+import ImageLoader from "../Image";
 
 function formatBigInt(bigIntValue) {
 	if (bigIntValue === 0n) {
@@ -93,6 +94,10 @@ export default function TransactionBox({ data }) {
 		serviceType,
 		name: serviceName,
 		deviceName,
+		imageURL,
+		description,
+		executionPrice,
+		installationPrice,
 	} = data;
 
 	/* 
@@ -136,8 +141,6 @@ export default function TransactionBox({ data }) {
 	useEffect(() => {
 		if (eventType == "ZKPStored") {
 			setIsZKP(true);
-		} else {
-			console.log("data:", data);
 		}
 	}, []);
 
@@ -154,11 +157,56 @@ export default function TransactionBox({ data }) {
 			className="transaction-box-container"
 		>
 			<EModal
+				className="zkp-modal"
 				isOpen={isZkpModalOpen}
+				title="ZKP Payload"
 				onClose={() => setIsZkpModalOpen(false)}
 			>
-				<p>Hello</p>
+				<p>{zkp_payload}</p>
 			</EModal>
+
+			<EModal
+				className="data-modal"
+				isOpen={isDataModalOpen}
+				title="Device Data"
+				onClose={() => setIsDataModalOpen(false)}
+			>
+				{(isZKP && <p>{data_payload}</p>) || (
+					<div className="data-holder">
+						<ImageLoader
+							height={200}
+							width={300}
+							src={imageURL}
+							className="img"
+						/>
+						<p>
+							NodeId: <span>{nodeId}</span>
+						</p>
+						<p>
+							EventType: <span>{eventType}</span>
+						</p>
+						<p>
+							ServiceName: <span>{serviceName}</span>
+						</p>
+						<p>
+							ServiceId: <span>{serviceId}</span>
+						</p>
+						<p>
+							ServiceType: <span>{serviceType}</span>
+						</p>
+						<p>
+							Description: <span>{description}</span>
+						</p>
+						<p>
+							ExecutionPrice: <span>{executionPrice}</span>
+						</p>
+						<p>
+							InstallationPrice: <span>{installationPrice}</span>
+						</p>
+					</div>
+				)}
+			</EModal>
+
 			<div className="left-data">
 				<div className="badge">
 					<Badge
@@ -208,7 +256,12 @@ export default function TransactionBox({ data }) {
 					</Button>
 				)}
 
-				<Button className={"button"}>Data</Button>
+				<Button
+					onClick={() => setIsDataModalOpen(true)}
+					className={"button"}
+				>
+					Data
+				</Button>
 
 				{isZKP && <Button className={"button"}>Verify Proof</Button>}
 			</div>

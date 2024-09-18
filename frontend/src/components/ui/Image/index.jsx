@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./style.scss";
 import { Skeleton } from "@mui/material";
 
-const ImageLoader = ({ src, alt, className = "" }) => {
+const ImageLoader = ({ src, alt, className = "", height, width }) => {
 	const [loading, setLoading] = useState(true);
 
 	const handleImageLoaded = () => {
@@ -16,8 +16,9 @@ const ImageLoader = ({ src, alt, className = "" }) => {
 					sx={{ bgcolor: "grey.800" }}
 					variant="rounded"
 					animation={"pulse"}
-					width={"50%"}
-					height={"200px"}
+					width={width ? width :"100px"}
+					height={height ? height :"100px"}
+					className={`${className}`}
 				/>
 			)}
 

@@ -12,6 +12,8 @@ export default function SideBar() {
 				className="logo"
 				src={"./img/fides-logo.png"}
 				alt={"FidesInnova Logo"}
+				width={"50%"}
+				height={200}
 			/>
 			<div className="nav-item selected">
 				<WebIcon />

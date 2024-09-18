@@ -11,7 +11,7 @@ export function useSocketConnection() {
 		// Set up socket listeners only once
 		if (!socket.hasListeners("connect")) {
 			socket.on("connect", () => {
-				console.log("Connected to the server");
+				//console.log("Connected to the server");
 				socket.emit("requestLastObjects");
 				socket.emit("requestCollectionCounts");
 			});
@@ -19,13 +19,13 @@ export function useSocketConnection() {
 
 		if (!socket.hasListeners("disconnect")) {
 			socket.on("disconnect", () => {
-				console.log("Disconnected from the server");
+				//console.log("Disconnected from the server");
 			});
 		}
 
 		if (!socket.hasListeners("lastObjects")) {
 			socket.on("lastObjects", (objects) => {
-				console.log("Received last objects:", objects);
+				//console.log("Received last objects:", objects);
 				setLatestTransactions(() =>
 					objects
 						.sort((a, b) => b.timestamp - a.timestamp)
@@ -36,7 +36,7 @@ export function useSocketConnection() {
 
 		if (!socket.hasListeners("collectionCounts")) {
 			socket.on("collectionCounts", (objects) => {
-				console.log("Received collection counts:", objects);
+				//console.log("Received collection counts:", objects);
 				setContractCounts({
 					serviceDeviceCount: objects.serviceDeviceCount,
 					zkpCount: objects.zkpCount,
@@ -46,7 +46,7 @@ export function useSocketConnection() {
 
 		if (!socket.hasListeners("dbChange")) {
 			socket.on("dbChange", (newData) => {
-				console.log("Database change detected:", newData);
+				//console.log("Database change detected:", newData);
 				setLatestTransactions((prevTransactions) =>
 					[...prevTransactions, newData]
 						.sort((a, b) => b.timestamp - a.timestamp)

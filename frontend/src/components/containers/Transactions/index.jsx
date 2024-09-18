@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./style.scss";
 import TransactionBox from "../../ui/TransactionBox";
 import TransactionText from "../../ui/TransactionText";
@@ -27,7 +27,7 @@ export default function LatestTransactions() {
 					return <TransactionBox key={index} data={item} />;
 				})) ||
 				[0, 1, 2].map((item) => {
-					return <TransactionBoxSkeleton />
+					return <TransactionBoxSkeleton key={item} />
 				})}
 		</AnimatedComponent>
 	);

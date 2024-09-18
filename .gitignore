@@ -1,7 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
+/frontend/node_modules
 /.pnp
 .pnp.js
 
@@ -18,6 +18,77 @@
 .env.test.local
 .env.production.local
 
+
+
+
+/backend/src/data/*
+
+/backend/uploads/*
+!/backend/uploads/avatars/
+!/backend/uploads/sprites.png
+
+admin_web_app/Runner_webapp/frontend/*
+!admin_web_app/Runner_webapp/frontend/t.txt
+web_app/Runner_webapp/frontend/*
+!web_app/Runner_webapp/frontend/t.txt
+
+# Project configuration files
+*webprivate.pem
+*webpublic.pem
+*/webprivate.pem*
+*/webpublic.pem*
+*/webprivate.pem
+*/webpublic.pem
+
+# Logs
+logs
+*.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# env
+*.env
+.env*
+.env
+
+
+# Tests
+/coverage
+/.nyc_output
+
+# IDEs and editors
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vite-cache/
+
+# IDE - VSCode
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+
+simple client
+simple notif app
+react client
+
+node_modules
+dist
+dist-ssr
+build
+*.local

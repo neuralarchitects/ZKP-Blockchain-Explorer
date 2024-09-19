@@ -162,7 +162,7 @@ export default function TransactionBox({ data }) {
 				title="ZKP Payload"
 				onClose={() => setIsZkpModalOpen(false)}
 			>
-				<p>{zkp_payload}</p>
+				<p>{JSON.stringify(zkp_payload)}</p>
 			</EModal>
 
 			<EModal

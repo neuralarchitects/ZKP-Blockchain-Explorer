@@ -11,7 +11,7 @@ export function useSocketConnection() {
 		// Set up socket listeners only once
 		if (!socket.hasListeners("connect")) {
 			socket.on("connect", () => {
-				//console.log("Connected to the server");
+				console.log("Connected to the server");
 				socket.emit("requestLastObjects");
 				socket.emit("requestCollectionCounts");
 			});
@@ -19,7 +19,7 @@ export function useSocketConnection() {
 
 		if (!socket.hasListeners("disconnect")) {
 			socket.on("disconnect", () => {
-				//console.log("Disconnected from the server");
+				console.log("Disconnected from the server");
 			});
 		}
 

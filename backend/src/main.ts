@@ -36,6 +36,8 @@ async function bootstrap() {
       'https://panel.fidesinnova.io:4000',
       'https://developer.fidesinnova.io',
       'https://panel.fidesinnova.io',
+      'https://fidesf2-explorer.fidesinnova.io',
+      'https://fidesf2-explorer.fidesinnova.io:3000',
     ],
     allowedHeaders: [
       'Content-Type',

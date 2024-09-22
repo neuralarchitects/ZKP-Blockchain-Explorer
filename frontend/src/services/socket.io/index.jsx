@@ -13,7 +13,6 @@ export function useSocketConnection() {
 			socket.on("connect", () => {
 				console.log("Connected to the server");
 				socket.emit("requestLastObjects");
-				socket.emit("requestCollectionCounts");
 			});
 		}
 
@@ -24,34 +23,32 @@ export function useSocketConnection() {
 		}
 
 		if (!socket.hasListeners("lastObjects")) {
-			socket.on("lastObjects", (objects) => {
+			socket.on("lastObjects", (objects, dbCount) => {
 				//console.log("Received last objects:", objects);
 				setLatestTransactions(() =>
 					objects
 						.sort((a, b) => b.timestamp - a.timestamp)
 						.slice(0, 10)
 				);
-			});
-		}
-
-		if (!socket.hasListeners("collectionCounts")) {
-			socket.on("collectionCounts", (objects) => {
-				//console.log("Received collection counts:", objects);
 				setContractCounts({
-					serviceDeviceCount: objects.serviceDeviceCount,
-					zkpCount: objects.zkpCount,
+					serviceDeviceCount: dbCount.serviceDeviceCount,
+					zkpCount: dbCount.zkpCount,
 				});
 			});
 		}
 
 		if (!socket.hasListeners("dbChange")) {
-			socket.on("dbChange", (newData) => {
+			socket.on("dbChange", (newData, dbCount) => {
 				//console.log("Database change detected:", newData);
 				setLatestTransactions((prevTransactions) =>
 					[...prevTransactions, newData]
 						.sort((a, b) => b.timestamp - a.timestamp)
 						.slice(0, 10)
 				);
+				setContractCounts({
+					serviceDeviceCount: dbCount.serviceDeviceCount,
+					zkpCount: dbCount.zkpCount,
+				});
 			});
 		}
 
@@ -60,7 +57,6 @@ export function useSocketConnection() {
 			socket.off("connect");
 			socket.off("disconnect");
 			socket.off("lastObjects");
-			socket.off("collectionCounts");
 			socket.off("dbChange");
 		};
 	}, []);

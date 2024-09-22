@@ -1,3 +1,11 @@
+body {
+	transform: scale(0.8);
+	transform-origin: 0 0; /* Align scaling to the top-left corner */
+	width: 125%; /* Ensure it covers full width after scaling */
+	height: 125%;
+	overflow: hidden; /* Prevent horizontal scroll */
+}
+
 * {
 	margin: 0;
 	padding: 0;

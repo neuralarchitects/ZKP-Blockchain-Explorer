@@ -3,6 +3,6 @@
 	position: relative;
 	display: flex;
 	width: 100%;
-	height: 100dvh;
+	height: 125dvh;
 	overflow-y: scroll;
 }

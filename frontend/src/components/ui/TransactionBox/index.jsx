@@ -74,6 +74,7 @@ function formatTransactionHash(str, length) {
 
 export default function TransactionBox({ data }) {
 	const [isZKP, setIsZKP] = useState(false);
+	const [dataPayload, setDataPayload] = useState({});
 	const [isZkpModalOpen, setIsZkpModalOpen] = useState(false);
 	const [isDataModalOpen, setIsDataModalOpen] = useState(false);
 	const {
@@ -100,49 +101,17 @@ export default function TransactionBox({ data }) {
 		installationPrice,
 	} = data;
 
-	/* 
-
-	data_payload: "90909090";
-	deviceId: "565565";
-	deviceType: "7676767";
-	eventType: "ZKPStored";
-	firmwareVersion: "89988989";
-	hardwareVersion: "77878";
-	nodeId: "56565656";
-	timestamp: 1726489441;
-	unixtime_payload: "hhjghhg";
-	zkp_payload: "54565656";
-	_id: "66e8abd547517fa69a7c460c";
-
-	-------------------------------------------------------------
-
-	creationDate: "Wed Aug 28 2024 17:02:37 GMT+0200 (Central European Summer Time)";
-	description: "The device owner will receive a notification on their phone when they press the device button.";
-	devices: '["[\\"MULTI_SENSOR_1\\"]"]';
-	eventType: "ServiceCreated";
-	executionPrice: "0";
-	from: "0x7A49B1E20b646d9c8C4080930F96AcbF5489D870";
-	gasFee: 6947580000000000;
-	imageURL: "https://panel.zkiot.tech/app/uploads/file-1725712393631-371112880.jpg";
-	installationPrice: "0";
-	name: '"Ping" Notification';
-	nodeId: "zkiot.tech";
-	program: "if ((MULTI_SENSOR_1.BUTTON) == \"pressed\") {\n  customizedMessage.sendNotification({ title: 'From: ' + MULTI_SENSOR_1.NAME, message: 'SOS' });}\n";
-	publishedDate: "Mon Sep 16 2024 14:52:57 GMT+0200 (Central European Summer Time)";
-	serviceId: "66d5c47caffbb7a40a1a48bb";
-	serviceType: "automation";
-	timestamp: 1726491182;
-	to: "0x2b746D228379F0E0a307723dF99486Dc17fdf9B1";
-	transactionHash: "2x1QsNiKDUd2oHl8AOiNcrMjPV1jdgtUQ+px7uv9UOw=";
-	_id: "66e82a2ea20a8d60c47c09e5";
-
-	 */
+	useEffect(() => {
+		if (data_payload) {
+			setDataPayload(JSON.parse(data_payload));
+		}
+	}, [data_payload]);
 
 	useEffect(() => {
-		if (eventType == "ZKPStored") {
+		if (String(eventType) == "ZKPStored") {
 			setIsZKP(true);
 		}
-	}, []);
+	}, [eventType]);
 
 	function handleCopy(text) {
 		navigator.clipboard.writeText(text);
@@ -162,7 +131,7 @@ export default function TransactionBox({ data }) {
 				title="ZKP Payload"
 				onClose={() => setIsZkpModalOpen(false)}
 			>
-				<p>{JSON.stringify(zkp_payload)}</p>
+				<p>{zkp_payload && JSON.parse(zkp_payload)}</p>
 			</EModal>
 
 			<EModal
@@ -171,7 +140,33 @@ export default function TransactionBox({ data }) {
 				title="Device Data"
 				onClose={() => setIsDataModalOpen(false)}
 			>
-				{(isZKP && <p>{data_payload}</p>) || (
+				{(isZKP && (
+					<div className="data-holder">
+						{dataPayload.Door && (
+							<p>
+								Door: <span>{dataPayload.Door}</span>
+							</p>
+						)}
+						<p>
+							Temperature: <span>{dataPayload.Temperature}</span>
+						</p>
+						<p>
+							Humidity: <span>{dataPayload.Humidity}</span>
+						</p>
+						<p>
+							Button: <span>{dataPayload.Button}</span>
+						</p>
+						<p>
+							Root: <span>{String(dataPayload.Root)}</span>
+						</p>
+						<p>
+							HardwareVersion: <span>{dataPayload.HV}</span>
+						</p>
+						<p>
+							FirmwareVersion: <span>{dataPayload.FV}</span>
+						</p>
+					</div>
+				)) || (
 					<div className="data-holder">
 						<ImageLoader
 							height={200}
@@ -228,22 +223,24 @@ export default function TransactionBox({ data }) {
 			<p className="transaction-time">{timeAgo(timestamp)}</p>
 
 			<div className="transaction-wallets">
-				<div className="wallet">
-					<HiArrowDown className="icon" />
-					<GradientCircle width={24} height={24} />
-					<p>{formatWalletAddress(fromWallet)}</p>
-					<CopyIcon
-						className="icon copy"
-						onClick={() => handleCopy(fromWallet)}
-					/>
-				</div>
-				<div className="wallet">
-					<DocumentIcon className="icon start" />
-					<p>{formatWalletAddress(intoWallet)}</p>
-					<CopyIcon
-						className="icon copy"
-						onClick={() => handleCopy(intoWallet)}
-					/>
+				<div className="holder">
+					<div className="wallet">
+						<HiArrowDown className="icon" />
+						<GradientCircle width={24} height={24} />
+						<p>{formatWalletAddress(fromWallet)}</p>
+						<CopyIcon
+							className="icon copy"
+							onClick={() => handleCopy(fromWallet)}
+						/>
+					</div>
+					<div className="wallet">
+						<DocumentIcon className="icon start" />
+						<p>{formatWalletAddress(intoWallet)}</p>
+						<CopyIcon
+							className="icon copy"
+							onClick={() => handleCopy(intoWallet)}
+						/>
+					</div>
 				</div>
 			</div>
 			<div className="button-container">
@@ -271,9 +268,6 @@ export default function TransactionBox({ data }) {
 					<div className="holder">
 						<p>
 							NodeId: <span>{nodeId}</span>
-						</p>
-						<p>
-							DeviceName : <span>{deviceName}</span>
 						</p>
 						<p>
 							DeviceType: <span>{deviceType}</span>

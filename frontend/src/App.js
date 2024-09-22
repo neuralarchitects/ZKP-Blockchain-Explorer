@@ -6,7 +6,7 @@ function App() {
 	return (
 		<main className="main-container">
 			<SideBar />
-      <Dashboard />
+			<Dashboard />
 		</main>
 	);
 }

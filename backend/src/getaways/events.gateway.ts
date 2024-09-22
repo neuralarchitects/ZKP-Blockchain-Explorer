@@ -17,6 +17,8 @@ import { MongoClient, Db, Collection } from "mongodb";
 export class EventsGateway
 	implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+	private zkpCount: number = 0;
+	private serviceDeviceCount: number = 0;
 	private server: Server;
 	private db: Db;
 	private zkpCollection: Collection;
@@ -26,8 +28,7 @@ export class EventsGateway
 	private readonly mongoUri = process.env.MONGO_CONNECTION;
 	private readonly dbName = "smartcontract_db"; // Replace with your database name
 	private readonly zkpCollectionName = "zkp_smartcontract";
-	private readonly serviceDeviceCollectionName =
-		"services_devices_smartcontract"; // Second collection name
+	private readonly serviceDeviceCollectionName = "services_devices_smartcontract"; // Second collection name
 
 	// Called when the gateway is initialized
 	afterInit(server: Server) {
@@ -52,14 +53,23 @@ export class EventsGateway
 		console.log("Connected to MongoDB");
 		this.db = client.db(this.dbName);
 
+		
+
 		this.zkpCollection = this.db.collection(this.zkpCollectionName);
 		this.serviceDeviceCollection = this.db.collection(
 			this.serviceDeviceCollectionName
 		);
 
+		this.zkpCount = await this.zkpCollection.countDocuments();
+    	this.serviceDeviceCount = await this.serviceDeviceCollection.countDocuments();
+
 		const zkpChangeStream = this.zkpCollection.watch();
 		zkpChangeStream.on("change", (change: any) => {
-			this.server.emit("dbChange", change.fullDocument);
+			this.zkpCount++;
+			this.server.emit("dbChange", change.fullDocument, {
+				zkpCount: this.zkpCount,
+				serviceDeviceCount: this.serviceDeviceCount,
+			});
 		});
 
 		const serviceDeviceChangeStream = this.serviceDeviceCollection.watch();
@@ -69,26 +79,14 @@ export class EventsGateway
 				...rest,
 				timestamp: TransactionTime,
 			};
-
-			this.server.emit("dbChange", data);
+			this.serviceDeviceCount++;
+			this.server.emit("dbChange", data, {
+				zkpCount: this.zkpCount,
+				serviceDeviceCount: this.serviceDeviceCount,
+			});
 		});
 	}
 
-	@SubscribeMessage("requestCollectionCounts")
-	async handleRequestCollectionCounts(client: Socket) {
-		try {
-			const zkpCount = await this.zkpCollection.countDocuments();
-			const serviceDeviceCount =
-				await this.serviceDeviceCollection.countDocuments();
-
-			client.emit("collectionCounts", {
-				zkpCount,
-				serviceDeviceCount,
-			});
-		} catch (error) {
-			console.error("Error fetching collection counts:", error);
-		}
-	}
 
 	@SubscribeMessage("requestLastObjects")
 	async handleRequestLastObjects(
@@ -96,17 +94,9 @@ export class EventsGateway
 		/* @MessageBody() data: { collection: string }, */
 	) {
 		try {
-			const zkpLastObjects = await this.zkpCollection
-				.find({})
-				.sort({ timestamp: -1 })
-				.limit(10)
-				.toArray();
+			const zkpLastObjects = await this.zkpCollection.find({}).sort({ timestamp: -1 }).limit(10).toArray();
 
-			const serviceDeviceLastObjects = await this.serviceDeviceCollection
-				.find({})
-				.sort({ timestamp: -1 })
-				.limit(10)
-				.toArray();
+			const serviceDeviceLastObjects = await this.serviceDeviceCollection.find({}).sort({ timestamp: -1 }).limit(10).toArray();
 
 			const updatedServiceDeviceLastObjects =
 				serviceDeviceLastObjects.map((obj) => {
@@ -120,7 +110,10 @@ export class EventsGateway
 			client.emit("lastObjects", [
 				...zkpLastObjects,
 				...updatedServiceDeviceLastObjects,
-			]);
+			], {
+				zkpCount: this.zkpCount,
+				serviceDeviceCount: this.serviceDeviceCount,
+			});
 		} catch (error) {
 			console.error("Error fetching last objects:", error);
 		}

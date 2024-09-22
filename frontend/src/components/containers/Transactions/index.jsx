@@ -23,11 +23,18 @@ export default function LatestTransactions() {
 			</div>
 
 			{(latestTransactions.length !== 0 &&
-				latestTransactions.reverse().map((item, index) => {
-					return <TransactionBox key={index} data={item} />;
-				})) ||
+				[...latestTransactions]
+					.sort((a, b) => b.timestamp - a.timestamp)
+					.map((item) => {
+						return (
+							<TransactionBox
+								key={item.transactionHash}
+								data={item}
+							/>
+						);
+					})) ||
 				[0, 1, 2].map((item) => {
-					return <TransactionBoxSkeleton key={item} />
+					return <TransactionBoxSkeleton key={item} />;
 				})}
 		</AnimatedComponent>
 	);

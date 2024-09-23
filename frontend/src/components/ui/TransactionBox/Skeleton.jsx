@@ -1,5 +1,5 @@
 import React from "react";
-import "./style.scss";
+import "./skeletonStyle.scss";
 import AnimatedComponent from "../Animated/Component";
 import { iphoneAnimation } from "../../../utility/framer-transitions";
 import { Skeleton } from "@mui/material";
@@ -8,7 +8,7 @@ export default function TransactionBoxSkeleton() {
 	return (
 		<AnimatedComponent
 			animation={iphoneAnimation(0.5)}
-			className="transaction-box-container"
+			className="transaction-box-skeleton-container"
 		>
 			<div className="left-data">
 				<div className="badge">

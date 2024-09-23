@@ -113,9 +113,9 @@ export default function TransactionBox({ data }) {
 		}
 	}, [eventType]);
 
-	function handleCopy(text) {
-		navigator.clipboard.writeText(text);
-		toast.success("Wallet address copied successfully", {
+	function handleCopy(copy, message) {
+		navigator.clipboard.writeText(copy, message);
+		toast.success(`${message} copied successfully`, {
 			style: { background: "#1E1F21", color: "white" },
 		});
 	}
@@ -141,63 +141,69 @@ export default function TransactionBox({ data }) {
 				onClose={() => setIsDataModalOpen(false)}
 			>
 				{(isZKP && (
-					<div className="data-holder">
-						{dataPayload.Door && (
+					<section className="main-data">
+						<div className="holder">
+							{dataPayload.Door && (
+								<p>
+									Door: <span>{dataPayload.Door}</span>
+								</p>
+							)}
 							<p>
-								Door: <span>{dataPayload.Door}</span>
+								Temperature:{" "}
+								<span>{dataPayload.Temperature}</span>
 							</p>
-						)}
-						<p>
-							Temperature: <span>{dataPayload.Temperature}</span>
-						</p>
-						<p>
-							Humidity: <span>{dataPayload.Humidity}</span>
-						</p>
-						<p>
-							Button: <span>{dataPayload.Button}</span>
-						</p>
-						<p>
-							Root: <span>{String(dataPayload.Root)}</span>
-						</p>
-						<p>
-							HardwareVersion: <span>{dataPayload.HV}</span>
-						</p>
-						<p>
-							FirmwareVersion: <span>{dataPayload.FV}</span>
-						</p>
-					</div>
+							<p>
+								Humidity: <span>{dataPayload.Humidity}</span>
+							</p>
+							<p>
+								Button: <span>{dataPayload.Button}</span>
+							</p>
+							<p>
+								Root: <span>{String(dataPayload.Root)}</span>
+							</p>
+							<p>
+								Hardware Version: <span>{dataPayload.HV}</span>
+							</p>
+							<p>
+								Firmware Version: <span>{dataPayload.FV}</span>
+							</p>
+						</div>
+					</section>
 				)) || (
-					<div className="data-holder">
+					<div className="main-data">
 						<ImageLoader
 							height={200}
 							width={300}
 							src={imageURL}
 							className="img"
 						/>
-						<p>
-							NodeId: <span>{nodeId}</span>
-						</p>
-						<p>
-							EventType: <span>{eventType}</span>
-						</p>
-						<p>
-							ServiceName: <span>{serviceName}</span>
-						</p>
-						<p>
-							ServiceId: <span>{serviceId}</span>
-						</p>
-						<p>
-							ServiceType: <span>{serviceType}</span>
-						</p>
-						<p>
-							Description: <span>{description}</span>
-						</p>
-						<p>
-							ExecutionPrice: <span>{executionPrice}</span>
-						</p>
-						<p>
-							InstallationPrice: <span>{installationPrice}</span>
-						</p>
+						<div className="holder service">
+							<p>
+								Node Id: <span>{nodeId}</span>
+							</p>
+							<p>
+								Event Type: <span>{eventType}</span>
+							</p>
+							<p>
+								Service Name: <span>{serviceName}</span>
+							</p>
+							<p>
+								Service Id: <span>{serviceId}</span>
+							</p>
+							<p>
+								Service Type: <span>{serviceType}</span>
+							</p>
+							<p>
+								Description: <span>{description}</span>
+							</p>
+							<p>
+								Execution Price: <span>{executionPrice}</span>
+							</p>
+							<p>
+								Installation Price:{" "}
+								<span>{installationPrice}</span>
+							</p>
+						</div>
 					</div>
 				)}
 			</EModal>
@@ -216,30 +222,38 @@ export default function TransactionBox({ data }) {
 					/>
 				</div>
 				<div className="transaction-hash">
-					<TransactionIcon />
-					<p>{formatTransactionHash(transactionHash, 16)}</p>
+					<TransactionIcon className={"icon"} />
+					<p
+						onClick={() =>
+							handleCopy(transactionHash, "Transaction Hash")
+						}
+						className="hash"
+					>
+						{transactionHash}
+						{/* {formatTransactionHash(transactionHash, 16)} */}
+					</p>
+					<p className="transaction-time">{timeAgo(timestamp)}</p>
 				</div>
 			</div>
-			<p className="transaction-time">{timeAgo(timestamp)}</p>
 
 			<div className="transaction-wallets">
 				<div className="holder">
-					<div className="wallet">
+					<div
+						onClick={() => handleCopy(fromWallet, "Wallet address")}
+						className="wallet"
+					>
 						<HiArrowDown className="icon" />
 						<GradientCircle width={24} height={24} />
 						<p>{formatWalletAddress(fromWallet)}</p>
-						<CopyIcon
-							className="icon copy"
-							onClick={() => handleCopy(fromWallet)}
-						/>
+						<CopyIcon className="icon copy" />
 					</div>
-					<div className="wallet">
+					<div
+						onClick={() => handleCopy(intoWallet, "Wallet address")}
+						className="wallet"
+					>
 						<DocumentIcon className="icon start" />
 						<p>{formatWalletAddress(intoWallet)}</p>
-						<CopyIcon
-							className="icon copy"
-							onClick={() => handleCopy(intoWallet)}
-						/>
+						<CopyIcon className="icon copy" />
 					</div>
 				</div>
 			</div>
@@ -267,19 +281,19 @@ export default function TransactionBox({ data }) {
 				{(isZKP && (
 					<div className="holder">
 						<p>
-							NodeId: <span>{nodeId}</span>
+							Node Id: <span>{nodeId}</span>
 						</p>
 						<p>
-							DeviceType: <span>{deviceType}</span>
+							Device Type: <span>{deviceType}</span>
 						</p>
 						<p>
-							DeviceId: <span>{deviceId}</span>
+							Device Id: <span>{deviceId}</span>
 						</p>
 						<p>
-							HardwareVersion : <span>{hardwareVersion}</span>
+							Hardware Version : <span>{hardwareVersion}</span>
 						</p>
 						<p>
-							FirmwareVersion: <span>{firmwareVersion}</span>
+							Firmware Version: <span>{firmwareVersion}</span>
 						</p>
 						<p>
 							Fee: <span>{formatBigInt(gasFee)}</span>
@@ -288,16 +302,16 @@ export default function TransactionBox({ data }) {
 				)) || (
 					<div className="holder">
 						<p>
-							NodeId: <span>{nodeId}</span>
+							Node Id: <span>{nodeId}</span>
 						</p>
 						<p>
-							ServiceName: <span>{serviceName}</span>
+							Service Name: <span>{serviceName}</span>
 						</p>
 						<p>
-							serviceType: <span>{serviceType}</span>
+							service Type: <span>{serviceType}</span>
 						</p>
 						<p>
-							serviceId: <span>{serviceId}</span>
+							service Id: <span>{serviceId}</span>
 						</p>
 
 						<p>

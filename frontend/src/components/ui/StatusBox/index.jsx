@@ -5,13 +5,19 @@ import { fadeInRight } from "../../../utility/framer-transitions";
 import CountUpNumber from "../Animated/Number";
 import Spinner from "../Spinner";
 
-export default function StatusBox({ Icon, title, value, loading }) {
+export default function StatusBox({
+	Icon,
+	title,
+	value,
+	loading,
+	iconClass = "",
+}) {
 	return (
 		<AnimatedComponent
 			animation={fadeInRight(1)}
 			className="status-box-container"
 		>
-			<Icon className={"icon"} />
+			<Icon className={`icon ${iconClass}`} />
 			<div className="content">
 				<p className="title">{title}</p>
 				<div className="value">

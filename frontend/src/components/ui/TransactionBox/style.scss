@@ -17,7 +17,7 @@
 		margin-block: 25px;
 		text-align: center;
 		line-height: var(--font-2xl);
-		font-weight: 700;
+		font-weight: 400;
 		font-size: var(--font-md);
 	}
 }
@@ -34,10 +34,35 @@
 		width: 95%;
 	}
 
-	.data-holder {
+	.main-data {
+		position: relative;
 		display: flex;
 		flex-direction: column;
+		align-items: center;
+		justify-content: center;
 		gap: 16px;
+
+		.holder {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+
+			&.service {
+				width: 40%;
+				margin-left: 13%;
+			}
+
+			p {
+				text-align: justify;
+				font-weight: 400;
+				color: white;
+				font-size: var(--font-md);
+
+				span {
+					color: #8a97a6;
+				}
+			}
+		}
 
 		.img {
 			align-self: center;
@@ -45,16 +70,6 @@
 			height: auto;
 			border-radius: 10px;
 			overflow: hidden;
-		}
-
-		p {
-			text-align: center;
-			font-weight: 700;
-			color: white;
-
-			span {
-				color: #8a97a6;
-			}
 		}
 	}
 }
@@ -70,10 +85,10 @@
 	.left-data {
 		align-self: center;
 		flex-basis: 140px;
-		flex-grow: 1;
+		flex-grow: 0.5;
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
+		gap: 12px;
 
 		.badge {
 			display: flex;
@@ -85,29 +100,37 @@
 			align-items: center;
 			gap: 8px;
 
-			p {
+			.icon {
+				width: 25px;
+				height: 25px;
+			}
+
+			.transaction-time {
+				width: 50px;
+				margin-left: 8px;
+				display: flex;
+				text-align: center;
+				text-wrap: nowrap;
+				font-weight: 500;
+				color: #8a97a6 !important;
+				font-size: var(--font-md);
+			}
+
+			.hash {
+				width: 210px;
 				font-size: var(--font-lg);
-				font-weight: 700;
+				font-weight: 500;
 				color: #0ea1ca;
 				white-space: nowrap;
 				overflow: hidden;
 				text-overflow: ellipsis;
+
+				&:hover {
+					text-decoration: underline;
+					cursor: pointer;
+				}
 			}
 		}
-	}
-
-	.transaction-time {
-		flex-basis: 50px;
-		flex-grow: 1;
-		display: flex;
-		justify-content: center;
-		text-align: center;
-		text-wrap: nowrap;
-		margin-top: auto;
-		margin-bottom: 1%;
-		font-weight: 700;
-		color: #8a97a6;
-		font-size: var(--font-md);
 	}
 
 	.transaction-wallets {
@@ -123,13 +146,22 @@
 			flex-direction: column;
 			align-items: end;
 			justify-content: center;
-			gap: 30%;
+			gap: 10%;
 
 			.wallet {
+				border: 1.4px dashed transparent;
+				border-radius: 10px;
+				padding: 6px;
 				display: flex;
 				align-items: center;
 				width: fit-content;
 				gap: 6px;
+
+				&:hover {
+					cursor: pointer;
+					border: 1.4px dashed #0ea1ca;
+					background: #1a365c;
+				}
 
 				.icon {
 					width: var(--icon-sm);
@@ -144,6 +176,11 @@
 					font-weight: 400;
 					font-size: var(--font-lg);
 					color: #0ea1ca;
+
+					&:hover {
+						text-decoration: underline;
+						cursor: pointer;
+					}
 				}
 			}
 		}
@@ -155,10 +192,10 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 8px;
+		column-gap: 8px;
 
 		.button {
-			font-weight: 600;
+			font-weight: 400;
 			flex-grow: 1;
 			flex-basis: auto;
 
@@ -169,7 +206,7 @@
 	}
 
 	.transaction-value {
-		flex-basis: 80px;
+		flex-basis: 350px;
 		flex-grow: 1;
 		display: flex;
 		flex-direction: column;
@@ -180,7 +217,7 @@
 		.holder {
 			display: flex;
 			flex-direction: column;
-			width: 100%;
+			width: fit-content;
 			gap: 8px;
 			padding-left: 10%;
 
@@ -189,8 +226,11 @@
 				text-wrap: nowrap;
 				overflow: hidden; /* Hide the overflowed text */
 				text-overflow: ellipsis; /* Show the ellipsis at the end */
-				max-width: 200px;
-				color: #5f6b7c;
+				color: #cfcfd0;
+
+				span {
+					color: #8d99a9;
+				}
 			}
 		}
 	}

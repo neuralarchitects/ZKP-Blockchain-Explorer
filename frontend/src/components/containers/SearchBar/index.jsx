@@ -9,7 +9,7 @@ export default function SearchBar() {
 			<h1>FidesInnova Explorer</h1>
 			<div className="custom-input">
 				<SearchIcon className="icon" />
-				<input placeholder="Search by address / txn hash / block / token" />
+				<input placeholder="Search by Node Id / Service Name / Service Id / Device Name / Device Id..." />
 			</div>
 		</AnimatedWidth>
 	);

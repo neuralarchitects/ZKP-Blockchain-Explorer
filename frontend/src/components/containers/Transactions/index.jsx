@@ -8,8 +8,7 @@ import AnimatedComponent from "../../ui/Animated/Component";
 import { iphoneAnimation } from "../../../utility/framer-transitions";
 import TransactionBoxSkeleton from "../../ui/TransactionBox/Skeleton";
 
-export default function LatestTransactions() {
-	const { latestTransactions } = useSocketConnection();
+export default function LatestTransactions({latestTransactions}) {
 
 	return (
 		<AnimatedComponent

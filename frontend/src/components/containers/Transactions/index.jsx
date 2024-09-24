@@ -2,7 +2,6 @@ import React from "react";
 import "./style.scss";
 import TransactionBox from "../../ui/TransactionBox";
 import TransactionText from "../../ui/TransactionText";
-import { useSocketConnection } from "../../../services/socket.io";
 import { Toaster } from "react-hot-toast";
 import AnimatedComponent from "../../ui/Animated/Component";
 import { iphoneAnimation } from "../../../utility/framer-transitions";

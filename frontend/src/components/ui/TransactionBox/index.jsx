@@ -114,10 +114,25 @@ export default function TransactionBox({ data }) {
 	}, [eventType]);
 
 	function handleCopy(copy, message) {
-		navigator.clipboard.writeText(copy, message);
-		toast.success(`${message} copied successfully`, {
-			style: { background: "#1E1F21", color: "white" },
-		});
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			navigator.clipboard
+				.writeText(String(copy))
+				.then(() => {
+					toast.success(`${message} copied successfully`, {
+						style: { background: "#1E1F21", color: "white" },
+					});
+				})
+				.catch((err) => {
+					toast.error("Failed to copy", {
+						style: { background: "#1E1F21", color: "white" },
+					});
+					console.error("Failed to copy text: ", err);
+				});
+		} else {
+			toast.error("Clipboard API not supported", {
+				style: { background: "#1E1F21", color: "white" },
+			});
+		}
 	}
 
 	return (
@@ -131,7 +146,9 @@ export default function TransactionBox({ data }) {
 				title="ZKP Payload"
 				onClose={() => setIsZkpModalOpen(false)}
 			>
-				<p>{zkp_payload && JSON.parse(zkp_payload)}</p>
+				{(isZKP && <p>{zkp_payload && JSON.parse(zkp_payload)}</p>) || (
+					<h2 className="no-zkp">The received data does not contain any ZKP.</h2>
+				)}
 			</EModal>
 
 			<EModal
@@ -258,14 +275,12 @@ export default function TransactionBox({ data }) {
 				</div>
 			</div>
 			<div className="button-container">
-				{isZKP && (
-					<Button
-						onClick={() => setIsZkpModalOpen(true)}
-						className={"button"}
-					>
-						ZKP
-					</Button>
-				)}
+				<Button
+					onClick={() => setIsZkpModalOpen(true)}
+					className={"button"}
+				>
+					ZKP
+				</Button>
 
 				<Button
 					onClick={() => setIsDataModalOpen(true)}
@@ -274,7 +289,7 @@ export default function TransactionBox({ data }) {
 					Data
 				</Button>
 
-				{isZKP && <Button className={"button"}>Verify Proof</Button>}
+				<Button className={"button"}>Verify Proof</Button>
 			</div>
 
 			<div className="transaction-value">

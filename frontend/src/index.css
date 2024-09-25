@@ -24,8 +24,9 @@ body {
 	--font-sm: clamp(10px, 1.5vw, 14px);
 	--font-md: clamp(15px, 1vw, 18px);
 	--font-lg: clamp(18px, 1.3vw, 20px);
-	--font-xlg: clamp(22px, 1.5vw, 24px);
+	--font-xl: clamp(22px, 1.5vw, 24px);
 	--font-2xl: clamp(26px, 1.5vw, 28px);
+	--font-3xl: clamp(30px, 1.5vw, 32px);
 	--icon-sm: 18px;
 	--icon-md: 24px;
 	--icon-lg: 30px;

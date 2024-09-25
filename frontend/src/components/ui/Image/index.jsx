@@ -16,8 +16,8 @@ const ImageLoader = ({ src, alt, className = "", height, width }) => {
 					sx={{ bgcolor: "grey.800" }}
 					variant="rounded"
 					animation={"pulse"}
-					width={width ? width :"100px"}
-					height={height ? height :"100px"}
+					width={width ? width : "100px"}
+					height={height ? height : "100px"}
 					className={`${className}`}
 				/>
 			)}
@@ -26,7 +26,7 @@ const ImageLoader = ({ src, alt, className = "", height, width }) => {
 				src={src}
 				alt={alt}
 				onLoad={handleImageLoaded}
-				className={`${className} image ${loading ? "hidden" : ""}`}
+				className={`${!loading && className} image ${loading ? "hidden" : ""}`}
 			/>
 		</>
 	);

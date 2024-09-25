@@ -21,7 +21,7 @@ export default function StatusBox({
 			<div className="content">
 				<p className="title">{title}</p>
 				<div className="value">
-					{(loading && <Spinner />) || (
+					{(loading && <Spinner type="double" />) || (
 						<CountUpNumber targetNumber={Number(value)} />
 					)}
 				</div>

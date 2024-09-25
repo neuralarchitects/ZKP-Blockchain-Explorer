@@ -28,6 +28,7 @@ import { JwtAuthGuard } from 'src/modules/authentication/guard/jwt-auth.guard';
 import {
   removeDeviceDto,
   removeServiceDto,
+  searchContractDto,
   verifyProofDto,
 } from '../dto/contract-dto';
 import { ContractService } from '../services/contract.service';
@@ -152,6 +153,18 @@ export class contractController {
 
     return this.contractService.requestFaucet(walletAddress);
   }
+
+  @Post('/search-data')
+  @HttpCode(201)
+  @ApiOperation({
+    summary: 'Searching data by string.',
+    description:
+      'This api return a search result between smart contract data by giving string.',
+  })
+  async searchInSmartContracts(@Body() body: searchContractDto) {
+   return await this.contractService.searchData(body.search)
+  }
+
 
   /* @Get('/fetch-service')
   @HttpCode(201)

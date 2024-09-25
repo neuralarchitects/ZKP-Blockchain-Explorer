@@ -394,8 +394,8 @@ export class DeviceController {
 
   @Get('v1/device/get-all-shared-devices')
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  /* @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth() */
   @ApiOperation({
     summary: 'Get all shared devices.',
     description: 'Gets all shared devices.',

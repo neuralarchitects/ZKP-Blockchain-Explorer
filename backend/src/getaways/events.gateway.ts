@@ -25,10 +25,10 @@ export class EventsGateway
 	private serviceDeviceCollection: Collection;
 
 	// MongoDB connection details
-	private readonly mongoUri = process.env.MONGO_CONNECTION;
-	private readonly dbName = "smartcontract_db"; // Replace with your database name
+	private readonly mongoUrl = process.env.MONGO_CONNECTION;
+	private readonly dbName = "smartcontract_db";
 	private readonly zkpCollectionName = "zkp_smartcontract";
-	private readonly serviceDeviceCollectionName = "services_devices_smartcontract"; // Second collection name
+	private readonly serviceDeviceCollectionName = "services_devices_smartcontract";
 
 	// Called when the gateway is initialized
 	afterInit(server: Server) {
@@ -48,14 +48,13 @@ export class EventsGateway
 	}
 
 	private async connectToMongoDB() {
-		const client = new MongoClient(this.mongoUri);
+		const client = new MongoClient(this.mongoUrl);
 		await client.connect();
-		console.log("Connected to MongoDB");
+		console.log("Socket Connected to MongoDB");
 		this.db = client.db(this.dbName);
 
-		
-
 		this.zkpCollection = this.db.collection(this.zkpCollectionName);
+
 		this.serviceDeviceCollection = this.db.collection(
 			this.serviceDeviceCollectionName
 		);

@@ -14,11 +14,11 @@ async function bootstrap() {
 
 	const httpsOptions = {
 		key: readFileSync('assets/certificates/webprivate.pem'),
-            cert: readFileSync('assets/certificates/webpublic.pem'),
+		cert: readFileSync('assets/certificates/webpublic.pem'),
 	  };
 
 	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-		httpsOptions, // Pass the SSL configuration here
+		httpsOptions,
 	  });
 
 	const config = new DocumentBuilder()
@@ -35,15 +35,11 @@ async function bootstrap() {
 
 	// app.enableCors();
 	app.enableCors({
-		origin: "*",
-		/* [
-			"http://localhost:3000",
-			"http://localhost:4000",
-			"https://fidesf2-explorer.fidesinnova.io",
-			"https://fidesf2-explorer.fidesinnova.io:3000",
-			"https://fidesf2-explorer.fidesinnova.io:4000",
-			"https://fidesf2-explorer.fidesinnova.io:4001",
-		] */
+		origin: [
+			'https://fidesf2-explorer.fidesinnova.io',
+			'https://localhost:3000',
+			'http://localhost:3000',
+		  ],
 		allowedHeaders: [
 			"Content-Type",
 			"Origin",

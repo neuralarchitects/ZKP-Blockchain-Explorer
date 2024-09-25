@@ -289,8 +289,8 @@ export class ServiceController {
 
   @Get('v1/service/get-all-published-services')
   @HttpCode(200)
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
+  /* @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth() */
   @ApiOperation({
     summary: 'Get all published services.',
     description: 'Gets all the services that are published.',

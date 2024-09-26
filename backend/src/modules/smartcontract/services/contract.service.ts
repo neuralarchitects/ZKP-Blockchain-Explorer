@@ -17,6 +17,12 @@ function parseProofString(proofString) {
   });
 }
 
+const base64ToHex = (base64String: string) => {
+  const buffer = Buffer.from(base64String, 'base64');
+  return buffer.toString('hex');
+};
+
+
 @Injectable()
 export class ContractService {
   private readonly rpcUrl = 'https://fidesf1-rpc.fidesinnova.io';
@@ -238,6 +244,8 @@ export class ContractService {
     this.zkpDataArray = this.zkpDataArray.filter((item) => !item._id.equals(id)); // Remove from the array
     console.log("ZKP deleted from array:", id);
   }
+
+  
   
   searchData = async (searchString: string) => {
     const results: any[] = [];
@@ -246,14 +254,25 @@ export class ContractService {
   
     // Helper function to check if a value in an object matches the search string
     const isMatch = (obj: any, searchString: string): boolean => {
-      return Object.values(obj).some((value) => {
+      const hexSearchString = base64ToHex(searchString); // Convert Base64 to hex
+    
+      return Object.values(obj).some((value: any) => {
         if (typeof value === 'object' && value !== null) {
+          // Handle binary values like transactionHash
+          if (value._bsontype === 'Binary' && value.sub_type === 0) {
+            const hexValue = value.buffer.toString('hex'); // Convert binary to hex
+            return hexValue === hexSearchString;
+          }
           // If value is an object, perform a recursive check on nested objects
           return isMatch(value, searchString);
         }
-        return String(value).toLowerCase() === searchString.toLowerCase(); // Case-insensitive comparison
+        // Case-insensitive comparison for other values
+        return String(value).toLowerCase() === searchString.toLowerCase();
       });
     };
+    
+    
+    
   
     console.log("ZKP array is:", this.zkpDataArray);
     console.log("Service array is:", this.serviceDataArray);

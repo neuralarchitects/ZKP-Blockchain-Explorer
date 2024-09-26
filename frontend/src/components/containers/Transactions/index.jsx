@@ -7,18 +7,25 @@ import AnimatedComponent from "../../ui/Animated/Component";
 import { iphoneAnimation } from "../../../utility/framer-transitions";
 import TransactionBoxSkeleton from "../../ui/TransactionBox/Skeleton";
 
-export default function LatestTransactions({latestTransactions}) {
-
+export default function LatestTransactions({
+	latestTransactions,
+	search = false,
+}) {
 	return (
 		<AnimatedComponent
 			animation={iphoneAnimation(1)}
 			className="transactions-container"
 		>
 			<Toaster />
-			<h3 className="title">Latest Transactions</h3>
-			<div className="scanning-title">
-				<TransactionText />
-			</div>
+
+			{search == false && (
+				<>
+					<h3 className="title">Latest Transactions</h3>
+					<div className="scanning-title">
+						<TransactionText />
+					</div>
+				</>
+			)}
 
 			{(latestTransactions.length !== 0 &&
 				[...latestTransactions]

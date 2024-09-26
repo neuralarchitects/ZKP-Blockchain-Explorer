@@ -1,0 +1,29 @@
+.search-page-container {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 120dvh;
+
+	.header {
+		color: #8a97a6;
+		font-size: var(--font-3xl);
+
+		span {
+			color: white;
+		}
+	}
+
+	.message-container {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		height: 120dvh;
+		justify-content: center;
+		align-items: center;
+		font-size: var(--font-3xl);
+
+        .icon {
+            font-size: 130px;
+        }
+	}
+}

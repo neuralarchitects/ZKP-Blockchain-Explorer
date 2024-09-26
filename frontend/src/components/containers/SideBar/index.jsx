@@ -20,18 +20,20 @@ export default function SideBar() {
 			{pages &&
 				pages.length > 0 &&
 				pages.map((page, index) => {
-					return (
-						<div
-							key={index}
-							className={`nav-item ${
-								page.key == currentPage ? " selected" : ""
-							}`}
-							onClick={() => setPage(page.key)}
-						>
-							<page.Icon className="icon" />
-							<p>{page.title}</p>
-						</div>
-					);
+					if (!page.hidden) {
+						return (
+							<div
+								key={index}
+								className={`nav-item ${
+									page.key == currentPage ? " selected" : ""
+								}`}
+								onClick={() => setPage(page.key)}
+							>
+								<page.Icon className="icon" />
+								<p>{page.title}</p>
+							</div>
+						);
+					}
 				})}
 		</AnimatedComponent>
 	);

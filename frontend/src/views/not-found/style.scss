@@ -1,0 +1,19 @@
+
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 120dvh;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    .icon {
+        font-size: 120px;
+    }
+
+    h1 {
+        font-size: var(--font-3xl);
+        font-weight: 500;
+    }
+}

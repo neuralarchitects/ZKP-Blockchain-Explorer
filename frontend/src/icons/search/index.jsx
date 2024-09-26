@@ -1,8 +1,10 @@
 import React from "react";
 
-function SearchIcon() {
+function SearchIcon({ className, onClick }) {
 	return (
 		<svg
+			onClick={onClick}
+			className={`${className}`}
 			xmlns="http://www.w3.org/2000/svg"
 			width="33"
 			height="33"

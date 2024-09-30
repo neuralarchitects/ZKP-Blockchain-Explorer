@@ -324,10 +324,10 @@ export class ContractService {
     });
 
     const updatedTimestampResult = results.map((obj) => {
-      const { TransactionTime, ...rest } = obj;
+      const { TransactionTime, timestamp, ...rest } = obj;
       return {
         ...rest,
-        timestamp: TransactionTime,
+        timestamp: timestamp || TransactionTime,
       };
     });
 

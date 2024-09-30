@@ -117,12 +117,20 @@ export default function TransactionBox({ data }) {
 			<EModal
 				className={`data-modal ${!isZKP && "big"}`}
 				isOpen={isDataModalOpen}
-				title="Device Data"
+				title={`${isDevice || isZKP ? "Device" : "Service"} Data`}
 				onClose={() => setIsDataModalOpen(false)}
 			>
 				{isZKP && (
 					<section className="main-data">
 						<div className="holder">
+							<ImageLoader
+								src={
+									deviceType == "E_CARD"
+										? "/img/e_card.png"
+										: "/img/multi_sensor.png"
+								}
+								className="img device"
+							/>
 							{dataPayload.Door && (
 								<p>
 									Door: <span>{dataPayload.Door}</span>
@@ -192,11 +200,10 @@ export default function TransactionBox({ data }) {
 				{isZKP == false && isDevice == true && (
 					<div className="main-data">
 						<ImageLoader
-					
 							src={
-								deviceType == "E-CARD"
-									? "./img/e_card.png"
-									: "./img/multi_sensor.png"
+								deviceType == "E_CARD"
+									? "/img/e_card.png"
+									: "/img/multi_sensor.png"
 							}
 							className="img device"
 						/>
@@ -241,7 +248,9 @@ export default function TransactionBox({ data }) {
 					<TransactionIcon className={"icon"} />
 					<p
 						onClick={() => {
-							navigateTo(`/transactions/${transactionHash}`);
+							const encodedHash =
+								encodeURIComponent(transactionHash);
+							navigateTo(`/transactions/${encodedHash}`);
 						}}
 						className="hash"
 					>

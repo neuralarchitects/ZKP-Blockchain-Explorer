@@ -9,13 +9,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 export default function SideBar() {
 	const { pages } = usePageStore();
 	const location = useLocation();
-	const navigateTo = useNavigate()
-		
+	const navigateTo = useNavigate();
+
 	return (
 		<AnimatedComponent animation={fadeInLeft(1, 200)} className="side-bar">
 			<ImageLoader
 				className="logo"
-				src={"./img/fides-logo.png"}
+				src={"/img/fides-logo.png"}
 				alt={"FidesInnova Logo"}
 				width={"50%"}
 				height={200}
@@ -28,7 +28,9 @@ export default function SideBar() {
 							<div
 								key={index}
 								className={`nav-item ${
-									page.route == location.pathname ? " selected" : ""
+									page.route == location.pathname
+										? " selected"
+										: ""
 								}`}
 								onClick={() => navigateTo(page.route)}
 							>

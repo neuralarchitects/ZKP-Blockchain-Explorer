@@ -36,8 +36,8 @@ export default function DeviceBox({ data }) {
 				<img
 					src={
 						deviceType == "E-CARD"
-							? "./img/e_card.png"
-							: "./img/multi_sensor.png"
+							? "/img/e_card.png"
+							: "/img/multi_sensor.png"
 					}
 					alt=""
 				/>

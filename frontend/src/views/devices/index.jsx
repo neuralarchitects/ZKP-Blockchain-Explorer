@@ -13,8 +13,14 @@ export default function Devices() {
 			const devices = await fetchData("device/get-all-shared-devices", {
 				cacheDuration: 60000,
 			});
-			console.log("Devices:", devices);
-			setSharedDevices(devices.data);
+			const updatedDevices = devices.data.map((device) => {
+				return {
+				  ...device,
+				  hardwareVersion: Math.floor(Math.random() * 2) + 1,   // Random between 1 and 2
+				  firmwareVersion: Math.floor(Math.random() * 3) + 1,   // Random between 1 and 3
+				};
+			  });
+			setSharedDevices(updatedDevices);
 		} catch (error) {
 			console.error("Error fetching devices:", error);
 		}

@@ -20,31 +20,33 @@ export default function Pagination({
 	};
 
 	// Function to generate pagination numbers
-	const getPagination = () => {
-		const pages = [];
-
-		if (totalPages <= 6) {
-			// Display all pages when total pages are less than or equal to 6
-			for (let i = 1; i <= totalPages; i++) {
-				pages.push(i);
-			}
-		} else {
-			// Display pagination with ellipses for higher page count
-			pages.push(1, 2);
-			if (currentPage > 3) {
-				pages.push("...");
-			}
-			if (currentPage > 2 && currentPage < totalPages - 1) {
-				pages.push(currentPage);
-			}
-			if (currentPage < totalPages - 2) {
-				pages.push("...");
-			}
-			pages.push(totalPages - 1, totalPages);
-		}
-
-		return pages;
-	};
+	// Function to generate pagination numbers
+const getPagination = () => {
+	const pages = [];
+  
+	// Always show the first and last pages
+	pages.push(1);
+  
+	if (currentPage > 3) {
+	  pages.push("...");
+	}
+  
+	// Show the adjacent pages to the current page
+	for (let i = Math.max(2, currentPage - 1); i <= Math.min(currentPage + 1, totalPages - 1); i++) {
+	  pages.push(i);
+	}
+  
+	if (currentPage < totalPages - 2) {
+	  pages.push("...");
+	}
+  
+	if (totalPages > 1) {
+	  pages.push(totalPages);
+	}
+  
+	return pages;
+  };
+  
 
 	return (
 		<section className={`pagination-container ${className}`}>

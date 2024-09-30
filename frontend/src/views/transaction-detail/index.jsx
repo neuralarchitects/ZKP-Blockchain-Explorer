@@ -20,10 +20,11 @@ export default function TransactionDetail() {
 	const { fetchData, loading } = useFetchData();
 	const [detailData, setDetailData] = useState({});
 	const { id } = useParams();
+	const decodedId = decodeURIComponent(id);
 	const navigateTo = useNavigate();
 
 	async function getTransactionDetail() {
-		const res = await fetchData(`contract/search-data?search=${id}`);
+		const res = await fetchData(`contract/search-data?search=${decodedId}`);
 		if (res.data.length > 0) {
 			setDetailData(res.data[0]);
 		} else {
@@ -34,7 +35,7 @@ export default function TransactionDetail() {
 
 	useEffect(() => {
 		getTransactionDetail();
-	}, [id]);
+	}, [decodedId]);
 
 	/* 
     data_payload: '{"FV":2,"HV":1,"Root":true,"Temperature":29,"Humidity":33.7,"Button":"Pressed"}';

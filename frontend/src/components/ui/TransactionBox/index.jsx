@@ -16,7 +16,11 @@ import { iphoneAnimation } from "../../../utility/framer-transitions";
 import EModal from "../Modal";
 import ImageLoader from "../Image";
 import { useNavigate } from "react-router-dom";
-import { copyText, formatBigInt, timeStamptimeAgo } from "../../../utility/functions";
+import {
+	copyText,
+	formatBigInt,
+	timeStamptimeAgo,
+} from "../../../utility/functions";
 
 function formatWalletAddress(address) {
 	try {
@@ -25,8 +29,6 @@ function formatWalletAddress(address) {
 		return address;
 	}
 }
-
-
 
 function formatTransactionHash(str, length) {
 	const string = String(str);
@@ -46,6 +48,7 @@ function formatTransactionHash(str, length) {
 
 export default function TransactionBox({ data }) {
 	const [isZKP, setIsZKP] = useState(false);
+	const [isDevice, setIsDevice] = useState(false);
 	const [dataPayload, setDataPayload] = useState({});
 	const [isZkpModalOpen, setIsZkpModalOpen] = useState(false);
 	const [isDataModalOpen, setIsDataModalOpen] = useState(false);
@@ -66,7 +69,7 @@ export default function TransactionBox({ data }) {
 		serviceId,
 		serviceType,
 		name: serviceName,
-		deviceName,
+		ownerId,
 		imageURL,
 		description,
 		executionPrice,
@@ -83,6 +86,13 @@ export default function TransactionBox({ data }) {
 	useEffect(() => {
 		if (String(eventType) == "ZKPStored") {
 			setIsZKP(true);
+		} else {
+			if (
+				String(eventType) == "DeviceCreated" ||
+				String(eventType) == "DeviceRemoved"
+			) {
+				setIsDevice(true);
+			}
 		}
 	}, [eventType]);
 
@@ -110,7 +120,7 @@ export default function TransactionBox({ data }) {
 				title="Device Data"
 				onClose={() => setIsDataModalOpen(false)}
 			>
-				{(isZKP && (
+				{isZKP && (
 					<section className="main-data">
 						<div className="holder">
 							{dataPayload.Door && (
@@ -139,7 +149,9 @@ export default function TransactionBox({ data }) {
 							</p>
 						</div>
 					</section>
-				)) || (
+				)}
+
+				{isZKP == false && isDevice == false && (
 					<div className="main-data">
 						<ImageLoader
 							height={200}
@@ -176,6 +188,40 @@ export default function TransactionBox({ data }) {
 						</div>
 					</div>
 				)}
+
+				{isZKP == false && isDevice == true && (
+					<div className="main-data">
+						<ImageLoader
+					
+							src={
+								deviceType == "E-CARD"
+									? "./img/e_card.png"
+									: "./img/multi_sensor.png"
+							}
+							className="img device"
+						/>
+						<div className="holder service">
+							<p>
+								Node Id: <span>{nodeId}</span>
+							</p>
+							<p>
+								Event Type: <span>{eventType}</span>
+							</p>
+							<p>
+								Device Name: <span>{serviceName}</span>
+							</p>
+							<p>
+								Device Id: <span>{deviceId}</span>
+							</p>
+							<p>
+								Device Type: <span>{deviceType}</span>
+							</p>
+							<p>
+								Owner Id: <span>{ownerId}</span>
+							</p>
+						</div>
+					</div>
+				)}
 			</EModal>
 
 			<div className="left-data">
@@ -202,7 +248,9 @@ export default function TransactionBox({ data }) {
 						{transactionHash}
 						{/* {formatTransactionHash(transactionHash, 16)} */}
 					</p>
-					<p className="transaction-time">{timeStamptimeAgo(timestamp)}</p>
+					<p className="transaction-time">
+						{timeStamptimeAgo(timestamp)}
+					</p>
 				</div>
 			</div>
 
@@ -246,7 +294,7 @@ export default function TransactionBox({ data }) {
 			</div>
 
 			<div className="transaction-value">
-				{(isZKP && (
+				{isZKP && (
 					<div className="holder">
 						<p>
 							Node Id: <span>{nodeId}</span>
@@ -267,7 +315,9 @@ export default function TransactionBox({ data }) {
 							Fee: <span>{formatBigInt(gasFee)} FDS</span>
 						</p>
 					</div>
-				)) || (
+				)}
+
+				{isZKP == false && isDevice == false && (
 					<div className="holder">
 						<p>
 							Node Id: <span>{nodeId}</span>
@@ -276,10 +326,30 @@ export default function TransactionBox({ data }) {
 							Service Name: <span>{serviceName}</span>
 						</p>
 						<p>
-							service Type: <span>{serviceType}</span>
+							Service Type: <span>{serviceType}</span>
 						</p>
 						<p>
-							service Id: <span>{serviceId}</span>
+							Service Id: <span>{serviceId}</span>
+						</p>
+
+						<p>
+							Fee: <span>{formatBigInt(gasFee)}</span>
+						</p>
+					</div>
+				)}
+				{isZKP == false && isDevice == true && (
+					<div className="holder">
+						<p>
+							Node Id: <span>{nodeId}</span>
+						</p>
+						<p>
+							Device Name: <span>{serviceName}</span>
+						</p>
+						<p>
+							Device Type: <span>{deviceType}</span>
+						</p>
+						<p>
+							Device Id: <span>{deviceId}</span>
 						</p>
 
 						<p>

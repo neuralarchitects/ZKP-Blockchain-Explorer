@@ -6,12 +6,22 @@
 	row-gap: 24px;
 	margin-bottom: 24px;
 
+	.content {
+		display: flex;
+		flex-direction: column;
+		row-gap: 16px;
+		width: 98%;
+		margin-inline: auto;
+	}
+
 	.header {
 		display: grid;
 		grid-template-columns: 100px repeat(5, 1fr);
 		background: #1e1f21;
 		justify-items: center;
 		align-items: center;
+		border-radius: 5px;
+		padding-inline: 10px;
 		padding-block: 15px;
 
 		.hard-firm-ware {

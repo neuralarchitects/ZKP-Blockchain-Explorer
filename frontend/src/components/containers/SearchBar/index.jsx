@@ -2,18 +2,17 @@ import React, { useRef, useState } from "react";
 import "./style.scss";
 import SearchIcon from "../../../icons/search";
 import AnimatedWidth from "../../ui/Animated/Width";
-import { usePageStore } from "../../../store/store";
+import { useNavigate } from "react-router-dom";
 
 export default function SearchBar() {
 	const inputRef = useRef(null);
-	const { setSearch, setPage } = usePageStore()
+	const navigateTo = useNavigate()
 
 	async function handleSearch(string) {
 		if (String(string).trim().length == 0) {
 			return false;
 		} else {
-			setSearch(string)
-			setPage("search")
+			navigateTo(`/search?text=${string}`)
 		}
 	}
 

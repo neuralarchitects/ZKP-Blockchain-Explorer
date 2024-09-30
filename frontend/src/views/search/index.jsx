@@ -5,29 +5,29 @@ import useFetchData from "../../services/api/useFetchData";
 import { HiOutlineX, HiOutlineXCircle, HiX, HiXCircle } from "react-icons/hi";
 import Spinner from "../../components/ui/Spinner";
 import LatestTransactions from "../../components/containers/Transactions";
+import { useLocation } from "react-router-dom";
 
 export default function SearchPage() {
-	const { searchString } = usePageStore();
 	const [apiData, setApiData] = useState([]);
-	const { fetchData, loading, error } = useFetchData();
+	const { fetchData, loading } = useFetchData();
+	const location = useLocation();
+	const params = new URLSearchParams(location.search);
+	const searchTextString = params.get("text");
 
 	useEffect(() => {
 		async function fetchSearchData() {
-			const res = await fetchData("contract/search-data", {
-				method: "POST",
-				body: {
-					search: searchString,
-				},
-			});
+			const res = await fetchData(
+				`contract/search-data?search=${searchTextString}`
+			);
 			setApiData(res.data);
 		}
 		fetchSearchData();
-	}, [searchString]);
+	}, [searchTextString]);
 
 	return (
 		<main className="search-page-container">
 			<h1 className="header">
-				Search results for <span>'{String(searchString)}'</span>
+				Search results for <span>'{String(searchTextString)}'</span>
 			</h1>
 			{((apiData.length == 0 && loading == false) || loading == true) && (
 				<div className="message-container">
@@ -40,9 +40,15 @@ export default function SearchPage() {
 					{loading == true && <Spinner type="rotate" />}
 				</div>
 			)}
-			{apiData.length > 0 && loading == false && (
-				<LatestTransactions search={true} latestTransactions={apiData} />
-			)}
+			<div className="transaction-list">
+				{apiData.length > 0 && loading == false && (
+					<LatestTransactions
+						pagination={true}
+						noHeader={true}
+						latestTransactions={apiData}
+					/>
+				)}
+			</div>
 		</main>
 	);
 }

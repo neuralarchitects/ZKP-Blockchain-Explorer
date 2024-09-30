@@ -1,6 +1,7 @@
 import React from "react";
 import "./style.scss";
 import DeviceBox from "../../ui/DeviceBox";
+import PaginatedList from "../../ui/PaginationList";
 
 export default function DevicesBoxes({ data }) {
 	return (
@@ -16,21 +17,23 @@ export default function DevicesBoxes({ data }) {
 					<p>Hardware Version</p>
 				</div>
 			</div>
-			{data.map((device) => {
-				return (
-					<DeviceBox
-						data={{
-							deviceName: device.deviceName,
-							deviceType: device.deviceType,
-							deviceEncryptedId: device.deviceEncryptedId,
-							firmwareVersion: device.firmwareVersion,
-							hardwareVersion: device.hardwareVersion,
-							insertDate: device.insertDate,
-							nodeId: device.nodeId,
-						}}
-					/>
-				);
-			})}
+			<PaginatedList className={"content"} itemsPerPage={10}>
+				{data.map((device) => {
+					return (
+						<DeviceBox
+							data={{
+								deviceName: device.deviceName,
+								deviceType: device.deviceType,
+								deviceEncryptedId: device.deviceEncryptedId,
+								firmwareVersion: device.firmwareVersion,
+								hardwareVersion: device.hardwareVersion,
+								insertDate: device.insertDate,
+								nodeId: device.nodeId,
+							}}
+						/>
+					);
+				})}
+			</PaginatedList>
 		</main>
 	);
 }

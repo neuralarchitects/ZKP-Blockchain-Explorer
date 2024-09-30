@@ -10,21 +10,13 @@ import TransactionIcon from "../../../icons/transaction";
 import GradientCircle from "../GradientCircle";
 import CopyIcon from "../../../icons/copy";
 import DocumentIcon from "../../../icons/document";
-import toast from "react-hot-toast";
 import Button from "../Button";
 import AnimatedComponent from "../Animated/Component";
 import { iphoneAnimation } from "../../../utility/framer-transitions";
 import EModal from "../Modal";
 import ImageLoader from "../Image";
-
-function formatBigInt(bigIntValue) {
-	if (bigIntValue === 0n) {
-		return 0;
-	}
-	const divisor = 1000000000000000000n;
-	const result = Number(bigIntValue) / Number(divisor);
-	return Number(result.toFixed(5));
-}
+import { useNavigate } from "react-router-dom";
+import { copyText, formatBigInt, timeStamptimeAgo } from "../../../utility/functions";
 
 function formatWalletAddress(address) {
 	try {
@@ -34,27 +26,7 @@ function formatWalletAddress(address) {
 	}
 }
 
-function timeAgo(unixTimestamp) {
-	const seconds = Math.floor((Date.now() - unixTimestamp * 1000) / 1000);
 
-	const intervals = {
-		year: 31536000,
-		month: 2592000,
-		day: 86400,
-		hour: 3600,
-		minute: 60,
-		second: 1,
-	};
-
-	for (const [unit, value] of Object.entries(intervals)) {
-		const interval = Math.floor(seconds / value);
-		if (interval >= 1) {
-			return `${interval}${unit.charAt(0)} ago`;
-		}
-	}
-
-	return "just now";
-}
 
 function formatTransactionHash(str, length) {
 	const string = String(str);
@@ -100,6 +72,7 @@ export default function TransactionBox({ data }) {
 		executionPrice,
 		installationPrice,
 	} = data;
+	const navigateTo = useNavigate();
 
 	useEffect(() => {
 		if (data_payload) {
@@ -113,28 +86,6 @@ export default function TransactionBox({ data }) {
 		}
 	}, [eventType]);
 
-	function handleCopy(copy, message) {
-		if (navigator.clipboard && navigator.clipboard.writeText) {
-			navigator.clipboard
-				.writeText(String(copy))
-				.then(() => {
-					toast.success(`${message} copied successfully`, {
-						style: { background: "#1E1F21", color: "white" },
-					});
-				})
-				.catch((err) => {
-					toast.error("Failed to copy", {
-						style: { background: "#1E1F21", color: "white" },
-					});
-					console.error("Failed to copy text: ", err);
-				});
-		} else {
-			toast.error("Clipboard API not supported", {
-				style: { background: "#1E1F21", color: "white" },
-			});
-		}
-	}
-
 	return (
 		<AnimatedComponent
 			animation={iphoneAnimation(0.5)}
@@ -147,12 +98,14 @@ export default function TransactionBox({ data }) {
 				onClose={() => setIsZkpModalOpen(false)}
 			>
 				{(isZKP && <p>{zkp_payload && JSON.parse(zkp_payload)}</p>) || (
-					<h2 className="no-zkp">The received data does not contain any ZKP.</h2>
+					<h2 className="no-zkp">
+						The received data does not contain any ZKP.
+					</h2>
 				)}
 			</EModal>
 
 			<EModal
-				className="data-modal"
+				className={`data-modal ${!isZKP && "big"}`}
 				isOpen={isDataModalOpen}
 				title="Device Data"
 				onClose={() => setIsDataModalOpen(false)}
@@ -241,22 +194,22 @@ export default function TransactionBox({ data }) {
 				<div className="transaction-hash">
 					<TransactionIcon className={"icon"} />
 					<p
-						onClick={() =>
-							handleCopy(transactionHash, "Transaction Hash")
-						}
+						onClick={() => {
+							navigateTo(`/transactions/${transactionHash}`);
+						}}
 						className="hash"
 					>
 						{transactionHash}
 						{/* {formatTransactionHash(transactionHash, 16)} */}
 					</p>
-					<p className="transaction-time">{timeAgo(timestamp)}</p>
+					<p className="transaction-time">{timeStamptimeAgo(timestamp)}</p>
 				</div>
 			</div>
 
 			<div className="transaction-wallets">
 				<div className="holder">
 					<div
-						onClick={() => handleCopy(fromWallet, "Wallet address")}
+						onClick={() => copyText(fromWallet, "Wallet address")}
 						className="wallet"
 					>
 						<HiArrowDown className="icon" />
@@ -265,7 +218,7 @@ export default function TransactionBox({ data }) {
 						<CopyIcon className="icon copy" />
 					</div>
 					<div
-						onClick={() => handleCopy(intoWallet, "Wallet address")}
+						onClick={() => copyText(intoWallet, "Wallet address")}
 						className="wallet"
 					>
 						<DocumentIcon className="icon start" />
@@ -311,7 +264,7 @@ export default function TransactionBox({ data }) {
 							Firmware Version: <span>{firmwareVersion}</span>
 						</p>
 						<p>
-							Fee: <span>{formatBigInt(gasFee)}</span>
+							Fee: <span>{formatBigInt(gasFee)} FDS</span>
 						</p>
 					</div>
 				)) || (

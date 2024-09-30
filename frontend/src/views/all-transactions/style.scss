@@ -1,0 +1,16 @@
+
+
+.contract-data-container {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .page-pagination {
+        align-self: center;
+        padding-block: 25px;
+    }
+
+    h1 {
+        font-size: var(--font-3xl);
+    }
+}

@@ -2,20 +2,30 @@ import "./App.scss";
 import SideBar from "./components/containers/SideBar";
 import { usePageStore } from "./store/store";
 import NotFound from "./views/not-found";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
-	const { currentPage, pages } = usePageStore();
-
-	const renderPage = () => {
-		const current = pages.find((page) => page.key === currentPage);
-		return current ? current.component : <NotFound />;
-	};
+	const { pages } = usePageStore();
 
 	return (
-		<main className="main-container">
-			<SideBar />
-			<div className="content-container">{renderPage()}</div>
-		</main>
+		<Router>
+			<main className="main-container">
+				<SideBar />
+				<div className="content-container">
+					<Routes>
+						{pages.map((thePage, index) => (
+							<Route
+								key={index}
+								path={thePage.route}
+								element={thePage.component}
+							/>
+						))}
+
+						<Route path="*" element={<NotFound />} />
+					</Routes>
+				</div>
+			</main>
+		</Router>
 	);
 }
 

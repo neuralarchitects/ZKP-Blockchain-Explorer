@@ -4,4 +4,17 @@
 	flex-grow: 1;
 	height: 100%;
 	gap: 25px;
+
+	.all-transactions {
+		text-align: center;
+		padding-bottom: 30px;
+		color: #63b3ed;
+		font-size: var(--font-lg);
+		cursor: pointer;
+
+		&:hover {
+			color: #4295d1;
+			text-decoration: underline;
+		}
+	}
 }

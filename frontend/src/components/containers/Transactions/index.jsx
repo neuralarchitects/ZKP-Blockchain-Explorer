@@ -6,10 +6,14 @@ import { Toaster } from "react-hot-toast";
 import AnimatedComponent from "../../ui/Animated/Component";
 import { iphoneAnimation } from "../../../utility/framer-transitions";
 import TransactionBoxSkeleton from "../../ui/TransactionBox/Skeleton";
+import PaginatedList from "../../ui/PaginationList";
 
 export default function LatestTransactions({
 	latestTransactions,
-	search = false,
+	noHeader = false,
+	loading = false,
+	pagination = false,
+	skeletonCount = 3,
 }) {
 	return (
 		<AnimatedComponent
@@ -18,7 +22,7 @@ export default function LatestTransactions({
 		>
 			<Toaster />
 
-			{search == false && (
+			{noHeader == false && (
 				<>
 					<h3 className="title">Latest Transactions</h3>
 					<div className="scanning-title">
@@ -27,20 +31,38 @@ export default function LatestTransactions({
 				</>
 			)}
 
-			{(latestTransactions.length !== 0 &&
-				[...latestTransactions]
-					.sort((a, b) => b.timestamp - a.timestamp)
-					.map((item) => {
-						return (
-							<TransactionBox
-								key={item.transactionHash}
-								data={item}
-							/>
-						);
-					})) ||
-				[0, 1, 2].map((item) => {
-					return <TransactionBoxSkeleton key={item} />;
-				})}
+			{pagination == true && (
+				<PaginatedList itemsPerPage={8}>
+					{latestTransactions.length !== 0 &&
+						loading == false &&
+						[...latestTransactions]
+							.sort((a, b) => b.timestamp - a.timestamp)
+							.map((item, index) => {
+								return (
+									<TransactionBox key={index} data={item} />
+								);
+							})}
+				</PaginatedList>
+			)}
+			{pagination == false && (
+				<>
+					{latestTransactions.length !== 0 &&
+						loading == false &&
+						[...latestTransactions]
+							.sort((a, b) => b.timestamp - a.timestamp)
+							.map((item, index) => {
+								return (
+									<TransactionBox key={index} data={item} />
+								);
+							})}
+				</>
+			)}
+			<div className="">
+				{(loading || latestTransactions.length === 0) &&
+					[...Array(skeletonCount)].map((_, index) => (
+						<TransactionBoxSkeleton key={index} />
+					))}
+			</div>
 		</AnimatedComponent>
 	);
 }

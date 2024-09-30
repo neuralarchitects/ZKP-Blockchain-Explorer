@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
 import useFetchData from "../../services/api/useFetchData";
-import DeviceBox from "../../components/ui/DeviceBox";
 import DevicesBoxes from "../../components/containers/DevicesBoxes";
 import Spinner from "../../components/ui/Spinner";
 

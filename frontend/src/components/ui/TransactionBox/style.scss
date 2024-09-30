@@ -21,24 +21,36 @@
 	}
 
 	p {
+		padding-inline: 10px;
 		margin-block: 25px;
 		text-align: center;
 		line-height: var(--font-2xl);
 		font-weight: 400;
 		font-size: var(--font-md);
+		word-break: break-all;
 	}
 }
 
 .data-modal {
-	width: 50%;
+	width: 25%;
+	&.big {
+		width: 50% !important;
+	}
+	
 	padding-bottom: 30px !important;
 
 	@media screen and (max-width: 1000px) {
-		width: 75%;
+		width: 30%;
+		&.big {
+			width: 75% !important;
+		}
 	}
 
 	@media screen and (max-width: 680px) {
-		width: 95%;
+		width: 65%;
+		&.big {
+			width: 95% !important;
+		}
 	}
 
 	.main-data {
@@ -47,6 +59,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
+		margin-top: 15px;
 		gap: 16px;
 
 		.holder {

@@ -4,10 +4,13 @@ import ImageLoader from "../../ui/Image";
 import AnimatedComponent from "../../ui/Animated/Component";
 import { fadeInLeft } from "../../../utility/framer-transitions";
 import { usePageStore } from "../../../store/store";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function SideBar() {
-	const { setPage, pages, currentPage } = usePageStore();
-
+	const { pages } = usePageStore();
+	const location = useLocation();
+	const navigateTo = useNavigate()
+		
 	return (
 		<AnimatedComponent animation={fadeInLeft(1, 200)} className="side-bar">
 			<ImageLoader
@@ -25,9 +28,9 @@ export default function SideBar() {
 							<div
 								key={index}
 								className={`nav-item ${
-									page.key == currentPage ? " selected" : ""
+									page.route == location.pathname ? " selected" : ""
 								}`}
-								onClick={() => setPage(page.key)}
+								onClick={() => navigateTo(page.route)}
 							>
 								<page.Icon className="icon" />
 								<p>{page.title}</p>

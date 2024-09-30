@@ -1,0 +1,33 @@
+.paginated-list {
+	width: 100%;
+}
+
+.pagination-container {
+	display: flex;
+	justify-content: center;
+	margin-top: 16px;
+
+    .pagination {
+		cursor: pointer;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 8px;
+		border: 1px solid #8d99a9;
+		border-radius: 5px;
+		font-size: var(--font-md);
+		font-weight: 500;
+		color: white;
+		background: transparent;
+
+		&:disabled {
+			cursor: not-allowed;
+			color: #4f4f4f;
+		}
+
+		&.active {
+			color: black;
+			background: #cfcfd0;
+		}
+	}
+}

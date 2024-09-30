@@ -1,6 +1,7 @@
 import React from "react";
 import "./style.scss";
 import ServiceBox from "../../ui/ServiceBox";
+import PaginatedList from "../../ui/PaginationList";
 
 export default function ServicesBoxes({ data }) {
 	return (
@@ -13,21 +14,23 @@ export default function ServicesBoxes({ data }) {
 				<p>Node ID</p>
 				<p>Service ID</p>
 			</div>
-			{data.map((service) => {
-				return (
-					<ServiceBox
-						data={{
-							code: service.code,
-							description: service.description,
-							insertDate: service.insertDate,
-							nodeId: service.nodeId,
-							nodeServiceId: service.nodeServiceId,
-							serviceImage: service.serviceImage,
-							serviceName: service.serviceName,
-						}}
-					/>
-				);
-			})}
+			<PaginatedList className="content" itemsPerPage={10}>
+				{data.map((service) => {
+					return (
+						<ServiceBox
+							data={{
+								code: service.code,
+								description: service.description,
+								insertDate: service.insertDate,
+								nodeId: service.nodeId,
+								nodeServiceId: service.nodeServiceId,
+								serviceImage: service.serviceImage,
+								serviceName: service.serviceName,
+							}}
+						/>
+					);
+				})}
+			</PaginatedList>
 		</main>
 	);
 }

@@ -4,33 +4,19 @@ import {
   HttpCode,
   Post,
   Get,
-  Patch,
-  Delete,
   Request,
-  Response,
   UseGuards,
-  Param,
   Query,
-  Req,
-  Put,
-  UseInterceptors,
-  UploadedFile,
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
-  ApiQuery,
   ApiTags,
 } from '@nestjs/swagger';
 import { GeneralException } from 'src/modules/utility/exceptions/general.exception';
 import { ErrorTypeEnum } from 'src/modules/utility/enums/error-type.enum';
 import { JwtAuthGuard } from 'src/modules/authentication/guard/jwt-auth.guard';
-import {
-  removeDeviceDto,
-  removeServiceDto,
-  searchContractDto,
-  verifyProofDto,
-} from '../dto/contract-dto';
+import { verifyProofDto } from '../dto/contract-dto';
 import { ContractService } from '../services/contract.service';
 import { UserService } from 'src/modules/user/services/user/user.service';
 
@@ -154,17 +140,29 @@ export class contractController {
     return this.contractService.requestFaucet(walletAddress);
   }
 
-  @Post('/search-data')
+  @Get('/search-data')
   @HttpCode(201)
   @ApiOperation({
     summary: 'Searching data by string.',
     description:
       'This api return a search result between smart contract data by giving string.',
   })
-  async searchInSmartContracts(@Body() body: searchContractDto) {
-   return await this.contractService.searchData(body.search)
+  async searchInSmartContracts(@Query('search') search: string) {
+    return await this.contractService.searchData(search);
   }
 
+  @Get('/get-contract-data')
+  @HttpCode(201)
+  async getData(
+    @Query('limit') limit: number,
+    @Query('offset') offset: number,
+  ) {
+    const records = await this.contractService.getPaginatedRecords(
+      Number(limit),
+      Number(offset),
+    );
+    return records;
+  }
 
   /* @Get('/fetch-service')
   @HttpCode(201)

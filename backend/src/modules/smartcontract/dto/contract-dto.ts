@@ -8,13 +8,6 @@ export class verifyProofDto {
   proof: string;
 }
 
-export class searchContractDto {
-  @IsNotEmpty({ message: 'search is required and must be entered.' })
-  @IsString({ message: 'search must be string.' })
-  @ApiProperty({ required: true })
-  search: string;
-}
-
 export class walletBalanceDto {
   @IsNotEmpty({ message: 'walletAddress is required and must be entered.' })
   @IsString({ message: 'walletAddress must be string.' })

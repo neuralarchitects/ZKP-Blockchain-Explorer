@@ -95,7 +95,7 @@ export class EventsGateway
 		try {
 			const zkpLastObjects = await this.zkpCollection.find({}).sort({ timestamp: -1 }).limit(10).toArray();
 
-			const serviceDeviceLastObjects = await this.serviceDeviceCollection.find({}).sort({ timestamp: -1 }).limit(10).toArray();
+			const serviceDeviceLastObjects = await this.serviceDeviceCollection.find({}).sort({ TransactionTime: -1 }).limit(10).toArray();
 
 			const updatedServiceDeviceLastObjects =
 				serviceDeviceLastObjects.map((obj) => {

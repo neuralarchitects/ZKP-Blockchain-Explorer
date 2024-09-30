@@ -5,8 +5,7 @@ import { GeneralException } from 'src/modules/utility/exceptions/general.excepti
 import { ErrorTypeEnum } from 'src/modules/utility/enums/error-type.enum';
 import { DeviceService } from 'src/modules/device/services/device.service';
 import { ServiceService } from 'src/modules/service/services/service.service';
-import { MongoClient, Db, Collection } from "mongodb";
-
+import { MongoClient, Db, Collection } from 'mongodb';
 
 function parseProofString(proofString) {
   let cleanedString = proofString.substring(1, proofString.length - 1);
@@ -21,7 +20,6 @@ const base64ToHex = (base64String: string) => {
   const buffer = Buffer.from(base64String, 'base64');
   return buffer.toString('hex');
 };
-
 
 @Injectable()
 export class ContractService {
@@ -38,15 +36,15 @@ export class ContractService {
     serviceDevice: null,
   };
   private db: Db;
-	private zkpCollection: Collection;
-	private serviceDeviceCollection: Collection;
-	private readonly mongoUrl = process.env.MONGO_CONNECTION;
-	private readonly dbName = "smartcontract_db";
-	private readonly zkpCollectionName = "zkp_smartcontract";
-	private readonly serviceDeviceCollectionName = "services_devices_smartcontract";
+  private zkpCollection: Collection;
+  private serviceDeviceCollection: Collection;
+  private readonly mongoUrl = process.env.MONGO_CONNECTION;
+  private readonly dbName = 'smartcontract_db';
+  private readonly zkpCollectionName = 'zkp_smartcontract';
+  private readonly serviceDeviceCollectionName =
+    'services_devices_smartcontract';
   private serviceDataArray = [];
-  private zkpDataArray = [];  
-
+  private zkpDataArray = [];
 
   constructor(
     @Inject(forwardRef(() => DeviceService))
@@ -81,7 +79,7 @@ export class ContractService {
       this.adminWallet,
     );
 
-    this.connectToMongo()
+    this.connectToMongo();
 
     this.contracts.serviceDevice.on('ServiceCreated', async (id, service) => {
       let newService = {
@@ -158,24 +156,25 @@ export class ContractService {
   async connectToMongo() {
     const client = new MongoClient(this.mongoUrl);
     await client.connect();
-    console.log("Api Connected to MongoDB");
+    console.log('Api Connected to MongoDB');
     this.db = client.db(this.dbName);
-  
+
     this.zkpCollection = this.db.collection(this.zkpCollectionName);
-    this.serviceDeviceCollection = this.db.collection(this.serviceDeviceCollectionName);
-  
+    this.serviceDeviceCollection = this.db.collection(
+      this.serviceDeviceCollectionName,
+    );
+
     // Fetch initial data and populate arrays
     this.serviceDataArray = await this.serviceDeviceCollection.find().toArray();
     this.zkpDataArray = await this.zkpCollection.find().toArray();
-  
+
     //console.log("ZKP is :", this.zkpDataArray);
-    
 
     // Set up Change Stream for serviceDeviceCollection
     const serviceDeviceChangeStream = this.serviceDeviceCollection.watch();
-    serviceDeviceChangeStream.on("change", (change: any) => {
+    serviceDeviceChangeStream.on('change', (change: any) => {
       switch (change.operationType) {
-        case "insert":
+        case 'insert':
           this.handleServiceInsert(change.fullDocument);
           break;
         /* case "update":
@@ -185,15 +184,15 @@ export class ContractService {
           this.handleServiceDelete(change.documentKey._id);
           break; */
         default:
-          console.log("Unrecognized operation type:", change.operationType);
+          console.log('Unrecognized operation type:', change.operationType);
       }
     });
-  
+
     // Set up Change Stream for zkpCollection (if needed)
     const zkpChangeStream = this.zkpCollection.watch();
-    zkpChangeStream.on("change", (change: any) => {
+    zkpChangeStream.on('change', (change: any) => {
       switch (change.operationType) {
-        case "insert":
+        case 'insert':
           this.handleZkpInsert(change.fullDocument);
           break;
         /* case "update":
@@ -203,59 +202,95 @@ export class ContractService {
           this.handleZkpDelete(change.documentKey._id);
           break; */
         default:
-          console.log("Unrecognized operation type:", change.operationType);
+          console.log('Unrecognized operation type:', change.operationType);
       }
     });
   }
-  
+
+  getPaginatedRecords = async (limit: number, offset: number): Promise<any> => {
+    const updatedServiceDeviceLastObjects = this.serviceDataArray.map((obj) => {
+      const { TransactionTime, ...rest } = obj;
+      return {
+        ...rest,
+        timestamp: TransactionTime,
+      };
+    });
+
+    let totalDataArray = [
+      ...updatedServiceDeviceLastObjects,
+      ...this.zkpDataArray,
+    ];
+
+    totalDataArray.sort((a, b) => b.timestamp - a.timestamp);
+
+    return {
+      data: [...totalDataArray.slice(offset, offset + limit)],
+      count: this.serviceDataArray.length + this.zkpDataArray.length,
+    };
+  };
+
   handleServiceInsert(newService: any) {
     this.serviceDataArray.push(newService); // Sync the new service with the array
-    console.log("Service inserted into array:", newService);
+    console.log('Service inserted into array:', newService);
   }
-  
+
   handleZkpInsert(newDevice: any) {
     this.zkpDataArray.push(newDevice); // Sync the new device with the array
-    console.log("ZKP inserted into array:", newDevice);
+    console.log('ZKP inserted into array:', newDevice);
   }
-  
 
   handleServiceUpdate(id: any, updatedFields: any) {
-    const index = this.serviceDataArray.findIndex((item) => item._id.equals(id));
+    const index = this.serviceDataArray.findIndex((item) =>
+      item._id.equals(id),
+    );
     if (index !== -1) {
-      this.serviceDataArray[index] = { ...this.serviceDataArray[index], ...updatedFields }; // Update the array
-      console.log("Service updated in array:", this.serviceDataArray[index]);
+      this.serviceDataArray[index] = {
+        ...this.serviceDataArray[index],
+        ...updatedFields,
+      }; // Update the array
+      console.log('Service updated in array:', this.serviceDataArray[index]);
     }
   }
-  
+
   handleZkpUpdate(id: any, updatedFields: any) {
     const index = this.zkpDataArray.findIndex((item) => item._id.equals(id));
     if (index !== -1) {
-      this.zkpDataArray[index] = { ...this.zkpDataArray[index], ...updatedFields }; // Update the array
-      console.log("ZKP updated in array:", this.zkpDataArray[index]);
+      this.zkpDataArray[index] = {
+        ...this.zkpDataArray[index],
+        ...updatedFields,
+      }; // Update the array
+      console.log('ZKP updated in array:', this.zkpDataArray[index]);
     }
   }
-  
+
   handleServiceDelete(id: any) {
-    this.serviceDataArray = this.serviceDataArray.filter((item) => !item._id.equals(id)); // Remove from the array
-    console.log("Service deleted from array:", id);
-  }
-  
-  handleZkpDelete(id: any) {
-    this.zkpDataArray = this.zkpDataArray.filter((item) => !item._id.equals(id)); // Remove from the array
-    console.log("ZKP deleted from array:", id);
+    this.serviceDataArray = this.serviceDataArray.filter(
+      (item) => !item._id.equals(id),
+    ); // Remove from the array
+    console.log('Service deleted from array:', id);
   }
 
-  
-  
+  handleZkpDelete(id: any) {
+    this.zkpDataArray = this.zkpDataArray.filter(
+      (item) => !item._id.equals(id),
+    ); // Remove from the array
+    console.log('ZKP deleted from array:', id);
+  }
+
   searchData = async (searchString: string) => {
     const results: any[] = [];
-  
-    console.log("typeof:", typeof this.serviceDeviceCollection, ", serviceDeviceCollection", this.serviceDeviceCollection);
-  
+
+    console.log(
+      'typeof:',
+      typeof this.serviceDeviceCollection,
+      ', serviceDeviceCollection',
+      this.serviceDeviceCollection,
+    );
+
     // Helper function to check if a value in an object matches the search string
     const isMatch = (obj: any, searchString: string): boolean => {
       const hexSearchString = base64ToHex(searchString); // Convert Base64 to hex
-    
+
       return Object.values(obj).some((value: any) => {
         if (typeof value === 'object' && value !== null) {
           // Handle binary values like transactionHash
@@ -270,31 +305,34 @@ export class ContractService {
         return String(value).toLowerCase() === searchString.toLowerCase();
       });
     };
-    
-    
-    
-  
-    console.log("ZKP array is:", this.zkpDataArray);
-    console.log("Service array is:", this.serviceDataArray);
-  
+
+    console.log('ZKP array is:', this.zkpDataArray);
+    console.log('Service array is:', this.serviceDataArray);
+
     // Search in serviceDataArray
     this.serviceDataArray.forEach((service) => {
       if (isMatch(service, searchString)) {
         results.push(service); // Add matching service to results
       }
     });
-  
+
     // Search in zkpDataArray
     this.zkpDataArray.forEach((zkp) => {
       if (isMatch(zkp, searchString)) {
         results.push(zkp); // Add matching zkp to results
       }
     });
-  
-    return results; // Return all matching objects
+
+    const updatedTimestampResult = results.map((obj) => {
+      const { TransactionTime, ...rest } = obj;
+      return {
+        ...rest,
+        timestamp: TransactionTime,
+      };
+    });
+
+    return updatedTimestampResult;
   };
-  
-  
 
   async adminWalletData() {
     return {
@@ -599,5 +637,4 @@ export class ContractService {
       return false;
     }
   }
-
 }

@@ -27,7 +27,7 @@ export default function AllTransactionsPage() {
 	return (
 		<main className="contract-data-container">
 			<h1>
-				All Transactions
+				All Operations
 			</h1>
 			<LatestTransactions
 				loading={loading}

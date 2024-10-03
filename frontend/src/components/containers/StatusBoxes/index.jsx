@@ -11,7 +11,7 @@ export default function StatusBoxes({ serviceDeviceCount, zkpCount }) {
 			<StatusBox
 				loading={!serviceDeviceCount ? true : false}
 				Icon={TransactionIcon}
-				title={"Transactions"}
+				title={"Protocol Operations"}
 				value={serviceDeviceCount + zkpCount}
 			/>
 			<StatusBox
@@ -24,7 +24,7 @@ export default function StatusBoxes({ serviceDeviceCount, zkpCount }) {
 				loading={!serviceDeviceCount ? true : false}
 				Icon={HiCheck}
 				iconClass={"check-icon"}
-				title={"Commitments"}
+				title={"Device Commitments"}
 				value={15}
 			/>
 		</section>

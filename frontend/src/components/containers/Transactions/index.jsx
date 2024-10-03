@@ -24,7 +24,7 @@ export default function LatestTransactions({
 
 			{noHeader == false && (
 				<>
-					<h3 className="title">Latest Transactions</h3>
+					<h3 className="title">Latest Operations</h3>
 					<div className="scanning-title">
 						<TransactionText />
 					</div>

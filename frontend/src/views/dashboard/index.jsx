@@ -26,7 +26,7 @@ export default function Dashboard() {
 				}}
 				className="all-transactions"
 			>
-				View all transactions
+				View all operations
 			</p>
 		</main>
 	);

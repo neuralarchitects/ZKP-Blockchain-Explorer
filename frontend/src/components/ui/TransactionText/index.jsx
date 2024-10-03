@@ -11,7 +11,7 @@ const TransactionText = () => {
 		return () => clearInterval(interval);
 	}, []);
 
-	return <p>Scanning New Transactions{dots}</p>;
+	return <p>Scanning New Operations{dots}</p>;
 };
 
 export default TransactionText;

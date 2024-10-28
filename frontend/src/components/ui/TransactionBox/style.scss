@@ -33,10 +33,12 @@
 
 .data-modal {
 	width: 25%;
+	max-width: 700px;
+
 	&.big {
 		width: 50% !important;
 	}
-	
+
 	padding-bottom: 30px !important;
 
 	@media screen and (max-width: 1000px) {
@@ -62,10 +64,20 @@
 		margin-top: 15px;
 		gap: 16px;
 
+		* {
+			text-wrap: nowrap;
+		}
+
 		.holder {
 			display: flex;
 			flex-direction: column;
 			gap: 16px;
+
+			@media screen and (max-width: 680px) {
+				&.service {
+					margin-left: 5% !important;
+				}
+			}
 
 			&.service {
 				width: 40%;
@@ -92,7 +104,8 @@
 			overflow: hidden;
 
 			&.device {
-				width: 100px;
+				width: 120px;
+				height: auto;
 			}
 		}
 	}

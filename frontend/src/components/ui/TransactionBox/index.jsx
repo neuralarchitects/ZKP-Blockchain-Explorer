@@ -117,7 +117,7 @@ export default function TransactionBox({ data }) {
 			<EModal
 				className={`data-modal ${!isZKP && "big"}`}
 				isOpen={isDataModalOpen}
-				title={`${isDevice || isZKP ? "Device" : "Service"} Data`}
+				title={`${isZKP == false ? "Specification" : "Device Data"}`}
 				onClose={() => setIsDataModalOpen(false)}
 			>
 				{isZKP && (
@@ -238,11 +238,11 @@ export default function TransactionBox({ data }) {
 						color={isZKP ? "#0ea1ca" : "#2A4364"}
 						text={`${isZKP ? "ZKP Stored" : "Contract Call"}`}
 					/>
-					<Badge
+					{/* <Badge
 						Icon={HiCheckCircle}
 						color={"#23543E"}
 						text={"Success"}
-					/>
+					/> */}
 				</div>
 				<div className="transaction-hash">
 					<TransactionIcon className={"icon"} />
@@ -285,21 +285,23 @@ export default function TransactionBox({ data }) {
 				</div>
 			</div>
 			<div className="button-container">
-				<Button
-					onClick={() => setIsZkpModalOpen(true)}
-					className={"button"}
-				>
-					ZKP
-				</Button>
+				{isZKP && (
+					<Button
+						onClick={() => setIsZkpModalOpen(true)}
+						className={"button"}
+					>
+						ZKP
+					</Button>
+				)}
 
 				<Button
 					onClick={() => setIsDataModalOpen(true)}
 					className={"button"}
 				>
-					Data
+					{isZKP ? "Data" : "Service Contract"}
 				</Button>
 
-				<Button className={"button"}>Verify Proof</Button>
+				{isZKP && <Button className={"button"}>Verify Proof</Button>}
 			</div>
 
 			<div className="transaction-value">

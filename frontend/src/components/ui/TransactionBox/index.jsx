@@ -1,30 +1,31 @@
-import React, { useEffect, useState } from "react";
-import "./style.scss";
-import Badge from "../Badge";
+import React, { useEffect, useState } from 'react';
+import './style.scss';
+import Badge from '../Badge';
 import {
 	HiArrowDown,
 	HiCheckCircle,
 	HiInformationCircle,
-} from "react-icons/hi";
-import TransactionIcon from "../../../icons/transaction";
-import GradientCircle from "../GradientCircle";
-import CopyIcon from "../../../icons/copy";
-import DocumentIcon from "../../../icons/document";
-import Button from "../Button";
-import AnimatedComponent from "../Animated/Component";
-import { iphoneAnimation } from "../../../utility/framer-transitions";
-import EModal from "../Modal";
-import ImageLoader from "../Image";
-import { useNavigate } from "react-router-dom";
+} from 'react-icons/hi';
+import TransactionIcon from '../../../icons/transaction';
+import GradientCircle from '../GradientCircle';
+import CopyIcon from '../../../icons/copy';
+import DocumentIcon from '../../../icons/document';
+import Button from '../Button';
+import AnimatedComponent from '../Animated/Component';
+import { iphoneAnimation } from '../../../utility/framer-transitions';
+import EModal from '../Modal';
+import ImageLoader from '../Image';
+import { useNavigate } from 'react-router-dom';
 import {
 	copyText,
 	formatBigInt,
 	timeStamptimeAgo,
-} from "../../../utility/functions";
+} from '../../../utility/functions';
+import { motion } from 'framer-motion';
 
 function formatWalletAddress(address) {
 	try {
-		return address.slice(0, 4) + ".." + address.slice(-4);
+		return address.slice(0, 4) + '..' + address.slice(-4);
 	} catch (error) {
 		return address;
 	}
@@ -76,6 +77,26 @@ export default function TransactionBox({ data }) {
 		installationPrice,
 	} = data;
 	const navigateTo = useNavigate();
+	const [shadow, setShadow] = useState('none');
+	const [border, setBorder] = useState('2px solid transparent');
+
+	const handleMouseMove = (e) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		const x = e.clientX - rect.left;
+		const y = e.clientY - rect.top;
+
+		// Calculate offsets and clamp values to prevent excessive shadow
+		const offsetX = Math.max(-10, Math.min(10, (x - rect.width / 2) / 10));
+		const offsetY = Math.max(-10, Math.min(10, (y - rect.height / 2) / 10));
+
+		setShadow(`${offsetX}px ${offsetY}px 15px 7.5px rgba(62, 53, 196, 0.5)`);
+		setBorder('2px solid #6d28d9');
+	};
+
+	const handleMouseLeave = () => {
+		setShadow('none');
+		setBorder('2px solid transparent');
+	};
 
 	useEffect(() => {
 		if (data_payload) {
@@ -84,12 +105,12 @@ export default function TransactionBox({ data }) {
 	}, [data_payload]);
 
 	useEffect(() => {
-		if (String(eventType) == "ZKPStored") {
+		if (String(eventType) == 'ZKPStored') {
 			setIsZKP(true);
 		} else {
 			if (
-				String(eventType) == "DeviceCreated" ||
-				String(eventType) == "DeviceRemoved"
+				String(eventType) == 'DeviceCreated' ||
+				String(eventType) == 'DeviceRemoved'
 			) {
 				setIsDevice(true);
 			}
@@ -97,10 +118,171 @@ export default function TransactionBox({ data }) {
 	}, [eventType]);
 
 	return (
-		<AnimatedComponent
-			animation={iphoneAnimation(0.5)}
-			className="transaction-box-container"
-		>
+		<AnimatedComponent animation={iphoneAnimation(0.5)}>
+			<motion.div
+				className="transaction-box-container"
+				onMouseMove={handleMouseMove}
+				onMouseLeave={handleMouseLeave}
+				style={{
+					transition: 'box-shadow 0.1s ease, transform 0.1s ease',
+					border: border !== 'none' && border,
+				}}
+				animate={{
+					boxShadow: shadow,
+					transform:
+						shadow === 'none'
+							? 'translateZ(0)'
+							: 'translateZ(10px)',
+					transition: { duration: 0.2 },
+				}}
+			>
+				<div className="left-data">
+					<div className="badge">
+						<Badge
+							Icon={HiInformationCircle}
+							color={isZKP ? '#0ea1ca' : '#2A4364'}
+							text={`${isZKP ? 'ZKP Stored' : 'Contract Call'}`}
+						/>
+						{/* <Badge
+						Icon={HiCheckCircle}
+						color={"#23543E"}
+						text={"Success"}
+					/> */}
+					</div>
+					<div className="transaction-hash">
+						<TransactionIcon className={'icon'} />
+						<p
+							onClick={() => {
+								const encodedHash =
+									encodeURIComponent(transactionHash);
+								navigateTo(`/transactions/${encodedHash}`);
+							}}
+							className="hash"
+						>
+							{transactionHash}
+							{/* {formatTransactionHash(transactionHash, 16)} */}
+						</p>
+						<p className="transaction-time">
+							{timeStamptimeAgo(timestamp)}
+						</p>
+					</div>
+				</div>
+
+				<div className="transaction-wallets">
+					<div className="holder">
+						<div
+							onClick={() =>
+								copyText(fromWallet, 'Wallet address')
+							}
+							className="wallet"
+						>
+							<HiArrowDown className="icon" />
+							<GradientCircle width={24} height={24} />
+							<p>{formatWalletAddress(fromWallet)}</p>
+							<CopyIcon className="icon copy" />
+						</div>
+						<div
+							onClick={() =>
+								copyText(intoWallet, 'Wallet address')
+							}
+							className="wallet"
+						>
+							<DocumentIcon className="icon start" />
+							<p>{formatWalletAddress(intoWallet)}</p>
+							<CopyIcon className="icon copy" />
+						</div>
+					</div>
+				</div>
+				<div className="button-container">
+					{isZKP && (
+						<Button
+							onClick={() => setIsZkpModalOpen(true)}
+							className={'button'}
+						>
+							ZKP
+						</Button>
+					)}
+
+					<Button
+						onClick={() => setIsDataModalOpen(true)}
+						className={'button'}
+					>
+						{isZKP ? 'IoT Data' : 'Service Contract'}
+					</Button>
+
+					{isZKP && (
+						<Button className={'button'}>Verify Proof</Button>
+					)}
+				</div>
+
+				<div className="transaction-value">
+					{isZKP && (
+						<div className="holder">
+							<p>
+								IoT Server Id: <span>{nodeId}</span>
+							</p>
+							<p>
+								Device Type: <span>{deviceType}</span>
+							</p>
+							<p>
+								Device Id: <span>{deviceId}</span>
+							</p>
+							<p>
+								Hardware Version :{' '}
+								<span>{hardwareVersion}</span>
+							</p>
+							<p>
+								Firmware Version: <span>{firmwareVersion}</span>
+							</p>
+							<p>
+								Fee: <span>{formatBigInt(gasFee)} FDS</span>
+							</p>
+						</div>
+					)}
+
+					{isZKP == false && isDevice == false && (
+						<div className="holder">
+							<p>
+								IoT Server Id: <span>{nodeId}</span>
+							</p>
+							<p>
+								Service Name: <span>{serviceName}</span>
+							</p>
+							<p>
+								Service Type: <span>{serviceType}</span>
+							</p>
+							<p>
+								Service Id: <span>{serviceId}</span>
+							</p>
+
+							<p>
+								Fee: <span>{formatBigInt(gasFee)}</span>
+							</p>
+						</div>
+					)}
+					{isZKP == false && isDevice == true && (
+						<div className="holder">
+							<p>
+								IoT Server Id: <span>{nodeId}</span>
+							</p>
+							<p>
+								Device Name: <span>{serviceName}</span>
+							</p>
+							<p>
+								Device Type: <span>{deviceType}</span>
+							</p>
+							<p>
+								Device Id: <span>{deviceId}</span>
+							</p>
+
+							<p>
+								Fee: <span>{formatBigInt(gasFee)}</span>
+							</p>
+						</div>
+					)}
+				</div>
+			</motion.div>
+
 			<EModal
 				className="zkp-modal"
 				isOpen={isZkpModalOpen}
@@ -115,9 +297,9 @@ export default function TransactionBox({ data }) {
 			</EModal>
 
 			<EModal
-				className={`data-modal ${!isZKP && "big"}`}
+				className={`data-modal ${!isZKP && 'big'}`}
 				isOpen={isDataModalOpen}
-				title={`${isZKP == false ? "Specification" : "Device Data"}`}
+				title={`${isZKP == false ? 'Specification' : 'Device Data'}`}
 				onClose={() => setIsDataModalOpen(false)}
 			>
 				{isZKP && (
@@ -125,9 +307,9 @@ export default function TransactionBox({ data }) {
 						<div className="holder">
 							<ImageLoader
 								src={
-									deviceType == "E_CARD"
-										? "/img/e_card.png"
-										: "/img/multi_sensor.png"
+									deviceType == 'E_CARD'
+										? '/img/e_card.png'
+										: '/img/multi_sensor.png'
 								}
 								className="img device"
 							/>
@@ -137,7 +319,7 @@ export default function TransactionBox({ data }) {
 								</p>
 							)}
 							<p>
-								Temperature:{" "}
+								Temperature:{' '}
 								<span>{dataPayload.Temperature}</span>
 							</p>
 							<p>
@@ -169,7 +351,7 @@ export default function TransactionBox({ data }) {
 						/>
 						<div className="holder service">
 							<p>
-								Node Id: <span>{nodeId}</span>
+								IoT Server Id: <span>{nodeId}</span>
 							</p>
 							<p>
 								Event Type: <span>{eventType}</span>
@@ -190,7 +372,7 @@ export default function TransactionBox({ data }) {
 								Execution Price: <span>{executionPrice}</span>
 							</p>
 							<p>
-								Installation Price:{" "}
+								Installation Price:{' '}
 								<span>{installationPrice}</span>
 							</p>
 						</div>
@@ -201,15 +383,15 @@ export default function TransactionBox({ data }) {
 					<div className="main-data">
 						<ImageLoader
 							src={
-								deviceType == "E_CARD"
-									? "/img/e_card.png"
-									: "/img/multi_sensor.png"
+								deviceType == 'E_CARD'
+									? '/img/e_card.png'
+									: '/img/multi_sensor.png'
 							}
 							className="img device"
 						/>
 						<div className="holder service">
 							<p>
-								Node Id: <span>{nodeId}</span>
+								IoT Server Id: <span>{nodeId}</span>
 							</p>
 							<p>
 								Event Type: <span>{eventType}</span>
@@ -230,145 +412,6 @@ export default function TransactionBox({ data }) {
 					</div>
 				)}
 			</EModal>
-
-			<div className="left-data">
-				<div className="badge">
-					<Badge
-						Icon={HiInformationCircle}
-						color={isZKP ? "#0ea1ca" : "#2A4364"}
-						text={`${isZKP ? "ZKP Stored" : "Contract Call"}`}
-					/>
-					{/* <Badge
-						Icon={HiCheckCircle}
-						color={"#23543E"}
-						text={"Success"}
-					/> */}
-				</div>
-				<div className="transaction-hash">
-					<TransactionIcon className={"icon"} />
-					<p
-						onClick={() => {
-							const encodedHash =
-								encodeURIComponent(transactionHash);
-							navigateTo(`/transactions/${encodedHash}`);
-						}}
-						className="hash"
-					>
-						{transactionHash}
-						{/* {formatTransactionHash(transactionHash, 16)} */}
-					</p>
-					<p className="transaction-time">
-						{timeStamptimeAgo(timestamp)}
-					</p>
-				</div>
-			</div>
-
-			<div className="transaction-wallets">
-				<div className="holder">
-					<div
-						onClick={() => copyText(fromWallet, "Wallet address")}
-						className="wallet"
-					>
-						<HiArrowDown className="icon" />
-						<GradientCircle width={24} height={24} />
-						<p>{formatWalletAddress(fromWallet)}</p>
-						<CopyIcon className="icon copy" />
-					</div>
-					<div
-						onClick={() => copyText(intoWallet, "Wallet address")}
-						className="wallet"
-					>
-						<DocumentIcon className="icon start" />
-						<p>{formatWalletAddress(intoWallet)}</p>
-						<CopyIcon className="icon copy" />
-					</div>
-				</div>
-			</div>
-			<div className="button-container">
-				{isZKP && (
-					<Button
-						onClick={() => setIsZkpModalOpen(true)}
-						className={"button"}
-					>
-						ZKP
-					</Button>
-				)}
-
-				<Button
-					onClick={() => setIsDataModalOpen(true)}
-					className={"button"}
-				>
-					{isZKP ? "Data" : "Service Contract"}
-				</Button>
-
-				{isZKP && <Button className={"button"}>Verify Proof</Button>}
-			</div>
-
-			<div className="transaction-value">
-				{isZKP && (
-					<div className="holder">
-						<p>
-							Node Id: <span>{nodeId}</span>
-						</p>
-						<p>
-							Device Type: <span>{deviceType}</span>
-						</p>
-						<p>
-							Device Id: <span>{deviceId}</span>
-						</p>
-						<p>
-							Hardware Version : <span>{hardwareVersion}</span>
-						</p>
-						<p>
-							Firmware Version: <span>{firmwareVersion}</span>
-						</p>
-						<p>
-							Fee: <span>{formatBigInt(gasFee)} FDS</span>
-						</p>
-					</div>
-				)}
-
-				{isZKP == false && isDevice == false && (
-					<div className="holder">
-						<p>
-							Node Id: <span>{nodeId}</span>
-						</p>
-						<p>
-							Service Name: <span>{serviceName}</span>
-						</p>
-						<p>
-							Service Type: <span>{serviceType}</span>
-						</p>
-						<p>
-							Service Id: <span>{serviceId}</span>
-						</p>
-
-						<p>
-							Fee: <span>{formatBigInt(gasFee)}</span>
-						</p>
-					</div>
-				)}
-				{isZKP == false && isDevice == true && (
-					<div className="holder">
-						<p>
-							Node Id: <span>{nodeId}</span>
-						</p>
-						<p>
-							Device Name: <span>{serviceName}</span>
-						</p>
-						<p>
-							Device Type: <span>{deviceType}</span>
-						</p>
-						<p>
-							Device Id: <span>{deviceId}</span>
-						</p>
-
-						<p>
-							Fee: <span>{formatBigInt(gasFee)}</span>
-						</p>
-					</div>
-				)}
-			</div>
 		</AnimatedComponent>
 	);
 }

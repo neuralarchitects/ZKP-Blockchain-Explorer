@@ -1,22 +1,22 @@
+
+
+
 body {
 	transform: scale(0.8);
 	transform-origin: 0 0; /* Align scaling to the top-left corner */
 	width: 125%; /* Ensure it covers full width after scaling */
 	height: 125%;
 	overflow: hidden; /* Prevent horizontal scroll */
+	background: linear-gradient(90deg, #191521, #282464);
+	color: #ffffff;
 }
 
 * {
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 	user-select: none;
-}
-
-body {
-	background: #101113;
-	color: #ffffff;
 }
 
 :root {

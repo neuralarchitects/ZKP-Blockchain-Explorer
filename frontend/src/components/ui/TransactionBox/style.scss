@@ -117,7 +117,10 @@
 	gap: 16px;
 	row-gap: 40px;
 	padding: 20px;
-	border-bottom: 2px solid #1f2022;
+	border-bottom: 3px solid #191521;
+	border-radius: 20px;
+	position: relative;
+	transition: all 0.3s ease;
 
 	.left-data {
 		align-self: center;
@@ -237,7 +240,7 @@
 			flex-basis: auto;
 
 			&:not(.skeleton) {
-				background: #0c3ea1;
+				background: #5248e3;
 			}
 		}
 	}
@@ -271,4 +274,8 @@
 			}
 		}
 	}
+}
+
+.transaction-box-container:hover {
+	transform: translateZ(10px);
 }

@@ -18,7 +18,7 @@ export default function SearchBar() {
 
 	return (
 		<AnimatedWidth duration={1} className="search-bar">
-			<h1>FidesInnova Explorer</h1>
+			<h1>FidesInnova ZKP Explorer</h1>
 			<div className="custom-input">
 				<SearchIcon
 					onClick={() => {
@@ -37,7 +37,7 @@ export default function SearchBar() {
 							handleSearch(e.target.value);
 						}
 					}}
-					placeholder="Search by Node Id / Service Name / Service Id / Device Name / Device Id..."
+					placeholder="Search by IoT Server Id / Service Contract Name / Service Contract Id / Device Name / Device Id"
 				/>
 			</div>
 		</AnimatedWidth>

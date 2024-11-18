@@ -79,6 +79,7 @@ export default function TransactionBox({ data }) {
 	const navigateTo = useNavigate();
 	const [shadow, setShadow] = useState('none');
 	const [border, setBorder] = useState('2px solid transparent');
+	const [borderBottom, setBorderBottom] = useState('2px solid #2d2f34');
 
 	const handleMouseMove = (e) => {
 		const rect = e.currentTarget.getBoundingClientRect();
@@ -89,13 +90,17 @@ export default function TransactionBox({ data }) {
 		const offsetX = Math.max(-10, Math.min(10, (x - rect.width / 2) / 10));
 		const offsetY = Math.max(-10, Math.min(10, (y - rect.height / 2) / 10));
 
-		setShadow(`${offsetX}px ${offsetY}px 15px 7.5px rgba(62, 53, 196, 0.5)`);
+		setShadow(
+			`${offsetX}px ${offsetY}px 15px 7.5px rgba(62, 53, 196, 0.5)`
+		);
+		setBorderBottom('none');
 		setBorder('2px solid #6d28d9');
 	};
 
 	const handleMouseLeave = () => {
 		setShadow('none');
 		setBorder('2px solid transparent');
+		setBorderBottom('2px solid #2d2f34');
 	};
 
 	useEffect(() => {
@@ -126,6 +131,7 @@ export default function TransactionBox({ data }) {
 				style={{
 					transition: 'box-shadow 0.1s ease, transform 0.1s ease',
 					border: border !== 'none' && border,
+					borderBottom: borderBottom,
 				}}
 				animate={{
 					boxShadow: shadow,

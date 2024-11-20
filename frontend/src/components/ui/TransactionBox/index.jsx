@@ -22,6 +22,8 @@ import {
 	timeStamptimeAgo,
 } from '../../../utility/functions';
 import { motion } from 'framer-motion';
+import useFetchData from '../../../services/api/useFetchData';
+import toast from 'react-hot-toast';
 
 function formatWalletAddress(address) {
 	try {
@@ -80,6 +82,23 @@ export default function TransactionBox({ data }) {
 	const [shadow, setShadow] = useState('none');
 	const [border, setBorder] = useState('2px solid transparent');
 	const [borderBottom, setBorderBottom] = useState('2px solid #2d2f34');
+
+	const { fetchData, loading } = useFetchData();
+
+	async function handleVerifyButton() {
+		try {
+			const res = await fetchData(`contract/verify-proof`, {
+				method: 'POST',
+				body: {
+					proof: zkp_payload,
+				},
+			});
+			console.log('res:', res);
+			/* toast.success(``, {
+				style: { background: "#1E1F21", color: "white" },
+			}); */
+		} catch (error) {}
+	}
 
 	const handleMouseMove = (e) => {
 		const rect = e.currentTarget.getBoundingClientRect();
@@ -217,7 +236,12 @@ export default function TransactionBox({ data }) {
 					</Button>
 
 					{isZKP && (
-						<Button className={'button'}>Verify Proof</Button>
+						<Button
+							onClick={handleVerifyButton}
+							className={'button'}
+						>
+							Verify Proof
+						</Button>
 					)}
 				</div>
 

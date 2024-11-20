@@ -50,6 +50,7 @@ function formatTransactionHash(str, length) {
 }
 
 export default function TransactionBox({ data }) {
+	const [proofLoading, setProofLoading] = useState(false);
 	const [isZKP, setIsZKP] = useState(false);
 	const [isDevice, setIsDevice] = useState(false);
 	const [dataPayload, setDataPayload] = useState({});
@@ -93,12 +94,14 @@ export default function TransactionBox({ data }) {
 			theProof = zkp_payload;
 		}
 		try {
+			setProofLoading(true)
 			const res = await fetchData(`contract/verify-proof`, {
 				method: 'POST',
 				body: {
 					proof: theProof,
 				},
 			});
+			setProofLoading(false)
 			if (res.data == true) {
 				toast.success(`Proof is verified`, {
 					style: { background: '#1E1F21', color: 'white' },
@@ -109,6 +112,7 @@ export default function TransactionBox({ data }) {
 				});
 			}
 		} catch (error) {
+			setProofLoading(false)
 			toast.error(`Error while verifying proof`, {
 				style: { background: '#1E1F21', color: 'white' },
 			});
@@ -253,6 +257,7 @@ export default function TransactionBox({ data }) {
 					{isZKP && (
 						<Button
 							onClick={handleVerifyButton}
+							loading={proofLoading}
 							className={'button'}
 						>
 							Verify Proof

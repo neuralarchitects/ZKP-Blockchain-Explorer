@@ -88,9 +88,9 @@ export default function TransactionBox({ data }) {
 	async function handleVerifyButton() {
 		let theProof = '';
 		try {
-			theProof = JSON.parse(zkp_payload)
+			theProof = JSON.parse(zkp_payload);
 		} catch (error) {
-			theProof = zkp_payload
+			theProof = zkp_payload;
 		}
 		try {
 			const res = await fetchData(`contract/verify-proof`, {
@@ -99,11 +99,20 @@ export default function TransactionBox({ data }) {
 					proof: theProof,
 				},
 			});
-			console.log('res:', res);
-			/* toast.success(``, {
-				style: { background: "#1E1F21", color: "white" },
-			}); */
-		} catch (error) {}
+			if (res.data == true) {
+				toast.success(`Proof is verified`, {
+					style: { background: '#1E1F21', color: 'white' },
+				});
+			} else {
+				toast.error(`Proof is not verified`, {
+					style: { background: '#1E1F21', color: 'white' },
+				});
+			}
+		} catch (error) {
+			toast.error(`Error while verifying proof`, {
+				style: { background: '#1E1F21', color: 'white' },
+			});
+		}
 	}
 
 	const handleMouseMove = (e) => {

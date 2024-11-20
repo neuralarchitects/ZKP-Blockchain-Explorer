@@ -86,11 +86,17 @@ export default function TransactionBox({ data }) {
 	const { fetchData, loading } = useFetchData();
 
 	async function handleVerifyButton() {
+		let theProof = '';
+		try {
+			theProof = JSON.parse(zkp_payload)
+		} catch (error) {
+			theProof = zkp_payload
+		}
 		try {
 			const res = await fetchData(`contract/verify-proof`, {
 				method: 'POST',
 				body: {
-					proof: zkp_payload,
+					proof: theProof,
 				},
 			});
 			console.log('res:', res);

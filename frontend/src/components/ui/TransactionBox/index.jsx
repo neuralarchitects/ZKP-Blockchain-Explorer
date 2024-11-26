@@ -80,11 +80,33 @@ export default function TransactionBox({ data }) {
 		installationPrice,
 	} = data;
 	const navigateTo = useNavigate();
+	const [deviceImage, setDeviceImage] = useState('');
 	const [shadow, setShadow] = useState('none');
 	const [border, setBorder] = useState('2px solid transparent');
 	const [borderBottom, setBorderBottom] = useState('2px solid #2d2f34');
-
 	const { fetchData, loading } = useFetchData();
+
+	function getDeviceUrlByType(devices, type) {
+		const device = devices.find(device => {
+			const regex = new RegExp(`^${type.replace(/[-_]/g, '[-_]')}$`, 'i'); // Create a regex to match both - and _
+			return regex.test(device.type); // Test the type against the regex
+		});
+		return device ? device.url : null; // Return the URL if found, otherwise null
+	}
+
+	async function getDeviceImagesFromNode(deviceType) {
+		let nodeApiUrl = '';
+		if (nodeId == 'developer.fidesinnova.io') {
+			nodeApiUrl = `https://${nodeId}/app/v1/devices`;
+		} else {
+			nodeApiUrl = `https://panel.${nodeId}/app/v1/devices`;
+		}
+		const res = await fetchData(nodeApiUrl, {
+			method: 'GET',
+		});
+
+		setDeviceImage(getDeviceUrlByType(res.data, String(deviceType)));
+	}
 
 	async function handleVerifyButton() {
 		let theProof = '';
@@ -94,14 +116,14 @@ export default function TransactionBox({ data }) {
 			theProof = zkp_payload;
 		}
 		try {
-			setProofLoading(true)
+			setProofLoading(true);
 			const res = await fetchData(`contract/verify-proof`, {
 				method: 'POST',
 				body: {
 					proof: theProof,
 				},
 			});
-			setProofLoading(false)
+			setProofLoading(false);
 			if (res.data == true) {
 				toast.success(`Proof is verified`, {
 					style: { background: '#1E1F21', color: 'white' },
@@ -112,7 +134,7 @@ export default function TransactionBox({ data }) {
 				});
 			}
 		} catch (error) {
-			setProofLoading(false)
+			setProofLoading(false);
 			toast.error(`Error while verifying proof`, {
 				style: { background: '#1E1F21', color: 'white' },
 			});
@@ -185,7 +207,9 @@ export default function TransactionBox({ data }) {
 						<Badge
 							Icon={HiInformationCircle}
 							color={isZKP ? '#0ea1ca' : '#2A4364'}
-							text={`${isZKP ? 'ZKP Stored' : 'Contract Call'}`}
+							text={`${
+								isZKP ? 'ZKP Stored' : 'Smart Contract Call'
+							}`}
 						/>
 						{/* <Badge
 						Icon={HiCheckCircle}
@@ -248,10 +272,19 @@ export default function TransactionBox({ data }) {
 					)}
 
 					<Button
-						onClick={() => setIsDataModalOpen(true)}
+						onClick={() => {
+							getDeviceImagesFromNode(deviceType);
+							setIsDataModalOpen(true);
+						}}
 						className={'button'}
 					>
-						{isZKP ? 'IoT Data' : 'Service Contract'}
+						{isZKP == false &&
+							isDevice == false &&
+							'Publish/Unpublish Service Contract'}
+						{isZKP == false &&
+							isDevice == true &&
+							'Share/Unshare Device'}
+						{isZKP == true && isDevice == false && 'IoT Data'}
 					</Button>
 
 					{isZKP && (
@@ -356,11 +389,7 @@ export default function TransactionBox({ data }) {
 					<section className="main-data">
 						<div className="holder">
 							<ImageLoader
-								src={
-									deviceType == 'E_CARD'
-										? '/img/e_card.png'
-										: '/img/multi_sensor.png'
-								}
+								src={deviceImage}
 								className="img device"
 							/>
 							{dataPayload.Door && (
@@ -396,9 +425,13 @@ export default function TransactionBox({ data }) {
 						<ImageLoader
 							height={200}
 							width={300}
-							src={imageURL}
+							src={
+								(imageURL && imageURL) ||
+								'/img/default-service.jpg'
+							}
 							className="img"
 						/>
+
 						<div className="holder service">
 							<p>
 								IoT Server Id: <span>{nodeId}</span>
@@ -431,14 +464,7 @@ export default function TransactionBox({ data }) {
 
 				{isZKP == false && isDevice == true && (
 					<div className="main-data">
-						<ImageLoader
-							src={
-								deviceType == 'E_CARD'
-									? '/img/e_card.png'
-									: '/img/multi_sensor.png'
-							}
-							className="img device"
-						/>
+						<ImageLoader src={deviceImage} className="img device" />
 						<div className="holder service">
 							<p>
 								IoT Server Id: <span>{nodeId}</span>

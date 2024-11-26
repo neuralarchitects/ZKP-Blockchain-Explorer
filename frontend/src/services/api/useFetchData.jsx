@@ -8,7 +8,7 @@ const useFetchData = () => {
 
 	// Function to fetch data with caching mechanism
 	const fetchData = async (
-		endpoint,
+		endpointOrFullURL,
 		{
 			method = "GET",
 			headers = {},
@@ -20,19 +20,19 @@ const useFetchData = () => {
 		setLoading(true);
 		setError(null);
 
+		// Determine if the endpointOrFullURL is a full URL or a relative endpoint
+		const isFullURL = /^https?:\/\//.test(endpointOrFullURL);
+		const url = new URL(isFullURL ? endpointOrFullURL : `${API_BASE_URL}${endpointOrFullURL}`);
+
 		// Construct URL with query params
-		const url = new URL(`${API_BASE_URL}${endpoint}`);
-		Object.keys(params).forEach((key) =>
-			url.searchParams.append(key, params[key])
-		);
+		Object.keys(params).forEach((key) => url.searchParams.append(key, params[key]));
 
 		// Check if there's cached data and it's still valid
 		const cacheKey = `${url.toString()}:${method}`; // Unique cache key based on URL and method
 		const cachedData = localStorage.getItem(cacheKey);
 		if (cachedData) {
 			const { data, timestamp } = JSON.parse(cachedData);
-			const isCacheValid =
-				new Date().getTime() - timestamp < cacheDuration;
+			const isCacheValid = new Date().getTime() - timestamp < cacheDuration;
 
 			// If cache is valid, return the cached data
 			if (isCacheValid) {

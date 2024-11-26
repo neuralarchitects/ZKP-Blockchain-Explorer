@@ -18,7 +18,7 @@ export default function SearchBar() {
 
 	return (
 		<AnimatedWidth duration={1} className="search-bar">
-			<h1>FidesInnova ZKP Explorer</h1>
+			<h1>Fidesinnova Verifiable Computing Platform</h1>
 			<div className="custom-input">
 				<SearchIcon
 					onClick={() => {

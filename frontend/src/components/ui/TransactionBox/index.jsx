@@ -24,6 +24,8 @@ import {
 import { motion } from 'framer-motion';
 import useFetchData from '../../../services/api/useFetchData';
 import toast from 'react-hot-toast';
+import HackerEffect from '../Animated/HackerEffect';
+import Spinner from '../Spinner';
 
 function formatWalletAddress(address) {
 	try {
@@ -54,6 +56,9 @@ export default function TransactionBox({ data }) {
 	const [isZKP, setIsZKP] = useState(false);
 	const [isDevice, setIsDevice] = useState(false);
 	const [dataPayload, setDataPayload] = useState({});
+	const [proofModal, setProofModal] = useState(false);
+	const [proofResult, setProofResult] = useState('Proof is not verified');
+	const [hackerAnimation, setHackerAnimation] = useState(false);
 	const [isZkpModalOpen, setIsZkpModalOpen] = useState(false);
 	const [isDataModalOpen, setIsDataModalOpen] = useState(false);
 	const {
@@ -86,8 +91,14 @@ export default function TransactionBox({ data }) {
 	const [borderBottom, setBorderBottom] = useState('2px solid #2d2f34');
 	const { fetchData, loading } = useFetchData();
 
+	useEffect(() => {
+		return () => {
+			setHackerAnimation(false);
+		};
+	}, [proofModal]);
+
 	function getDeviceUrlByType(devices, type) {
-		const device = devices.find(device => {
+		const device = devices.find((device) => {
 			const regex = new RegExp(`^${type.replace(/[-_]/g, '[-_]')}$`, 'i'); // Create a regex to match both - and _
 			return regex.test(device.type); // Test the type against the regex
 		});
@@ -108,36 +119,56 @@ export default function TransactionBox({ data }) {
 		setDeviceImage(getDeviceUrlByType(res.data, String(deviceType)));
 	}
 
+	async function verifyProofWithTimer(theProof) {
+		const timerPromise = new Promise((resolve) =>
+			setTimeout(resolve, 2000)
+		);
+
+		const fetchPromise = fetchData(`contract/verify-proof`, {
+			method: 'POST',
+			body: {
+				proof: theProof,
+			},
+		}).catch((error) => {
+			console.error('API call failed:', error);
+			return null; // Return null or appropriate value if API call fails
+		});
+
+		// Wait for the timer to finish (3 seconds)
+		await timerPromise;
+
+		// Wait for the API call to finish (even if it fails)
+		const apiResult = await fetchPromise;
+
+		if (apiResult && apiResult.data === true) {
+			return apiResult;
+		} else {
+			throw new Error('Proof verification failed');
+		}
+	}
+
 	async function handleVerifyButton() {
+		setProofModal(true);
 		let theProof = '';
 		try {
 			theProof = JSON.parse(zkp_payload);
 		} catch (error) {
 			theProof = zkp_payload;
 		}
+
 		try {
-			setProofLoading(true);
-			const res = await fetchData(`contract/verify-proof`, {
-				method: 'POST',
-				body: {
-					proof: theProof,
-				},
-			});
+			const result = await verifyProofWithTimer(theProof);
 			setProofLoading(false);
-			if (res.data == true) {
-				toast.success(`Proof is verified`, {
-					style: { background: '#1E1F21', color: 'white' },
-				});
+			setHackerAnimation(true);
+			if (result.data === true) {
+				setProofResult('Proof is Verified');
 			} else {
-				toast.error(`Proof is not verified`, {
-					style: { background: '#1E1F21', color: 'white' },
-				});
+				setProofResult('Proof is Not Verified');
 			}
 		} catch (error) {
 			setProofLoading(false);
-			toast.error(`Error while verifying proof`, {
-				style: { background: '#1E1F21', color: 'white' },
-			});
+			setHackerAnimation(true);
+			setProofResult('Proof is Not Verified');
 		}
 	}
 
@@ -377,6 +408,16 @@ export default function TransactionBox({ data }) {
 						The received data does not contain any ZKP.
 					</h2>
 				)}
+			</EModal>
+
+			<EModal
+				className="proof-modal"
+				isOpen={proofModal}
+				closable={hackerAnimation}
+				title="Proof Verifier"
+				onClose={() => setProofModal(false)}
+			>
+				<HackerEffect isFinished={hackerAnimation} text={proofResult} />
 			</EModal>
 
 			<EModal

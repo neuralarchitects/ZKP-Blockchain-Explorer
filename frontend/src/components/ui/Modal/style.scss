@@ -12,10 +12,12 @@
 		outline: 0;
 
 		.header {
+			width: 100%;
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
 			margin-bottom: 16px;
+			padding-inline: 8px;
 
 			.icon {
 				width: var(--icon-lg);

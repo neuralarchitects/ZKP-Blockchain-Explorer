@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import "./style.scss";
-import Pagination from "../../components/ui/pagination";
-import useFetchData from "../../services/api/useFetchData";
-import LatestTransactions from "../../components/containers/Transactions";
+import React, { useEffect, useState } from 'react';
+import './style.scss';
+import Pagination from '../../components/ui/pagination';
+import useFetchData from '../../services/api/useFetchData';
+import LatestTransactions from '../../components/containers/Transactions';
 
 export default function AllTransactionsPage() {
 	const { fetchData, loading } = useFetchData();
@@ -26,9 +26,7 @@ export default function AllTransactionsPage() {
 
 	return (
 		<main className="contract-data-container">
-			<h1>
-				All Operations
-			</h1>
+			<h1>All Operations</h1>
 			<LatestTransactions
 				loading={loading}
 				noHeader={true}

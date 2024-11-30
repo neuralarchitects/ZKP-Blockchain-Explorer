@@ -1,12 +1,12 @@
-import React from "react";
-import "./style.scss";
-import TransactionBox from "../../ui/TransactionBox";
-import TransactionText from "../../ui/TransactionText";
-import { Toaster } from "react-hot-toast";
-import AnimatedComponent from "../../ui/Animated/Component";
-import { iphoneAnimation } from "../../../utility/framer-transitions";
-import TransactionBoxSkeleton from "../../ui/TransactionBox/Skeleton";
-import PaginatedList from "../../ui/PaginationList";
+import React from 'react';
+import './style.scss';
+import TransactionBox from '../../ui/TransactionBox';
+import TransactionText from '../../ui/TransactionText';
+import { Toaster } from 'react-hot-toast';
+import AnimatedComponent from '../../ui/Animated/Component';
+import { iphoneAnimation } from '../../../utility/framer-transitions';
+import TransactionBoxSkeleton from '../../ui/TransactionBox/Skeleton';
+import PaginatedList from '../../ui/PaginationList';
 
 export default function LatestTransactions({
 	latestTransactions,

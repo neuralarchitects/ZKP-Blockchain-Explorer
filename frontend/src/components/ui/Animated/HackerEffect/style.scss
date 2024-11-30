@@ -1,0 +1,22 @@
+.hacker-container {
+	position: relative;
+	top: 50%;
+
+	text-align: center;
+	color: #282464;
+	font-size: 60px;
+	text-shadow: 0 0 15px #282464;
+	width: 100%;
+
+	.glow {
+		color: #6f67e5;
+		text-shadow: 0px 0px 10px #534bc6;
+	}
+
+	span {
+		width: 55px;
+		display: inline-block;
+		padding: 0 10px;
+		font-weight: 500;
+	}
+}

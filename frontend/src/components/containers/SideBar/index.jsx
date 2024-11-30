@@ -12,7 +12,7 @@ export default function SideBar() {
 	const navigateTo = useNavigate();
 
 	return (
-		<AnimatedComponent animation={fadeInLeft(1, 200)} className="side-bar">
+		<AnimatedComponent animation={fadeInLeft(0.5, 200)} className="side-bar">
 			<ImageLoader
 				className="logo"
 				src={"/img/fides-logo.png"}

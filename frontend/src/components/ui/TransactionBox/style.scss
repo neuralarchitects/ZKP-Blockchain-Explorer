@@ -3,7 +3,7 @@
 	max-height: 100dvh;
 
 	p {
-		overflow: scroll;
+		overflow-y: auto;
 	}
 
 	@media screen and (max-width: 1000px) {

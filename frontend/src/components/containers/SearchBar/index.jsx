@@ -34,7 +34,7 @@ export default function SearchBar({ initialValue = '' }) {
 						handleSearch(inputValue);
 					}
 				}}
-				placeholder="Search"
+				placeholder="Search by IoT Server Id / Service Contract Name / Service Contract Id / Device Name / Device Id"
 			/>
 		</AnimatedWidth>
 	);

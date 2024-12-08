@@ -206,9 +206,14 @@ const ResponsiveTable = ({
 									{(actionItems || []).map((item, index) => (
 										<MenuItem
 											key={index}
+											className="action-item"
 											onClick={() =>
 												handleDropdownClick(item, row)
 											}
+											sx={{
+												justifyContent: 'center', // Center the text horizontally
+												textAlign: 'center',     // Align text inside the MenuItem
+											  }}
 										>
 											{item}
 										</MenuItem>

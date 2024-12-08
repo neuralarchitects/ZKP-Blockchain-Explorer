@@ -2,24 +2,23 @@
 	position: relative;
 	top: 50%;
 	text-align: center;
-	color: #282464;
+	color: rgba(white, 0.3);
 	font-size: 60px;
-	text-shadow: 0 0 15px #282464;
+	text-shadow: 0 0 15px rgba(white, 0.3);
 	width: 100%;
 	word-wrap: break-word;
 	word-break: break-word;
 	display: inline-block;
-  
+
 	.glow {
-	  color: #6f67e5;
-	  text-shadow: 0px 0px 10px #534bc6;
+		color: var(--color-secondary);
+		text-shadow: 0px 0px 10px var(--color-secondary);
 	}
-  
+
 	span {
-	  display: inline-block;
-	  padding: 0 10px;
-	  font-weight: 500;
-	  white-space: nowrap; /* Prevents breaking inside words */
+		display: inline-block;
+		padding: 0 10px;
+		font-weight: 500;
+		white-space: nowrap; /* Prevents breaking inside words */
 	}
-  }
-  
+}

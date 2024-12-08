@@ -18,11 +18,10 @@ function transformDevicesToArray(devices) {
 		device.deviceEncryptedId || '',
 		new Date(device.insertDate).toLocaleDateString() || '',
 		device.nodeId || '',
-		<p>
-			FW: {device.firmwareVersion || 0}
-			<br />
-			HW: {device.hardwareVersion || 0}
-		</p>,
+		<div className='fw-hw-holder'>
+			<p>FW: {device.firmwareVersion || 0}</p>
+			<p>HW: {device.hardwareVersion || 0}</p>
+		</div>,
 	]);
 }
 

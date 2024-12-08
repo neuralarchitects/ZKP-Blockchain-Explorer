@@ -16,3 +16,10 @@
 		object-fit: contain;
 	}
 }
+
+.fw-hw-holder {
+	display: flex;
+	width: fit-content;
+	gap: 16px;
+	margin-inline: auto;
+}

@@ -241,7 +241,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 						nodeId,
 						idField,
 						eventType,
-						actions, // Actions column for buttons
+						actions,
 					]
 				)}
 			/>

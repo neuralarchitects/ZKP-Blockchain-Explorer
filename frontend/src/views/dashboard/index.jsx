@@ -6,6 +6,7 @@ import { useSocketConnection } from '../../services/socket.io';
 import { HiHand } from 'react-icons/hi';
 import BannerSlider from '../../components/containers/BannerSlider';
 import TransactionsTable from '../../components/ui/TransactionsTable';
+import { useNavigate } from 'react-router-dom';
 
 function getFormattedDate() {
 	const options = {
@@ -22,7 +23,7 @@ function getFormattedDate() {
 export default function Dashboard() {
 	const { latestTransactions, serviceDeviceCount, zkpCount } =
 		useSocketConnection();
-	
+	const navigateTo = useNavigate();
 
 	useEffect(() => {
 		console.log('latestTransactions:', latestTransactions);
@@ -49,16 +50,18 @@ export default function Dashboard() {
 
 			<TransactionsTable transactions={latestTransactions} />
 
-			{/* 
-			<ZkpDevices />
 			<p
 				onClick={() => {
-					navigateTo("/transactions");
+					navigateTo('/transactions');
 				}}
 				className="all-transactions"
 			>
 				View all operations
-			</p> */}
+			</p>
+
+			{/* 
+			<ZkpDevices />
+			 */}
 		</main>
 	);
 }

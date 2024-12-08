@@ -6,7 +6,6 @@
 	gap: 25px;
 	height: fit-content;
 
-
 	.dashboard-header {
 		display: flex;
 		flex-wrap: nowrap;
@@ -46,13 +45,12 @@
 
 	.all-transactions {
 		text-align: center;
-		padding-bottom: 30px;
-		color: #63b3ed;
-		font-size: var(--font-lg);
+		color: var(--color-text);
+		font-size: var(--font-md);
 		cursor: pointer;
 
 		&:hover {
-			color: #4295d1;
+			color: var(--color-primary);
 			text-decoration: underline;
 		}
 	}

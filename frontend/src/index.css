@@ -17,8 +17,7 @@
 }
 
 body {
-	max-width: 1400px;
-	margin: 0 auto;
+
 	width: 100%; /* Ensure it covers full width after scaling */
 	height: 100%;
 	overflow: hidden; /* Prevent horizontal scroll */

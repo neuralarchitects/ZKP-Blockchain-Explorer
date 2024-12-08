@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 function SearchIcon({ className, onClick }) {
 	return (
@@ -12,7 +12,6 @@ function SearchIcon({ className, onClick }) {
 			viewBox="0 0 33 33"
 		>
 			<path
-				stroke="#676767"
 				strokeLinecap="round"
 				strokeLinejoin="round"
 				strokeWidth="2"

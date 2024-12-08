@@ -1,0 +1,18 @@
+.image-holder {
+	width: 75px;
+	height: 75px;
+	border-radius: 50%;
+	padding: 5px;
+	overflow: hidden;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--color-text);
+	border: 1.5px solid #8e9ba9;
+
+	img {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+	}
+}

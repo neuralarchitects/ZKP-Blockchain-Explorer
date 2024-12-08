@@ -3,13 +3,14 @@ import './style.scss';
 import Pagination from '../../components/ui/pagination';
 import useFetchData from '../../services/api/useFetchData';
 import LatestTransactions from '../../components/containers/Transactions';
+import TransactionsTable from '../../components/ui/TransactionsTable';
 
 export default function AllTransactionsPage() {
 	const { fetchData, loading } = useFetchData();
 	const [nowOffset, setNowOffset] = useState(0);
 	const [totalCount, setTotalCount] = useState(0);
 	const [nowData, setNowData] = useState([]);
-	const eachPageDataCount = 8;
+	const eachPageDataCount = 20;
 
 	async function getPageData() {
 		const res = await fetchData(
@@ -27,12 +28,13 @@ export default function AllTransactionsPage() {
 	return (
 		<main className="contract-data-container">
 			<h1>All Operations</h1>
-			<LatestTransactions
+			<TransactionsTable transactions={nowData} />
+			{/* <LatestTransactions
 				loading={loading}
 				noHeader={true}
 				latestTransactions={nowData}
 				skeletonCount={5}
-			/>
+			/> */}
 			<Pagination
 				eachPageCount={eachPageDataCount}
 				totalCount={totalCount}

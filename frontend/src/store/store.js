@@ -12,6 +12,7 @@ import Devices from "../views/devices";
 import SearchPage from "../views/search";
 import AllTransactionsPage from "../views/all-transactions";
 import TransactionDetail from "../views/transaction-detail";
+import DashboardIcon from "../components/ui/icons/Dashboard";
 
 export const usePageStore = create((set) => ({
 	searchString: "",
@@ -21,7 +22,7 @@ export const usePageStore = create((set) => ({
 			title: "Dashboard",
 			key: "dashboard",
 			component: <Dashboard />,
-			Icon: WebIcon,
+			Icon: DashboardIcon,
 		},
 		{
 			route: "/transactions",

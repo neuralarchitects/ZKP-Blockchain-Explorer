@@ -4,12 +4,13 @@ import SearchIcon from '../../../icons/search';
 import AnimatedWidth from '../../ui/Animated/Width';
 import { useNavigate } from 'react-router-dom';
 
-export default function SearchBar() {
+export default function SearchBar({ initialValue = '' }) {
+	const [inputValue, setInputValue] = useState(initialValue);
 	const inputRef = useRef(null);
 	const navigateTo = useNavigate();
 
 	async function handleSearch(string) {
-		if (String(string).trim().length == 0) {
+		if (String(string).trim().length === 0) {
 			return false;
 		} else {
 			navigateTo(`/search?text=${string}`);
@@ -17,30 +18,24 @@ export default function SearchBar() {
 	}
 
 	return (
-		<AnimatedWidth duration={1} className="search-bar">
-			<h1>Fidesinnova Verifiable Computing Platform</h1>
-
-			<div className="custom-input">
-				<SearchIcon
-					onClick={() => {
-						if (inputRef.current) {
-							handleSearch(inputRef.current.value);
-						}
-					}}
-					className="icon"
-				/>
-				<input
-					ref={inputRef}
-					type="search"
-					onKeyDown={(e) => {
-						if (e.key === 'Enter') {
-							e.preventDefault();
-							handleSearch(e.target.value);
-						}
-					}}
-					placeholder="Search by IoT Server Id / Service Contract Name / Service Contract Id / Device Name / Device Id"
-				/>
-			</div>
+		<AnimatedWidth duration={1} className="custom-input">
+			<SearchIcon
+				onClick={() => handleSearch(inputValue)}
+				className="icon"
+			/>
+			<input
+				ref={inputRef}
+				type="search"
+				value={inputValue}
+				onChange={(e) => setInputValue(e.target.value)}
+				onKeyDown={(e) => {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+						handleSearch(inputValue);
+					}
+				}}
+				placeholder="Search"
+			/>
 		</AnimatedWidth>
 	);
 }

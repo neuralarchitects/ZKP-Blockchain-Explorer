@@ -8,10 +8,12 @@
 	gap: 4px;
 
 	.icon {
+		color: var(--color-secondary);
 		font-size: var(--icon-md);
 	}
 
 	p {
+		color: var(--color-secondary);
 		font-weight: 400;
 		font-size: var(--font-md);
 	}

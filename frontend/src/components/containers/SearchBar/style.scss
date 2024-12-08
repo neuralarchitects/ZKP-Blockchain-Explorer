@@ -1,48 +1,36 @@
-.search-bar {
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	gap: 16px;
-	padding: 36px;
-	width: 100%;
-	border-radius: 10px;
-	background: linear-gradient(91.82deg, #3329bc, #5248e3, #282464);
-	background-size: 200% 200%;
-	animation: waveBackground 4s ease-in-out infinite;
-}
-
-.search-bar input {
-	font-weight: 600;
-}
-
-.search-bar input::placeholder {
-	color: #676767;
-}
-
 .custom-input {
-	background: #101113;
+	display: flex;
+	gap: 16px;
+	padding: 10px;
+	background: var(--color-secondary);
 	display: flex;
 	gap: 12px;
 	align-items: center;
 	border-radius: 10px;
-	padding: 15px;
-	width: 100%;
+	flex: 1;
+	height: fit-content;
 
 	.icon {
-		font-size: var(--icon-lg);
-		color: #676767;
+		width: var(--icon-lg);
+		height: auto;
+		stroke: #495d72;
 		cursor: pointer;
 	}
 }
 
+.custom-input input::placeholder {
+	color: #495d72;
+}
+
 .custom-input input {
 	background: transparent;
-	color: white;
+	color: var(--color-primary);
 	border: 0;
 	outline: 0;
 	width: 100%;
 	height: 100%;
-	font-size: var(--font-lg);
+	font-weight: 600;
+	font-size: var(--font-sm);
 }
 
 @keyframes waveBackground {

@@ -1,29 +1,29 @@
 *::-webkit-scrollbar-track {
-	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
-	background-color: #1f2937;
+	background-color: #fff;
 }
 
 *::-webkit-scrollbar {
-	width: 12px !important;
-	height: 12px !important;
-	background-color: #1f2937 !important;
+	width: 6px !important;
+	height: 6px !important;
+	background-color: #fff !important;
 }
 
 *::-webkit-scrollbar-thumb {
 	border-radius: 10px !important;
 	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3) !important;
-	background-color: #374151 !important;
+	background-color: var(--color-secondary) !important;
 }
 
 body {
-	transform: scale(0.8);
-	transform-origin: 0 0; /* Align scaling to the top-left corner */
-	width: 125%; /* Ensure it covers full width after scaling */
-	height: 125%;
+	max-width: 1400px;
+	margin: 0 auto;
+	width: 100%; /* Ensure it covers full width after scaling */
+	height: 100%;
 	overflow: hidden; /* Prevent horizontal scroll */
-	background: linear-gradient(90deg, #191521, #282464);
-	color: #ffffff;
+	background: #fdfdfd;
+	color: var(--color-primary);
 }
 
 * {
@@ -35,9 +35,12 @@ body {
 }
 
 :root {
+	--color-primary: #0c1e33;
+	--color-secondary: #e0e6e9;
+	--color-text: #495d72;
 	--font-xsm: clamp(8px, 1vw, 12px);
-	--font-sm: clamp(10px, 1.5vw, 14px);
-	--font-md: clamp(15px, 1vw, 18px);
+	--font-sm: clamp(12px, 1.5vw, 14px);
+	--font-md: clamp(16px, 1vw, 18px);
 	--font-lg: clamp(18px, 1.3vw, 20px);
 	--font-xl: clamp(22px, 1.5vw, 24px);
 	--font-2xl: clamp(26px, 1.5vw, 28px);
@@ -46,4 +49,9 @@ body {
 	--icon-md: 24px;
 	--icon-lg: 30px;
 	--icon-xlg: clamp(40px, 2.5vw, 50px);
+	--screen-sm: 640px;
+	--screen-md: 768px;
+	--screen-lg: 1024px;
+	--screen-xl: 1280px;
+	--screen-2xl: 1536px;
 }

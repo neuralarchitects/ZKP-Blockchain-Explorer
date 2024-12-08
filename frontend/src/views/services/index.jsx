@@ -3,6 +3,7 @@ import "./style.scss";
 import useFetchData from "../../services/api/useFetchData";
 import Spinner from "../../components/ui/Spinner";
 import ServicesBoxes from "../../components/containers/ServicesBoxes";
+import ServicesTable from "../../components/ui/ServicesTable";
 
 export default function Services() {
 	const { fetchData, loading, error } = useFetchData();
@@ -32,7 +33,7 @@ export default function Services() {
 				<div className="loading-container">
 					<Spinner type="rotate" />
 				</div>
-			)) || <ServicesBoxes data={sharedServices} />}
+			)) || <ServicesTable data={sharedServices} />}
 		</main>
 	);
 }

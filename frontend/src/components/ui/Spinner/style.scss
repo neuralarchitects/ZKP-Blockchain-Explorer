@@ -36,7 +36,7 @@
 	height: 55px;
 	border-radius: 50%;
 	display: inline-block;
-	border-top: 6px solid #fff;
+	border-top: 6px solid var(--color-primary);
 	border-right: 6px solid transparent;
 	box-sizing: border-box;
 	animation: rotation 1s linear infinite;

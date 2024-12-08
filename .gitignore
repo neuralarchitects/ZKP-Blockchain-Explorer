@@ -19,8 +19,6 @@
 .env.production.local
 
 
-
-
 /backend/src/data/*
 
 /backend/uploads/*
@@ -33,6 +31,8 @@ web_app/Runner_webapp/frontend/*
 !web_app/Runner_webapp/frontend/t.txt
 
 # Project configuration files
+*localhost-key.pem
+*localhost.pem
 *webprivate.pem
 *webpublic.pem
 */webprivate.pem*

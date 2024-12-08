@@ -4,6 +4,45 @@
 	flex-grow: 1;
 	height: 100%;
 	gap: 25px;
+	height: fit-content;
+
+
+	.dashboard-header {
+		display: flex;
+		flex-wrap: nowrap;
+		align-items: center;
+		text-align: start;
+		gap: 16px;
+		color: var(--color-primary);
+
+		p {
+			font-size: var(--font-md);
+			white-space: nowrap;
+		}
+
+		@media (max-width: 768px) {
+			font-size: var(--font-lg);
+		}
+
+		@media (max-width: 768px) {
+			p {
+				font-size: var(--font-sm);
+			}
+		}
+	}
+
+	.welcome-text {
+		display: flex;
+		gap: 4px;
+		align-items: center;
+
+		font-size: var(--font-lg);
+
+		.icon {
+			color: #f3cd10;
+			font-size: var(--icon-md);
+		}
+	}
 
 	.all-transactions {
 		text-align: center;

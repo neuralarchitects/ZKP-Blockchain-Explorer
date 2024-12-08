@@ -5,15 +5,21 @@
 	height: 120dvh;
 
 	.transaction-list {
-		padding-bottom: 24px;
+		padding-block: 24px;
 	}
 
 	.header {
-		color: #8a97a6;
-		font-size: var(--font-3xl);
+		width: 100%;
+		gap: 16px;
+		display: flex;
+		color: var(--color-text);
 
-		span {
-			color: white;
+		@media (max-width: 600px) {
+			flex-direction: column;
+		}
+
+		h1 {
+			font-size: var(--font-3xl);
 		}
 	}
 
@@ -26,8 +32,8 @@
 		align-items: center;
 		font-size: var(--font-3xl);
 
-        .icon {
-            font-size: 130px;
-        }
+		.icon {
+			font-size: 130px;
+		}
 	}
 }

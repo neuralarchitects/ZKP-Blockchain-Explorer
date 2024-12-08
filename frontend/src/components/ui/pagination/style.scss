@@ -12,8 +12,8 @@
 		border-radius: 5px;
 		font-size: var(--font-md);
 		font-weight: 500;
-		color: white;
-		background: transparent;
+		color: var(--color-primary);
+		background: var(--color-secondary);
 
 		&:disabled {
 			cursor: not-allowed;
@@ -22,7 +22,7 @@
 
 		&.active {
 			color: black;
-			background: #cfcfd0;
+			background: #8d99a9;
 		}
 
 		&.pagination-ellipsis {

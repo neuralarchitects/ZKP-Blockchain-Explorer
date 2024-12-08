@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import './style.scss';
 import Badge from '../Badge';
 import {
-	HiArrowDown,
-	HiCheckCircle,
+	HiIdentification,
 	HiInformationCircle,
+	HiServer,
 } from 'react-icons/hi';
+import { MdDevices } from 'react-icons/md';
+import { BiCoin, BiNetworkChart } from 'react-icons/bi';
+import { FaDollarSign } from 'react-icons/fa';
 import TransactionIcon from '../../../icons/transaction';
 import GradientCircle from '../GradientCircle';
 import CopyIcon from '../../../icons/copy';
@@ -112,11 +115,14 @@ export default function TransactionBox({ data }) {
 		} else {
 			nodeApiUrl = `https://panel.${nodeId}/app/v1/devices`;
 		}
-		const res = await fetchData(nodeApiUrl, {
-			method: 'GET',
-		});
-
-		setDeviceImage(getDeviceUrlByType(res.data, String(deviceType)));
+		try {
+			const res = await fetchData(nodeApiUrl, {
+				method: 'GET',
+			});
+			setDeviceImage(getDeviceUrlByType(res.data, String(deviceType)));
+		} catch (error) {
+			console.error(error);
+		}
 	}
 
 	async function verifyProofWithTimer(theProof) {
@@ -172,28 +178,6 @@ export default function TransactionBox({ data }) {
 		}
 	}
 
-	const handleMouseMove = (e) => {
-		const rect = e.currentTarget.getBoundingClientRect();
-		const x = e.clientX - rect.left;
-		const y = e.clientY - rect.top;
-
-		// Calculate offsets and clamp values to prevent excessive shadow
-		const offsetX = Math.max(-10, Math.min(10, (x - rect.width / 2) / 10));
-		const offsetY = Math.max(-10, Math.min(10, (y - rect.height / 2) / 10));
-
-		setShadow(
-			`${offsetX}px ${offsetY}px 15px 7.5px rgba(62, 53, 196, 0.5)`
-		);
-		setBorderBottom('none');
-		setBorder('2px solid #6d28d9');
-	};
-
-	const handleMouseLeave = () => {
-		setShadow('none');
-		setBorder('2px solid transparent');
-		setBorderBottom('2px solid #2d2f34');
-	};
-
 	useEffect(() => {
 		if (data_payload) {
 			setDataPayload(JSON.parse(data_payload));
@@ -215,25 +199,108 @@ export default function TransactionBox({ data }) {
 
 	return (
 		<AnimatedComponent animation={iphoneAnimation(0.5)}>
-			<motion.div
-				className="transaction-box-container"
-				onMouseMove={handleMouseMove}
-				onMouseLeave={handleMouseLeave}
-				style={{
-					transition: 'box-shadow 0.1s ease, transform 0.1s ease',
-					border: border !== 'none' && border,
-					borderBottom: borderBottom,
-				}}
-				animate={{
-					boxShadow: shadow,
-					transform:
-						shadow === 'none'
-							? 'translateZ(0)'
-							: 'translateZ(10px)',
-					transition: { duration: 0.2 },
-				}}
-			>
-				<div className="left-data">
+			<motion.div className="transaction-box-container">
+				<section className="box-container">
+					<div className="box-header">
+						<TransactionIcon className={'icon'} />
+						<h1
+							onClick={() => {
+								const encodedHash =
+									encodeURIComponent(transactionHash);
+								navigateTo(`/transactions/${encodedHash}`);
+							}}
+						>
+							{transactionHash}
+						</h1>
+					</div>
+					<div className="box-data">
+						<HiInformationCircle className="icon" />
+						<p>{isZKP ? 'ZKP Stored' : 'Smart Contract Call'}</p>
+					</div>
+					<div className="box-data">
+						<HiServer className="icon" />
+						<p>
+							Server: <span>{nodeId}</span>
+						</p>
+					</div>
+					{isZKP && (
+						<>
+							<div className="box-data">
+								<MdDevices className={'icon'} />
+								<p>
+									Type: <span>{deviceType}</span>
+								</p>
+							</div>
+							<div className="box-data">
+								<HiIdentification className={'icon'} />
+								<p>
+									Id: <span>{deviceId}</span>
+								</p>
+							</div>
+						</>
+					)}
+
+					{isZKP == false && isDevice == false && (
+						<>
+							<div className="box-data">
+								<BiNetworkChart className={'icon'} />
+								<p>
+									Name: <span>{serviceName}</span>
+								</p>
+							</div>
+							<div className="box-data">
+								<HiIdentification className={'icon'} />
+								<p>
+									Id: <span>{serviceId}</span>
+								</p>
+							</div>
+						</>
+					)}
+					<div className="box-data">
+						<FaDollarSign className={'icon'} />
+						<p>
+							Fee: <span>{formatBigInt(gasFee) || 0} FDS</span>
+						</p>
+					</div>
+
+					<div className="button-contianer">
+						{isZKP && (
+							<>
+								<Button
+									onClick={() => setIsZkpModalOpen(true)}
+									className={'button'}
+								>
+									ZKP
+								</Button>
+								<Button
+									onClick={handleVerifyButton}
+									loading={proofLoading}
+									className={'button'}
+								>
+									Verify Proof
+								</Button>
+							</>
+						)}
+
+						<Button
+							onClick={() => {
+								getDeviceImagesFromNode(deviceType);
+								setIsDataModalOpen(true);
+							}}
+							className={'button'}
+						>
+							{isZKP == false &&
+								isDevice == false &&
+								'Publish/Unpublish Service Contract'}
+							{isZKP == false &&
+								isDevice == true &&
+								'Share/Unshare Device'}
+							{isZKP == true && isDevice == false && 'IoT Data'}
+						</Button>
+					</div>
+				</section>
+
+				{/* <div className="left-data">
 					<div className="badge">
 						<Badge
 							Icon={HiInformationCircle}
@@ -242,11 +309,6 @@ export default function TransactionBox({ data }) {
 								isZKP ? 'ZKP Stored' : 'Smart Contract Call'
 							}`}
 						/>
-						{/* <Badge
-						Icon={HiCheckCircle}
-						color={"#23543E"}
-						text={"Success"}
-					/> */}
 					</div>
 					<div className="transaction-hash">
 						<TransactionIcon className={'icon'} />
@@ -259,7 +321,6 @@ export default function TransactionBox({ data }) {
 							className="hash"
 						>
 							{transactionHash}
-							{/* {formatTransactionHash(transactionHash, 16)} */}
 						</p>
 						<p className="transaction-time">
 							{timeStamptimeAgo(timestamp)}
@@ -394,7 +455,7 @@ export default function TransactionBox({ data }) {
 							</p>
 						</div>
 					)}
-				</div>
+				</div> */}
 			</motion.div>
 
 			<EModal
@@ -490,7 +551,8 @@ export default function TransactionBox({ data }) {
 								Service Type: <span>{serviceType}</span>
 							</p>
 							<p>
-								Description: <span>{description}</span>
+								Description:{' '}
+								<span className="text-wrap">{description}</span>
 							</p>
 							<p>
 								Execution Price: <span>{executionPrice}</span>

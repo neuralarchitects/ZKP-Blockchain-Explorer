@@ -1,27 +1,35 @@
 .transactions-container {
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 	width: 100%;
-	gap: 5px;
-	
+	height: 100%;
+	gap: 20px;
 
-	.title {
-        margin-bottom: 16px;;
-		font-weight: 500;
-		font-size: var(--font-2xl);
+	.items-container {
+		width: 100%;
+		height: 100%;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(300px, max-content));
+		justify-content: center;
+		column-gap: 24px;
+		row-gap: 32px;
+		padding: 16px;
 	}
 
-	.scanning-title {
+	.transactions-header {
 		width: 100%;
-		padding: 10px;
-		background: #3329bc;
-        padding-left: 1%;
-		border-top-left-radius: 15px;
-		border-top-right-radius: 15px;
-        p {
-            color: white;
-            font-weight: 700;
-            font-size: var(--font-md);
-        }
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		border-bottom: 2px solid #ced8e5;
+		padding-bottom: 10px;
+
+		.logo {
+			font-size: var(--icon-md);
+		}
+
+		h1 {
+			font-size: var(--font-lg);
+		}
 	}
 }

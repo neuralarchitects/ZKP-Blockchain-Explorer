@@ -1,0 +1,144 @@
+.text-wrap {
+	text-wrap: wrap !important;
+}
+
+.zkp-modal {
+	color: var(--color-secondary);
+	width: 50%;
+	max-height: 85dvh;
+	margin: 0 auto; /* Center within the constrained body */
+
+	p {
+		overflow-y: auto;
+		padding-inline: 10px;
+		margin-block: 25px;
+		text-align: center;
+		line-height: var(--font-2xl);
+		font-weight: 400;
+		font-size: var(--font-md);
+		word-break: break-word;
+	}
+
+	.no-zkp {
+		text-align: center;
+		margin-block: 25px;
+		font-weight: 500;
+		font-size: var(--font-2xl);
+	}
+
+	@media screen and (max-width: 1000px) {
+		width: 75%;
+	}
+
+	@media screen and (max-width: 680px) {
+		width: 95%;
+	}
+}
+
+.proof-modal {
+	color: var(--color-secondary);
+	width: 50%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 0 auto; /* Center within the constrained body */
+	padding: 20px;
+
+	@media screen and (max-width: 1000px) {
+		width: 75%;
+	}
+
+	@media screen and (max-width: 680px) {
+		width: 95%;
+	}
+}
+
+.data-modal {
+	color: var(--color-secondary);
+	width: 25%;
+	max-width: 700px;
+	margin: 0 auto; /* Center within the constrained body */
+	padding: 20px;
+
+	&.big {
+		width: 50% !important;
+	}
+
+	padding-bottom: 30px !important;
+
+	@media screen and (max-width: 1000px) {
+		width: 30%;
+		&.big {
+			width: 75% !important;
+		}
+	}
+
+	@media screen and (max-width: 680px) {
+		width: 65%;
+		&.big {
+			width: 95% !important;
+		}
+	}
+
+	.main-data {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		margin-top: 15px;
+		gap: 16px;
+
+		* {
+			text-wrap: nowrap;
+		}
+
+		.holder {
+			display: flex;
+			flex-direction: column;
+			gap: 16px;
+
+			&.service {
+				width: 100%; /* Adjust width as needed */
+				margin: 0 auto; /* Centers the content horizontally */
+				text-align: left; /* Ensures text alignment starts from the same X-axis */
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+
+				@media screen and (max-width: 680px) {
+					width: 95%; /* Wider width for smaller screens */
+				}
+
+				p {
+					width: 100%; /* Ensures text does not overflow */
+					text-align: left; /* Ensures consistent starting point for all lines */
+				}
+			}
+
+			p {
+				text-align: justify;
+				font-weight: 400;
+				color: white;
+				font-size: var(--font-md);
+
+				span {
+					color: #8a97a6;
+				}
+			}
+		}
+
+		.img {
+			align-self: center;
+			width: 200px;
+			height: auto;
+			border-radius: 10px;
+			overflow: hidden;
+
+			&.device {
+				width: 100px !important;
+				height: auto;
+			}
+		}
+	}
+}

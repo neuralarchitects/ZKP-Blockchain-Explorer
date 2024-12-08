@@ -3,6 +3,7 @@ import "./style.scss";
 import useFetchData from "../../services/api/useFetchData";
 import DevicesBoxes from "../../components/containers/DevicesBoxes";
 import Spinner from "../../components/ui/Spinner";
+import DevicesTable from "../../components/ui/DevicesTable";
 
 export default function Devices() {
 	const { fetchData, loading, error } = useFetchData();
@@ -38,7 +39,7 @@ export default function Devices() {
 				<div className="loading-container">
 					<Spinner type="rotate" />
 				</div>
-			)) || <DevicesBoxes data={sharedDevices} />}
+			)) || <DevicesTable data={sharedDevices} />}
 		</main>
 	);
 }

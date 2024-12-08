@@ -7,6 +7,7 @@ import AnimatedComponent from '../../ui/Animated/Component';
 import { iphoneAnimation } from '../../../utility/framer-transitions';
 import TransactionBoxSkeleton from '../../ui/TransactionBox/Skeleton';
 import PaginatedList from '../../ui/PaginationList';
+import { HiDocumentText } from 'react-icons/hi';
 
 export default function LatestTransactions({
 	latestTransactions,
@@ -23,46 +24,51 @@ export default function LatestTransactions({
 			<Toaster />
 
 			{noHeader == false && (
-				<>
-					<h3 className="title">Latest Operations</h3>
-					<div className="scanning-title">
-						<TransactionText />
-					</div>
-				</>
+				<div className="transactions-header">
+					<HiDocumentText className="logo" />
+					<h3>Latest Operations</h3>
+				</div>
 			)}
 
-			{pagination == true && (
-				<PaginatedList itemsPerPage={8}>
-					{latestTransactions.length !== 0 &&
-						loading == false &&
-						[...latestTransactions]
-							.sort((a, b) => b.timestamp - a.timestamp)
-							.map((item, index) => {
-								return (
-									<TransactionBox key={index} data={item} />
-								);
-							})}
-				</PaginatedList>
-			)}
-			{pagination == false && (
-				<>
-					{latestTransactions.length !== 0 &&
-						loading == false &&
-						[...latestTransactions]
-							.sort((a, b) => b.timestamp - a.timestamp)
-							.map((item, index) => {
-								return (
-									<TransactionBox key={index} data={item} />
-								);
-							})}
-				</>
-			)}
-			<div className="">
+			<section className="items-container">
+				{pagination == true && (
+					<PaginatedList itemsPerPage={8}>
+						{latestTransactions.length !== 0 &&
+							loading == false &&
+							[...latestTransactions]
+								.sort((a, b) => b.timestamp - a.timestamp)
+								.map((item, index) => {
+									return (
+										<TransactionBox
+											key={index}
+											data={item}
+										/>
+									);
+								})}
+					</PaginatedList>
+				)}
+				{pagination == false && (
+					<>
+						{latestTransactions.length !== 0 &&
+							loading == false &&
+							[...latestTransactions]
+								.sort((a, b) => b.timestamp - a.timestamp)
+								.map((item, index) => {
+									return (
+										<TransactionBox
+											key={index}
+											data={item}
+										/>
+									);
+								})}
+					</>
+				)}
+
 				{(loading || latestTransactions.length === 0) &&
 					[...Array(skeletonCount)].map((_, index) => (
 						<TransactionBoxSkeleton key={index} />
 					))}
-			</div>
+			</section>
 		</AnimatedComponent>
 	);
 }

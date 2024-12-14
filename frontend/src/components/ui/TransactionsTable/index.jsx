@@ -29,6 +29,7 @@ function transformTransactionsData(data) {
 
 		let isZKP = false;
 		let isDevice = false;
+		let isTransaction = false;
 
 		if (String(eventType) === 'ZKPStored') {
 			isZKP = true;
@@ -37,6 +38,8 @@ function transformTransactionsData(data) {
 			String(eventType) === 'DeviceRemoved'
 		) {
 			isDevice = true;
+		} else if (String(eventType) === 'Transaction') {
+			isTransaction = true;
 		}
 
 		return {
@@ -51,7 +54,11 @@ function transformTransactionsData(data) {
 			actions: [
 				isZKP && 'ZKP',
 				isZKP && 'Verify Proof',
-				!isZKP && !isDevice && 'Publish/Unpublish Service Contract',
+				isTransaction && 'Transaction Details',
+				!isZKP &&
+					!isDevice &&
+					!isTransaction &&
+					'Publish/Unpublish Service Contract',
 				!isZKP && isDevice && 'Share/Unshare Device',
 				isZKP && !isDevice && 'IoT Data',
 			].filter(Boolean),
@@ -161,7 +168,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 		}
 	}
 
-    useEffect(() => {
+	useEffect(() => {
 		return () => {
 			setHackerAnimation(false);
 		};
@@ -169,7 +176,8 @@ export default function TransactionsTable({ transactions, ...props }) {
 
 	function handleCellClick(row, col, item) {
 		if (col === 0) {
-			navigateTo(`/transactions/${item}`);
+			const encodedHash = encodeURIComponent(item);
+			navigateTo(`/transactions/${encodedHash}`);
 		}
 	}
 
@@ -198,8 +206,11 @@ export default function TransactionsTable({ transactions, ...props }) {
 		if (action === 'ZKP') {
 			setIsZkpModalOpen(true);
 		} else if (action === 'Verify Proof') {
-            handleVerifyButton()
+			handleVerifyButton();
 			setProofModal(true);
+		} else if (action == 'Transaction Details') {
+			const encodedHash = encodeURIComponent(items[0]);
+			navigateTo(`/transactions/${encodedHash}`);		
 		} else {
 			await getDeviceImagesFromNode(
 				tempData?.nodeId,
@@ -332,7 +343,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 					<div className="main-data">
 						<ImageLoader
 							width={200}
-                            height={100}
+							height={100}
 							src={
 								(modalData?.imageURL && modalData?.imageURL) ||
 								'/img/default-service.jpg'

@@ -3,9 +3,9 @@ import './style.scss';
 import StatusBox from '../../ui/StatusBox';
 import BoxIcon from '../../../icons/box';
 import TransactionIcon from '../../../icons/transaction';
-import { HiCheck } from 'react-icons/hi';
+import { HiCheck, HiOutlineCash, HiOutlineSwitchHorizontal, HiOutlineViewGrid } from 'react-icons/hi';
 
-export default function StatusBoxes({ serviceDeviceCount, zkpCount }) {
+export default function StatusBoxes({ serviceDeviceCount, zkpCount, blockChainCount, dailyTransactions }) {
 	return (
 		<section className="status-container">
 			<StatusBox
@@ -29,6 +29,22 @@ export default function StatusBoxes({ serviceDeviceCount, zkpCount }) {
 				iconClass={'check-icon'}
 				title={'Device Commitments'}
 				value={15}
+			/>
+			<StatusBox
+				color={'#dedede'}
+				loading={!serviceDeviceCount ? true : false}
+				Icon={HiOutlineViewGrid}
+				iconClass={'check-icon'}
+				title={'Total Blocks'}
+				value={blockChainCount}
+			/>
+			<StatusBox
+				color={'#aedede'}
+				loading={!serviceDeviceCount ? true : false}
+				Icon={HiOutlineCash}
+				iconClass={'check-icon'}
+				title={'Daily Transactions'}
+				value={dailyTransactions}
 			/>
 		</section>
 	);

@@ -21,7 +21,7 @@ function getFormattedDate() {
 }
 
 export default function Dashboard() {
-	const { latestTransactions, serviceDeviceCount, zkpCount } =
+	const { latestTransactions, serviceDeviceCount, zkpCount, blockChainCount, dailyTransactions } =
 		useSocketConnection();
 	const navigateTo = useNavigate();
 
@@ -46,6 +46,8 @@ export default function Dashboard() {
 			<StatusBoxes
 				serviceDeviceCount={serviceDeviceCount}
 				zkpCount={zkpCount}
+				blockChainCount={blockChainCount}
+				dailyTransactions={dailyTransactions}
 			/>
 
 			<TransactionsTable transactions={latestTransactions} />

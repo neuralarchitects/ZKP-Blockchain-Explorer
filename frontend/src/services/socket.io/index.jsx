@@ -1,29 +1,29 @@
-import { useEffect, useState } from "react";
-import io from "socket.io-client";
+import { useEffect, useState } from 'react';
+import io from 'socket.io-client';
 
 export function useSocketConnection() {
 	const [latestTransactions, setLatestTransactions] = useState([]);
 	const [contractCounts, setContractCounts] = useState({});
 
 	useEffect(() => {
-		const socket = io("https://fidesf2-explorer.fidesinnova.io:3000");
+		const socket = io('https://fidesf2-explorer.fidesinnova.io:3000');
 
 		// Set up socket listeners only once
-		if (!socket.hasListeners("connect")) {
-			socket.on("connect", () => {
-				console.log("Connected to the server");
-				socket.emit("requestLastObjects");
+		if (!socket.hasListeners('connect')) {
+			socket.on('connect', () => {
+				console.log('Connected to the server');
+				socket.emit('requestLastObjects');
 			});
 		}
 
-		if (!socket.hasListeners("disconnect")) {
-			socket.on("disconnect", () => {
-				console.log("Disconnected from the server");
+		if (!socket.hasListeners('disconnect')) {
+			socket.on('disconnect', () => {
+				console.log('Disconnected from the server');
 			});
 		}
 
-		if (!socket.hasListeners("lastObjects")) {
-			socket.on("lastObjects", (objects, dbCount) => {
+		if (!socket.hasListeners('lastObjects')) {
+			socket.on('lastObjects', (objects, dbCount) => {
 				//console.log("Received last objects:", objects);
 				setLatestTransactions(() =>
 					objects
@@ -33,13 +33,15 @@ export function useSocketConnection() {
 				setContractCounts({
 					serviceDeviceCount: dbCount.serviceDeviceCount,
 					zkpCount: dbCount.zkpCount,
+					blockChainCount: dbCount.blockChainCount,
+					dailyTransactions: dbCount.dailyTransactions,
 				});
 			});
 		}
 
-		if (!socket.hasListeners("dbChange")) {
-			socket.on("dbChange", (newData, dbCount) => {
-				//console.log("Database change detected:", newData);
+		if (!socket.hasListeners('dbChange')) {
+			socket.on('dbChange', (newData, dbCount) => {
+				console.log('Database change detected:', newData);
 				setLatestTransactions((prevTransactions) =>
 					[...prevTransactions, newData]
 						.sort((a, b) => b.timestamp - a.timestamp)
@@ -48,22 +50,37 @@ export function useSocketConnection() {
 				setContractCounts({
 					serviceDeviceCount: dbCount.serviceDeviceCount,
 					zkpCount: dbCount.zkpCount,
+					blockChainCount: dbCount.blockChainCount,
+					dailyTransactions: dbCount.dailyTransactions,
+				});
+			});
+		}
+
+		if (!socket.hasListeners('countUpdate')) {
+			socket.on('countUpdate', (dbCount) => {
+				setContractCounts({
+					serviceDeviceCount: dbCount.serviceDeviceCount,
+					zkpCount: dbCount.zkpCount,
+					blockChainCount: dbCount.blockChainCount,
+					dailyTransactions: dbCount.dailyTransactions,
 				});
 			});
 		}
 
 		// Cleanup the listeners when the component unmounts
 		return () => {
-			socket.off("connect");
-			socket.off("disconnect");
-			socket.off("lastObjects");
-			socket.off("dbChange");
+			socket.off('connect');
+			socket.off('disconnect');
+			socket.off('lastObjects');
+			socket.off('dbChange');
 		};
 	}, []);
 
 	return {
 		serviceDeviceCount: contractCounts.serviceDeviceCount,
 		zkpCount: contractCounts.zkpCount,
+		blockChainCount: contractCounts.blockChainCount,
+		dailyTransactions: contractCounts.dailyTransactions,
 		latestTransactions: latestTransactions,
 	};
 }

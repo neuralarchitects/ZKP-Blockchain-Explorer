@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from "react";
-import "./style.scss";
-import { useNavigate, useParams } from "react-router-dom";
-import useFetchData from "../../services/api/useFetchData";
-import TransactionIcon from "../../icons/transaction";
-import CopyIcon from "../../icons/copy";
+import React, { useEffect, useState } from 'react';
+import './style.scss';
+import { useNavigate, useParams } from 'react-router-dom';
+import useFetchData from '../../services/api/useFetchData';
+import TransactionIcon from '../../icons/transaction';
+import CopyIcon from '../../icons/copy';
 import {
 	copyText,
 	formatBigInt,
 	formatUnixTimestamp,
 	timeStamptimeAgo,
-} from "../../utility/functions";
-import { Toaster } from "react-hot-toast";
-import Spinner from "../../components/ui/Spinner";
-import Badge from "../../components/ui/Badge";
-import { HiCheckCircle, HiOutlineClock } from "react-icons/hi";
-import GradientCircle from "../../components/ui/GradientCircle";
+} from '../../utility/functions';
+import { Toaster } from 'react-hot-toast';
+import Spinner from '../../components/ui/Spinner';
+import Badge from '../../components/ui/Badge';
+import { HiCheckCircle, HiOutlineClock } from 'react-icons/hi';
+import GradientCircle from '../../components/ui/GradientCircle';
 
 export default function TransactionDetail() {
 	const { fetchData, loading } = useFetchData();
@@ -24,12 +24,14 @@ export default function TransactionDetail() {
 	const navigateTo = useNavigate();
 
 	async function getTransactionDetail() {
-		const res = await fetchData(`contract/search-data?search=${decodedId}`);
+		const res = await fetchData(
+			`contract/search-data?search=${encodeURIComponent(id)}`
+		);
 		if (res.data.length > 0) {
 			setDetailData(res.data[0]);
 		} else {
 			setDetailData(false);
-			navigateTo("/");
+			navigateTo('/');
 		}
 	}
 
@@ -44,16 +46,16 @@ export default function TransactionDetail() {
 			{loading == false && detailData != false && (
 				<>
 					<div className="hash-holder">
-						<TransactionIcon className={"icon"} />
+						<TransactionIcon className={'icon'} />
 						<p>{detailData.transactionHash}</p>
 						<CopyIcon
 							onClick={() =>
 								copyText(
 									detailData.transactionHash,
-									"Transaction Hash"
+									'Transaction Hash'
 								)
 							}
-							className={"icon copy"}
+							className={'icon copy'}
 						/>
 					</div>
 					<div className="grid-container">
@@ -64,10 +66,10 @@ export default function TransactionDetail() {
 								onClick={() =>
 									copyText(
 										detailData.transactionHash,
-										"Transaction Hash"
+										'Transaction Hash'
 									)
 								}
-								className={"icon copy"}
+								className={'icon copy'}
 							/>
 						</div>
 
@@ -76,8 +78,8 @@ export default function TransactionDetail() {
 						<div className="badge-holder">
 							<Badge
 								Icon={HiCheckCircle}
-								color={"#23543E"}
-								text={"Success"}
+								color={'#23543E'}
+								text={'Success'}
 							/>
 						</div>
 
@@ -85,9 +87,9 @@ export default function TransactionDetail() {
 						<div className="timestamp-holder">
 							<HiOutlineClock className="icon" />
 							<p className="right-data">
-								{timeStamptimeAgo(detailData.timestamp)}{" "}
-								<span>|</span>{" "}
-								{formatUnixTimestamp(detailData.timestamp)}{" "}
+								{timeStamptimeAgo(detailData.timestamp)}{' '}
+								<span>|</span>{' '}
+								{formatUnixTimestamp(detailData.timestamp)}{' '}
 								<span>{`| Confirmed within <= 4 secs`}</span>
 							</p>
 						</div>
@@ -99,14 +101,14 @@ export default function TransactionDetail() {
 							<GradientCircle width={24} height={24} />
 							<p
 								onClick={() =>
-									copyText(detailData.from, "Wallet")
+									copyText(detailData.from, 'Wallet')
 								}
 							>
 								{detailData.from}
 							</p>
 							<CopyIcon
 								onClick={() =>
-									copyText(detailData.from, "Wallet")
+									copyText(detailData.from, 'Wallet')
 								}
 								className="icon"
 							/>
@@ -117,14 +119,14 @@ export default function TransactionDetail() {
 							<GradientCircle width={24} height={24} />
 							<p
 								onClick={() =>
-									copyText(detailData.to, "Wallet")
+									copyText(detailData.to, 'Wallet')
 								}
 							>
 								{detailData.to}
 							</p>
 							<CopyIcon
 								onClick={() =>
-									copyText(detailData.to, "Wallet")
+									copyText(detailData.to, 'Wallet')
 								}
 								className="icon"
 							/>

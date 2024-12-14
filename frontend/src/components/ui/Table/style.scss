@@ -16,6 +16,15 @@
 			color: var(--color-primary);
 			background-color: var(--color-secondary);
 		}
+
+		.MuiTableRow-root {
+			&:nth-child(even) {
+				background-color: #f5f5f5; // Light grey for odd rows
+			}
+			&:nth-child(odd) {
+				background-color: #ffffff; // White for even rows
+			}
+		}
 	}
 
 	@media (max-width: 768px) {

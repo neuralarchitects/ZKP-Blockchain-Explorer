@@ -8,8 +8,32 @@
 	padding-inline: 15px;
 	padding-block: 25px;
 	gap: 16px;
+	transform-origin: top left !important;
+	transition: transform 0.3s ease !important;
 
-	@media (max-width: 500px) {
+	@media (max-width: 1368px) {
+		height: 65px;
+		.content {
+			transform: scale(0.85) !important;
+		}
+	}
+
+	@media (max-width: 768px) {
+		height: 55px;
+		.content {
+			transform: scale(0.8) !important;
+		}
+		.icon {
+			width: var(--icon-sm) !important;
+			height: var(--icon-sm) !important;
+		}
+	}
+
+	@media (max-width: 480px) {
+		height: 50px;
+		.content {
+			transform: scale(0.7) !important;
+		}
 	}
 
 	.icon {

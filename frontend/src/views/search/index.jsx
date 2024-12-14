@@ -18,7 +18,9 @@ export default function SearchPage() {
 	useEffect(() => {
 		async function fetchSearchData() {
 			const res = await fetchData(
-				`contract/search-data?search=${searchTextString}`
+				`contract/search-data?search=${encodeURIComponent(
+					searchTextString
+				)}`
 			);
 			setApiData(res.data);
 		}

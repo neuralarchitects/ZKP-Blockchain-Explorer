@@ -3,7 +3,6 @@ import './style.scss';
 import useFetchData from '../../services/api/useFetchData';
 import { HiX } from 'react-icons/hi';
 import Spinner from '../../components/ui/Spinner';
-import LatestTransactions from '../../components/containers/Transactions';
 import { useLocation } from 'react-router-dom';
 import TransactionsTable from '../../components/ui/TransactionsTable';
 import SearchBar from '../../components/containers/SearchBar';

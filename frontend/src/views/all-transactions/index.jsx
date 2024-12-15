@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import './style.scss';
 import Pagination from '../../components/ui/pagination';
 import useFetchData from '../../services/api/useFetchData';
-import LatestTransactions from '../../components/containers/Transactions';
 import TransactionsTable from '../../components/ui/TransactionsTable';
 import ImageLoader from '../../components/ui/Image';
 
@@ -31,13 +30,13 @@ export default function AllTransactionsPage() {
 
 		// Choose the image based on screen width
 		if (width <= 500) {
-			return `/img/banners/${folder}/${folder}-500.jpg`;
+			return `/img/banners/${folder}/500.jpg`;
 		} else if (width <= 900) {
-			return `/img/banners/${folder}/${folder}-900.jpg`;
+			return `/img/banners/${folder}/900.jpg`;
 		} else if (width <= 1367) {
-			return `/img/banners/${folder}/${folder}-1367.jpg`;
+			return `/img/banners/${folder}/1367.jpg`;
 		} else {
-			return `/img/banners/${folder}/${folder}-2200.jpg`;
+			return `/img/banners/${folder}/2200.jpg`;
 		}
 	};
 
@@ -49,7 +48,7 @@ export default function AllTransactionsPage() {
 				alt={`Operations Banner`}
 				width={'100%'}
 				height={'auto'}
-				style={{borderRadius: '10px'}}
+				style={{ borderRadius: '10px' }}
 			/>
 			<TransactionsTable transactions={nowData} />
 			<Pagination

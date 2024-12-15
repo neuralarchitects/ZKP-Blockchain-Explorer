@@ -1,5 +1,51 @@
+.event-label {
+	&.zkp {
+		span {
+			background: #c4dcf7;
+			color: #3e6187;
+		}
+	}
+
+	&.device {
+		span {
+			background: #faf5c8;
+			color: #8a823f;
+		}
+	}
+	
+	&.service {
+		span {
+			background: #f7d4fb;
+			color: #7f3987;
+		}
+	}
+	
+	&.transaction {
+		span {
+			background: #cef6cd;
+			color: #618d5c;
+		}
+	}
+
+	span {
+		display: flex;
+		align-items: center;
+		width: fit-content;
+		padding: 5px;
+		border-radius: 5px;
+	}
+}
+
 .text-wrap {
 	text-wrap: wrap !important;
+}
+
+.transaction-hash-label {
+	cursor: pointer;
+}
+
+.transaction-hash-label:hover {
+	text-decoration: underline;
 }
 
 .zkp-modal {
@@ -55,32 +101,19 @@
 
 .data-modal {
 	color: var(--color-secondary);
-	width: 25%;
-	max-width: 700px;
-	margin: 0 auto; /* Center within the constrained body */
-	padding: 20px;
+	width: auto;
+	max-height: 90dvh;
+	overflow-y: auto;
+	margin-inline: 20px;
 
 	&.big {
-		width: 50% !important;
+		max-width: 400px;
 	}
 
 	padding-bottom: 30px !important;
 
-	@media screen and (max-width: 1000px) {
-		width: 30%;
-		&.big {
-			width: 75% !important;
-		}
-	}
-
-	@media screen and (max-width: 680px) {
-		width: 65%;
-		&.big {
-			width: 95% !important;
-		}
-	}
-
 	.main-data {
+		padding-inline: 25px !important;
 		position: relative;
 		display: flex;
 		flex-direction: column;
@@ -88,10 +121,6 @@
 		justify-content: center;
 		margin-top: 15px;
 		gap: 16px;
-
-		* {
-			text-wrap: nowrap;
-		}
 
 		.holder {
 			display: flex;

@@ -54,12 +54,10 @@ function transformTransactionsData(data) {
 			actions: [
 				isZKP && 'ZKP',
 				isZKP && 'Verify Proof',
-				isTransaction && 'Transaction Details',
-				!isZKP &&
-					!isDevice &&
-					!isTransaction &&
-					'Publish/Unpublish Service Contract',
-				!isZKP && isDevice && 'Share/Unshare Device',
+
+				(isTransaction || isZKP) && 'Transaction Details',
+				!isZKP && !isDevice && !isTransaction && 'Service Details',
+				!isZKP && isDevice && 'Device Details',
 				isZKP && !isDevice && 'IoT Data',
 			].filter(Boolean),
 		};
@@ -73,6 +71,14 @@ function findItemByTransactionHash(data, transactionHash) {
 function findItemByTransactionHashFromArray(data, transactionHash) {
 	return data.find((item) => item[0] === transactionHash);
 }
+
+const eventTypeLabels = {
+	ZKPStored: 'ZKP Stored',
+	DeviceCreated: 'Device Shared',
+	DeviceRemoved: 'Device Unshared',
+	ServiceCreated: 'Service Shared',
+	ServiceRemoved: 'Service Unshared',
+};
 
 export default function TransactionsTable({ transactions, ...props }) {
 	const navigateTo = useNavigate();
@@ -174,8 +180,8 @@ export default function TransactionsTable({ transactions, ...props }) {
 		};
 	}, [proofModal]);
 
-	function handleCellClick(row, col, item) {
-		if (col === 0) {
+	function handleCellClick(row, col, item, fullRowData) {
+		if (col === 0 && fullRowData[4].props.children === 'Transaction') {
 			const encodedHash = encodeURIComponent(item);
 			navigateTo(`/transactions/${encodedHash}`);
 		}
@@ -210,7 +216,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 			setProofModal(true);
 		} else if (action == 'Transaction Details') {
 			const encodedHash = encodeURIComponent(items[0]);
-			navigateTo(`/transactions/${encodedHash}`);		
+			navigateTo(`/transactions/${encodedHash}`);
 		} else {
 			await getDeviceImagesFromNode(
 				tempData?.nodeId,
@@ -229,12 +235,47 @@ export default function TransactionsTable({ transactions, ...props }) {
 					'Date',
 					'Time',
 					'Server Name',
-					'Device/Service Id',
 					'Event Type',
+				]}
+				conditionalOverrides={[
+					{
+						rowExist: 'Transaction',
+						columnToApplyClass: 0,
+						className: 'transaction-hash-label',
+					},
+					{
+						rowExist: 'ZKP Stored',
+						columnToApplyClass: 4,
+						className: 'event-label zkp',
+					},
+					{
+						rowExist: 'Device Shared',
+						columnToApplyClass: 4,
+						className: 'event-label device',
+					},
+					{
+						rowExist: 'Device Unshared',
+						columnToApplyClass: 4,
+						className: 'event-label device',
+					},
+					{
+						rowExist: 'Service Shared',
+						columnToApplyClass: 4,
+						className: 'event-label service',
+					},
+					{
+						rowExist: 'Service Unshared',
+						columnToApplyClass: 4,
+						className: 'event-label service',
+					},
+					{
+						rowExist: 'Transaction',
+						columnToApplyClass: 4,
+						className: 'event-label transaction',
+					},
 				]}
 				onActionClick={handleActionClick}
 				actions={true}
-				truncateColumns={[0, 4]}
 				onCellClick={handleCellClick}
 				data={transformedData.map(
 					({
@@ -242,7 +283,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 						formattedDate,
 						formattedTime,
 						nodeId,
-						idField,
+
 						eventType,
 						actions,
 					}) => [
@@ -250,8 +291,12 @@ export default function TransactionsTable({ transactions, ...props }) {
 						formattedDate,
 						formattedTime,
 						nodeId,
-						idField,
-						eventType,
+
+						<span>
+							{eventTypeLabels[eventType]
+								? eventTypeLabels[eventType]
+								: eventType}
+						</span>,
 						actions,
 					]
 				)}
@@ -264,10 +309,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 				onClose={() => setIsZkpModalOpen(false)}
 			>
 				{(isZKP && (
-					<p>
-						{modalData?.zkp_payload &&
-							JSON.parse(modalData?.zkp_payload)}
-					</p>
+					<p>{modalData?.zkp_payload && modalData?.data_payload}</p>
 				)) || (
 					<h2 className="no-zkp">
 						The received data does not contain any ZKP.
@@ -291,7 +333,11 @@ export default function TransactionsTable({ transactions, ...props }) {
 			<EModal
 				className={`data-modal ${!isZKP && 'big'}`}
 				isOpen={isDataModalOpen}
-				title={`${isZKP == false ? 'Specification' : 'Device Data'}`}
+				title={`${
+					isZKP == false
+						? `${isDevice ? 'Device Details' : 'Service Details'}`
+						: 'IoT Data'
+				}`}
 				onClose={() => setIsDataModalOpen(false)}
 			>
 				{isZKP && (
@@ -301,39 +347,71 @@ export default function TransactionsTable({ transactions, ...props }) {
 								src={deviceImage}
 								className="img device"
 							/>
-							{modalData?.data_payload?.Door && (
+							{modalData?.unixtime_payload?.Door && (
 								<p>
 									Door:{' '}
-									<span>{modalData?.data_payload?.Door}</span>
+									<span>
+										{
+											JSON.parse(
+												modalData?.unixtime_payload
+											)?.Door
+										}
+									</span>
 								</p>
 							)}
 							<p>
 								Temperature:{' '}
 								<span>
-									{modalData?.data_payload?.Temperature}
+									{
+										JSON.parse(modalData?.unixtime_payload)
+											?.Temperature
+									}
 								</span>
 							</p>
 							<p>
 								Humidity:{' '}
-								<span>{modalData?.data_payload?.Humidity}</span>
+								<span>
+									{
+										JSON.parse(modalData?.unixtime_payload)
+											?.Humidity
+									}
+								</span>
 							</p>
 							<p>
 								Button:{' '}
-								<span>{modalData?.data_payload?.Button}</span>
+								<span>
+									{
+										JSON.parse(modalData?.unixtime_payload)
+											?.Button
+									}
+								</span>
 							</p>
 							<p>
 								Root:{' '}
 								<span>
-									{String(modalData?.data_payload?.Root)}
+									{String(
+										JSON.parse(modalData?.unixtime_payload)
+											?.Root
+									)}
 								</span>
 							</p>
 							<p>
 								Hardware Version:{' '}
-								<span>{modalData?.data_payload?.HV}</span>
+								<span>
+									{
+										JSON.parse(modalData?.unixtime_payload)
+											?.HV
+									}
+								</span>
 							</p>
 							<p>
 								Firmware Version:{' '}
-								<span>{modalData?.data_payload?.FV}</span>
+								<span>
+									{
+										JSON.parse(modalData?.unixtime_payload)
+											?.FV
+									}
+								</span>
 							</p>
 						</div>
 					</section>
@@ -359,8 +437,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 								Event Type: <span>{modalData?.eventType}</span>
 							</p>
 							<p>
-								Service Name:{' '}
-								<span>{modalData?.serviceName}</span>
+								Service Name: <span>{modalData?.name}</span>
 							</p>
 							<p>
 								Service Id: <span>{modalData?.serviceId}</span>
@@ -371,9 +448,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 							</p>
 							<p>
 								Description:{' '}
-								<span className="text-wrap">
-									{modalData?.description}
-								</span>
+								<span>{modalData?.description}</span>
 							</p>
 							<p>
 								Execution Price:{' '}

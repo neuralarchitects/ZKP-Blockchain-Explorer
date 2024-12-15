@@ -11,7 +11,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { HiArrowLeft, HiArrowRight } from 'react-icons/hi';
-import './style.scss';
+import './style.scss'; // Retain your original styles
 
 const ResponsiveTable = ({
 	titles,
@@ -23,6 +23,7 @@ const ResponsiveTable = ({
 	truncateColumns = [],
 	pagination = false,
 	itemsPerPage = 10,
+	conditionalOverrides = [], // New prop for condition-based styling
 }) => {
 	const [menuAnchor, setMenuAnchor] = useState(null);
 	const [activeRow, setActiveRow] = useState(null);
@@ -35,6 +36,33 @@ const ResponsiveTable = ({
 		return text.length > truncateLength
 			? text.slice(0, truncateLength) + '...'
 			: text;
+	};
+
+	// Function to evaluate conditional styles
+	const getClassName = (rowIndex, cellIndex, row) => {
+		for (const override of conditionalOverrides) {
+			const { rowExist, columnToApplyClass, className } = override;
+
+			console.log('row:', row);
+
+			// Check if `rowExist` exists in the row
+			const existsInRow = row.some((item) => {
+				if (typeof item === 'string') {
+					return item === String(rowExist);
+				}
+				if (typeof item === 'object' && item?.type === 'span') {
+					// Check if the React element contains the text
+					return item.props.children === String(rowExist);
+				}
+				return false;
+			});
+
+			// Check if conditions match
+			if (existsInRow && cellIndex === columnToApplyClass) {
+				return className; // Apply the class if condition matches
+			}
+		}
+		return ''; // Return empty if no condition matches
 	};
 
 	const handleMenuOpen = (event, rowIndex) => {
@@ -74,8 +102,6 @@ const ResponsiveTable = ({
 
 	const renderPagination = () => {
 		const pages = [];
-
-		// Always show the first and last pages
 		pages.push(
 			<button
 				key={1}
@@ -98,7 +124,6 @@ const ResponsiveTable = ({
 			);
 		}
 
-		// Show the adjacent pages
 		for (
 			let i = Math.max(2, currentPage - 1);
 			i <= Math.min(currentPage + 1, totalPages - 1);
@@ -180,10 +205,15 @@ const ResponsiveTable = ({
 							key={cellIndex}
 							onClick={() => {
 								if (onCellClick) {
-									onCellClick(rowIndex, cellIndex, cell);
+									onCellClick(
+										rowIndex,
+										cellIndex,
+										cell,
+										visibleCells
+									);
 								}
 							}}
-							className="table-cell"
+							className={getClassName(rowIndex, cellIndex, row)} // Pass the row to check conditions
 						>
 							{truncateColumns.includes(cellIndex)
 								? truncateText(cell)
@@ -203,17 +233,13 @@ const ResponsiveTable = ({
 									open={Boolean(menuAnchor)}
 									onClose={handleMenuClose}
 								>
-									{(actionItems || []).map((item, index) => (
+									{actionItems.map((item, index) => (
 										<MenuItem
 											key={index}
 											className="action-item"
 											onClick={() =>
 												handleDropdownClick(item, row)
 											}
-											sx={{
-												justifyContent: 'center', // Center the text horizontally
-												textAlign: 'center',     // Align text inside the MenuItem
-											  }}
 										>
 											{item}
 										</MenuItem>

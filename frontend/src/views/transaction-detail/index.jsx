@@ -41,11 +41,11 @@ export default function TransactionDetail() {
 
 	return (
 		<main className="transaction-detail-container">
-			<h1>Operation Details</h1>
+			<h1 className='main-header'>Transaction Details</h1>
 			<Toaster />
 			{loading == false && detailData != false && (
 				<>
-					<div className="hash-holder">
+					{/* <div className="hash-holder">
 						<TransactionIcon className={'icon'} />
 						<p>{detailData.transactionHash}</p>
 						<CopyIcon
@@ -57,7 +57,7 @@ export default function TransactionDetail() {
 							}
 							className={'icon copy'}
 						/>
-					</div>
+					</div> */}
 					<div className="grid-container">
 						<p className="title">Transaction hash</p>
 						<div className="hash-holder">

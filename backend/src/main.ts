@@ -1,83 +1,84 @@
-import { NestFactory } from "@nestjs/core";
-import { NestExpressApplication } from "@nestjs/platform-express";
-import { DocumentBuilder } from "@nestjs/swagger/dist/document-builder";
-import { SwaggerModule } from "@nestjs/swagger/dist/swagger-module";
-import { AppModule } from "./app.module";
-import { join } from "path";
-import { Inject, Logger } from "@nestjs/common";
-import { TestService } from "./modules/broker/services/test.service";
-import { MqttLogService } from "./modules/broker/services/mqtt-log.service";
-import { readFileSync } from "fs";
+import { NestFactory } from '@nestjs/core';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { DocumentBuilder } from '@nestjs/swagger/dist/document-builder';
+import { SwaggerModule } from '@nestjs/swagger/dist/swagger-module';
+import { AppModule } from './app.module';
+import { join } from 'path';
+import { Inject, Logger } from '@nestjs/common';
+import { TestService } from './modules/broker/services/test.service';
+import { MqttLogService } from './modules/broker/services/mqtt-log.service';
+import { readFileSync } from 'fs';
 
 async function bootstrap() {
-	// const app = await NestFactory.create(AppModule);
+  // const app = await NestFactory.create(AppModule);
 
-	const httpsOptions = {
-		key: readFileSync('assets/certificates/webprivate.pem'),
-		cert: readFileSync('assets/certificates/webpublic.pem'),
-	  };
+  const httpsOptions = {
+    key: readFileSync('assets/certificates/webprivate.pem'),
+    cert: readFileSync('assets/certificates/webpublic.pem'),
+  };
 
-	const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-		httpsOptions,
-	  });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    httpsOptions,
+  });
 
-	const config = new DocumentBuilder()
-		.setTitle("FidesInnova")
-		.setDescription("The FidesInnova API description")
-		.setVersion("2.1.0")
-		.addTag("FidesInnova")
-		.addBearerAuth()
-		.build();
-	const document = SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup("app/api", app, document);
+  const config = new DocumentBuilder()
+    .setTitle('FidesInnova')
+    .setDescription('The FidesInnova API description')
+    .setVersion('2.1.0')
+    .addTag('FidesInnova')
+    .addBearerAuth()
+    .build();
 
-	app.useStaticAssets(join(__dirname, "../uploads"));
+  const document = SwaggerModule.createDocument(app, config);
 
-	// app.enableCors();
-	app.enableCors({
-		origin: [
-			'https://fidesf2-explorer.fidesinnova.io',
-			'https://localhost:3000',
-			'http://localhost:3000',
-		  ],
-		allowedHeaders: [
-			"Content-Type",
-			"Origin",
-			"X-Requested-With",
-			"Accept",
-			"Authorization",
-		],
-		// headers exposed to the client
-		exposedHeaders: ["Authorization"],
-		credentials: true, // Enable credentials (cookies, authorization headers) cross-origin
+  SwaggerModule.setup('app/api', app, document);
 
-		methods: ["GET", "POST", "PATCH", "DELETE"],
-	});
+  app.useStaticAssets(join(__dirname, '../uploads'));
 
-	await app.listen(process.env.HOST_PORT);
-	console.log(
-		"\x1B[32m \nApplication successfully started on port \x1B[0m",
-		process.env.HOST_PORT
-	);
+  // app.enableCors();
+  app.enableCors({
+    origin: [
+      'https://fidesf2-explorer.fidesinnova.io',
+      'http://localhost:3000',
+    ],
+    allowedHeaders: [
+      'Content-Type',
+      'Origin',
+      'X-Requested-With',
+      'Accept',
+      'Authorization',
+    ],
+    // headers exposed to the client
+    exposedHeaders: ['Authorization'],
+    credentials: true, // Enable credentials (cookies, authorization headers) cross-origin
 
-	// Launching broker
-	// console.log('\x1B[33m \nLaunching broker... \x1B[0m');
-	// const broker = require('./modules/broker/server/mqtt-server');
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  });
 
-	// const tset = require('./modules/broker/server/test');
-	// const test = require('./modules/broker/server/test-class');
-	// test.startup();
+  await app.listen(process.env.HOST_PORT);
+  console.log(
+    '\x1B[32m \nApplication successfully started on port \x1B[0m',
+    process.env.HOST_PORT,
+  );
 
-	// let testService: TestService = new TestService();
-	let mqttLogService: MqttLogService = new MqttLogService();
-	let testService: TestService = new TestService(mqttLogService);
-	testService.printMsg();
-	testService.callDeviceModule();
+  // Launching broker
+  // console.log('\x1B[33m \nLaunching broker... \x1B[0m');
+  // const broker = require('./modules/broker/server/mqtt-server');
 
-	// Run MQTT Server.
-	const mqttServerRunner = require("./modules/broker/server/mqtt-server");
+  // const tset = require('./modules/broker/server/test');
+  // const test = require('./modules/broker/server/test-class');
+  // test.startup();
 
-	// Run Blockly Server.
-	const blocklyServerRunner = require("./modules/blockly/server/blockly-server");
+  // let testService: TestService = new TestService();
+  let mqttLogService: MqttLogService = new MqttLogService();
+  let testService: TestService = new TestService(mqttLogService);
+  testService.printMsg();
+  testService.callDeviceModule();
+
+  // Run MQTT Server.
+  const mqttServerRunner = require('./modules/broker/server/mqtt-server');
+
+  // Run Blockly Server.
+  const blocklyServerRunner = require('./modules/blockly/server/blockly-server');
 }
 bootstrap();

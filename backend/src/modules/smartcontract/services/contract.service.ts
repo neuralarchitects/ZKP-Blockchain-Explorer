@@ -6,6 +6,9 @@ import { ErrorTypeEnum } from 'src/modules/utility/enums/error-type.enum';
 import { DeviceService } from 'src/modules/device/services/device.service';
 import { ServiceService } from 'src/modules/service/services/service.service';
 import { MongoClient, Db, Collection } from 'mongodb';
+import axios from 'axios';
+import { transformTransactions } from 'src/getaways/events.gateway';
+import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
 function parseProofString(proofString) {
   let cleanedString = proofString.substring(1, proofString.length - 1);
@@ -23,6 +26,7 @@ const base64ToHex = (base64String: string) => {
 
 @Injectable()
 export class ContractService {
+  private pythonApiUrl = 'http://localhost:7000/process'; // FastAPI URL
   private readonly rpcUrl = 'https://fidesf1-rpc.fidesinnova.io';
   private readonly chainId = 706883;
   private readonly faucetAmount = 5;
@@ -38,11 +42,16 @@ export class ContractService {
   private db: Db;
   private zkpCollection: Collection;
   private serviceDeviceCollection: Collection;
+  private blockChainDb: Db;
+  private blockChainCollection: Collection;
   private readonly mongoUrl = process.env.MONGO_CONNECTION;
   private readonly dbName = 'smartcontract_db';
   private readonly zkpCollectionName = 'zkp_smartcontract';
   private readonly serviceDeviceCollectionName =
     'services_devices_smartcontract';
+  private readonly blockChainDbName = 'blockchain_data';
+  private readonly blockChainCollectionName = 'blocks';
+  private transactionDataArray = [];
   private serviceDataArray = [];
   private zkpDataArray = [];
 
@@ -153,22 +162,65 @@ export class ContractService {
     });
   }
 
+  async zkpVerifyProofFromPython(input: string): Promise<boolean> {
+    let theProof = '';
+    try {
+      theProof = JSON.parse(input);
+    } catch (error) {
+      theProof = input;
+    }
+    try {
+      const response = await axios.post(this.pythonApiUrl, { input: theProof });
+      return response.data.output;
+    } catch (error) {
+      console.error('Error calling Python service:', error.message);
+      throw new GeneralException(
+        ErrorTypeEnum.UNPROCESSABLE_ENTITY,
+        `Failed to process verify request in Python service`,
+      );
+    }
+  }
+
   async connectToMongo() {
     const client = new MongoClient(this.mongoUrl);
     await client.connect();
     console.log('Api Connected to MongoDB');
     this.db = client.db(this.dbName);
+    this.blockChainDb = client.db(this.blockChainDbName);
 
     this.zkpCollection = this.db.collection(this.zkpCollectionName);
     this.serviceDeviceCollection = this.db.collection(
       this.serviceDeviceCollectionName,
     );
+    this.blockChainCollection = this.blockChainDb.collection(
+      this.blockChainCollectionName,
+    );
 
     // Fetch initial data and populate arrays
     this.serviceDataArray = await this.serviceDeviceCollection.find().toArray();
     this.zkpDataArray = await this.zkpCollection.find().toArray();
+    this.transactionDataArray = await this.blockChainCollection
+      .find({ $expr: { $gt: [{ $size: '$transactions' }, 0] } })
+      .toArray();
 
-    //console.log("ZKP is :", this.zkpDataArray);
+    const blockChainChangeStream = this.blockChainCollection.watch();
+    blockChainChangeStream.on('change', (change: any) => {
+      if (change.fullDocument?.transactions.length > 0) {
+        switch (change.operationType) {
+          case 'insert':
+            this.handleBlockChainInsert(change.fullDocument);
+            break;
+          /* case "update":
+            this.handleServiceUpdate(change.documentKey._id, change.updateDescription.updatedFields);
+            break;
+          case "delete":
+            this.handleServiceDelete(change.documentKey._id);
+            break; */
+          default:
+            console.log('Unrecognized operation type:', change.operationType);
+        }
+      }
+    });
 
     // Set up Change Stream for serviceDeviceCollection
     const serviceDeviceChangeStream = this.serviceDeviceCollection.watch();
@@ -208,35 +260,59 @@ export class ContractService {
   }
 
   getPaginatedRecords = async (limit: number, offset: number): Promise<any> => {
-    const updatedServiceDeviceLastObjects = this.serviceDataArray.map((obj) => {
-      const { TransactionTime, ...rest } = obj;
-      return {
+    const processArray = (array: any[]) =>
+      array.map(({ TransactionTime, ...rest }) => ({
         ...rest,
         timestamp: TransactionTime,
-      };
-    });
+      }));
 
-    let totalDataArray = [
-      ...updatedServiceDeviceLastObjects,
-      ...this.zkpDataArray,
-    ];
+    // Standardize arrays
+    const serviceData = processArray(this.serviceDataArray);
+    const zkpData = this.zkpDataArray; // Assume already has 'timestamp'
 
-    totalDataArray.sort((a, b) => b.timestamp - a.timestamp);
+    const transactionData = this.transactionDataArray
+      .map((item) => transformTransactions(item))
+      .flat();
+
+    const totalCount =
+      serviceData.length + zkpData.length + transactionData.length;
+
+    // Priority Queue for merge
+    const queue = new MinPriorityQueue((item: any) => -item.timestamp); // Negative for descending sort
+
+    // Add all data to the queue
+    [...serviceData, ...zkpData, ...transactionData].forEach((record) =>
+      queue.enqueue(record),
+    );
+
+    // Extract only the required range
+    const paginatedData = [];
+    for (let i = 0; i < offset + limit && !queue.isEmpty(); i++) {
+      const record = queue.dequeue();
+      if (i >= offset) {
+        paginatedData.push(record);
+      }
+    }
 
     return {
-      data: [...totalDataArray.slice(offset, offset + limit)],
-      count: this.serviceDataArray.length + this.zkpDataArray.length,
+      data: paginatedData,
+      count: totalCount,
     };
   };
 
+  handleBlockChainInsert(newTransaction: any) {
+    this.transactionDataArray.push(newTransaction); // Sync the new service with the array
+    //console.log('Transaction inserted into array:', newTransaction);
+  }
+
   handleServiceInsert(newService: any) {
     this.serviceDataArray.push(newService); // Sync the new service with the array
-    console.log('Service inserted into array:', newService);
+    //console.log('Service inserted into array:', newService);
   }
 
   handleZkpInsert(newDevice: any) {
     this.zkpDataArray.push(newDevice); // Sync the new device with the array
-    console.log('ZKP inserted into array:', newDevice);
+    //console.log('ZKP inserted into array:', newDevice);
   }
 
   handleServiceUpdate(id: any, updatedFields: any) {
@@ -278,7 +354,7 @@ export class ContractService {
   }
 
   searchData = async (searchString: string) => {
-    const results: any[] = [];
+    let results: any[] = [];
 
     console.log(
       'typeof:',
@@ -320,6 +396,17 @@ export class ContractService {
     this.zkpDataArray.forEach((zkp) => {
       if (isMatch(zkp, searchString)) {
         results.push(zkp); // Add matching zkp to results
+      }
+    });
+
+    // Search in transactionDataArray
+    this.transactionDataArray.forEach((transactionBlock) => {
+      if (isMatch(transactionBlock, searchString)) {
+        if (transactionBlock?.transactions?.length > 0) {
+          transformTransactions(transactionBlock).forEach((element) => {
+            results.push(element);
+          });
+        }
       }
     });
 
@@ -638,3 +725,32 @@ export class ContractService {
     }
   }
 }
+
+/* {
+  _id: new ObjectId("67582d049f2d36cf964a62ff"),
+  number: 4125125,
+  hash: '5136bf12c3d67fca2112234937b337ca534adfba5d956aa0a19d5114f1bbb2e0',
+  parentHash: '139f5e5e4414f500c8f8bf7e6b104d9488d70ad6cae70826e06af70c689b208b',
+  miner: '0x1a61e7dbC3f7B325D3657C4923f79Ed1F79bA9d3',
+  timestamp: 1733831940,
+  transactions: [
+    {
+      blockHash: new Binary(Buffer.from("5136bf12c3d67fca2112234937b337ca534adfba5d956aa0a19d5114f1bbb2e0", "hex"), 0),
+      blockNumber: 4125125,
+      from: '0x7A49B1E20b646d9c8C4080930F96AcbF5489D870',
+      gas: 826437,
+      gasPrice: 10000000000,
+      hash: new Binary(Buffer.from("45fc53242e0abae37d2c5714aae1a09eb43fdf78ae248f40da6e11ed9139c15b", "hex"), 0),
+      input: new Binary(Buffer.from("e7f7c43d00000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001c00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000024000000000000000000000000000000000000000000000000000000000000004e00000000000000000000000000000000000000000000000000000000000000520000000000000000000000000000000000000000000000000000000000000000d7a6b73656e736f722e746563680000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000184e4441364e454d36513045364e446b364e5467364e7a673d0000000000000000000000000000000000000000000000000000000000000000000000000000000c4d554c54495f53454e534f5200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001350000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000013100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000027e225b27307831663838363031393732383561336464666263383966356132616132636262346364323130616432386266303963643530303862616335343231663935363163272c2027307831393534376239336431326266376133643031306165653837613130363265333865323763623961666666313266653930343264363236383334613932306332275d2c5b5b27307830336666666261313363323466306137623733396465306539323661653766346635633064303766616633643738303264396665353337313535646538346137272c2027307832326234343936633864376261363964666633306161373963353063613233323535343866383932376238666136353438323233646137646666626564333735275d2c5b27307830643538333063306461313636363235346264613865666462623134346263646665616432383036313136313436653430643639653233316262306431653433272c2027307830666166313430396661616333393463306261373366646463336162306464383331316431383737313333363563616638396664626335386139316339316234275d5d2c5b27307830306564633962636265623864373234626532303139346334326466353764613263633938643166616434313564623334616436313735363366656166396336272c2027307830666164303533663364396334303965656534386539386133613462353561633839653966363039393465633265643764333265666233643066613535623730275d2c5b27307832663534666133386634366537306263323937323339396561623135363166333238646537663366643331386466366330363862363335636364366562633436275d220000000000000000000000000000000000000000000000000000000000000000000a313733333833313933360000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000b17b224656223a312c224856223a352c22526f6f74223a747275652c2254656d7065726174757265223a32362e362c2248756d6964697479223a31392e392c224e6f697365223a36382e312c225072657373757265223a302c22416c74696d65746572223a302c2265434f32223a3430302c2254564f43223a352c224d6f76656d656e74223a224465746563746564222c22446f6f72223a224f70656e222c22427574746f6e223a2250726573736564227d000000000000000000000000000000", "hex"), 0),
+      nonce: 3310,
+      to: '0xCFC00106081c541389D449183D4EEADF5d895D37',
+      transactionIndex: 0,
+      value: 0,
+      type: 0,
+      chainId: 706883,
+      v: 1413802,
+      r: new Binary(Buffer.from("18c2cc287be513c75c35592e77b31c874bd4396b22a1bccc087ce7e8d4606c73", "hex"), 0),
+      s: new Binary(Buffer.from("500b200e80fef6a340dfddcb44327834890c99a2bd230bccd77ba50a50832732", "hex"), 0)
+    }
+  ]
+} */

@@ -8,11 +8,7 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { GeneralException } from 'src/modules/utility/exceptions/general.exception';
 import { ErrorTypeEnum } from 'src/modules/utility/enums/error-type.enum';
 import { JwtAuthGuard } from 'src/modules/authentication/guard/jwt-auth.guard';
@@ -149,6 +145,17 @@ export class contractController {
   })
   async searchInSmartContracts(@Query('search') search: string) {
     return await this.contractService.searchData(search);
+  }
+
+  @Post('/verify-proof')
+  @HttpCode(201)
+  @ApiOperation({
+    summary: 'Verifying an ZKP Proof.',
+    description:
+      'This api return a boolean that proof is verified or not.',
+  })
+  async zkpVerifyProof(@Body() body: verifyProofDto) {
+    return await this.contractService.zkpVerifyProofFromPython(body.proof);
   }
 
   @Get('/get-contract-data')

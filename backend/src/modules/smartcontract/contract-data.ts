@@ -1,38 +1,244 @@
 export const serviceDeviceContractAddress =
-  '0x2b746D228379F0E0a307723dF99486Dc17fdf9B1';
-  
-export const zkpContractAddress = '0xf1AdF8eD7569e0BceC73B371f4876Db69515CD20';
+  '0x0caf2cdaefa7a2c553f1fe45add08d812dacc35e';
+
+export const zkpContractAddress = '0x731b6c8d68ca98e0ab0592fdb1749c1d2f2ac504';
 
 export const zkpContractABI = [
   {
     inputs: [
       {
-        internalType: 'uint256[2]',
-        name: '_pA',
-        type: 'uint256[2]',
+        internalType: 'string',
+        name: 'nodeId',
+        type: 'string',
       },
       {
-        internalType: 'uint256[2][2]',
-        name: '_pB',
-        type: 'uint256[2][2]',
+        internalType: 'string',
+        name: 'deviceId',
+        type: 'string',
       },
       {
-        internalType: 'uint256[2]',
-        name: '_pC',
-        type: 'uint256[2]',
+        internalType: 'string',
+        name: 'deviceType',
+        type: 'string',
       },
       {
-        internalType: 'uint256[1]',
-        name: '_pubSignals',
-        type: 'uint256[1]',
+        internalType: 'string',
+        name: 'hardwareVersion',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'firmwareVersion',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'zkp_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'data_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'unixtime_payload',
+        type: 'string',
       },
     ],
-    name: 'verifyProof',
+    name: 'storeZKP',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'nodeId',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'deviceId',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'deviceType',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'hardwareVersion',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'firmwareVersion',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'data_payload',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'zkp_payload',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'string',
+        name: 'unixtime_payload',
+        type: 'string',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256',
+      },
+    ],
+    name: 'ZKPStored',
+    type: 'event',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'index',
+        type: 'uint256',
+      },
+    ],
+    name: 'getZKP',
     outputs: [
       {
-        internalType: 'bool',
+        internalType: 'string',
+        name: 'nodeId',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'deviceId',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'deviceType',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'hardwareVersion',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'firmwareVersion',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'zkp_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'data_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'unixtime_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [],
+    name: 'getZKPCount',
+    outputs: [
+      {
+        internalType: 'uint256',
         name: '',
-        type: 'bool',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: '',
+        type: 'uint256',
+      },
+    ],
+    name: 'zkps',
+    outputs: [
+      {
+        internalType: 'string',
+        name: 'nodeId',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'deviceId',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'deviceType',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'hardwareVersion',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'firmwareVersion',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'data_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'zkp_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'string',
+        name: 'unixtime_payload',
+        type: 'string',
+      },
+      {
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256',
       },
     ],
     stateMutability: 'view',

@@ -12,14 +12,14 @@
 			color: #8a823f;
 		}
 	}
-	
+
 	&.service {
 		span {
 			background: #f7d4fb;
 			color: #7f3987;
 		}
 	}
-	
+
 	&.transaction {
 		span {
 			background: #cef6cd;
@@ -83,20 +83,14 @@
 
 .proof-modal {
 	color: var(--color-secondary);
-	width: 50%;
+	width: auto;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	margin: 0 auto; /* Center within the constrained body */
 	padding: 20px;
-
-	@media screen and (max-width: 1000px) {
-		width: 75%;
-	}
-
-	@media screen and (max-width: 680px) {
-		width: 95%;
-	}
+	flex-wrap: wrap;
+	white-space: wrap;
 }
 
 .data-modal {

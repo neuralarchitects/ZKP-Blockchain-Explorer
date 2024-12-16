@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './style.scss';
+import Spinner from '../../Spinner';
 
 const LetterAnimation = ({ text, isFinished }) => {
 	const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'.split('');
@@ -7,7 +8,6 @@ const LetterAnimation = ({ text, isFinished }) => {
 	const [currentIndex, setCurrentIndex] = useState(0);
 
 	useEffect(() => {
-		// Animation effect for random letters
 		const interval = setInterval(() => {
 			setAnimatedText(() =>
 				text
@@ -27,7 +27,6 @@ const LetterAnimation = ({ text, isFinished }) => {
 
 	useEffect(() => {
 		if (isFinished) {
-			// Reveal letters one by one
 			const revealInterval = setInterval(() => {
 				setAnimatedText((prev) => {
 					const newText = [...prev];
@@ -45,30 +44,30 @@ const LetterAnimation = ({ text, isFinished }) => {
 
 			return () => clearInterval(revealInterval);
 		} else {
-			// Reset animation state
 			setCurrentIndex(0);
 			setAnimatedText(new Array(text.length).fill(''));
 		}
 	}, [isFinished, text]);
 
-	useEffect(() => {
-		// Reset state when the input text changes
-		if (!isFinished) {
-			setAnimatedText(new Array(text.length).fill(''));
-			setCurrentIndex(0);
-		}
-	}, [text]);
-
 	return (
 		<div className="hacker-container">
-			{animatedText.map((char, index) => (
-				<span
-					key={index}
-					className={isFinished && index < currentIndex ? 'glow' : ''}
-				>
-					{char}
-				</span>
-			))}
+			<div className="low-res">
+				{(isFinished == false && (
+					<Spinner type="double" />
+				)) || <p className="glow">{text}</p>}
+			</div>
+			<div className="word-container">
+				{animatedText.map((char, index) => (
+					<span
+						key={index}
+						className={
+							isFinished && index < currentIndex ? 'glow' : ''
+						}
+					>
+						{char}
+					</span>
+				))}
+			</div>
 		</div>
 	);
 };

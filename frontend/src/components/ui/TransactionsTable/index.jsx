@@ -91,7 +91,6 @@ export default function TransactionsTable({ transactions, ...props }) {
 	const [deviceImage, setDeviceImage] = useState('');
 	const [hackerAnimation, setHackerAnimation] = useState(false);
 	const [proofResult, setProofResult] = useState('Proof is not verified');
-	const [proofLoading, setProofLoading] = useState(false);
 	const { fetchData } = useFetchData();
 
 	const transformedData = transformTransactionsData(transactions);
@@ -160,7 +159,6 @@ export default function TransactionsTable({ transactions, ...props }) {
 
 		try {
 			const result = await verifyProofWithTimer(theProof);
-			setProofLoading(false);
 			setHackerAnimation(true);
 			if (result.data === true) {
 				setProofResult('Proof is Verified');
@@ -168,7 +166,6 @@ export default function TransactionsTable({ transactions, ...props }) {
 				setProofResult('Proof is Not Verified');
 			}
 		} catch (error) {
-			setProofLoading(false);
 			setHackerAnimation(true);
 			setProofResult('Proof is Not Verified');
 		}

@@ -25,10 +25,8 @@
 !/backend/uploads/avatars/
 !/backend/uploads/sprites.png
 
-admin_web_app/Runner_webapp/frontend/*
-!admin_web_app/Runner_webapp/frontend/t.txt
-web_app/Runner_webapp/frontend/*
-!web_app/Runner_webapp/frontend/t.txt
+frontend/Runner_webapp/frontend/*
+!frontend/Runner_webapp/frontend/t.txt
 
 # Project configuration files
 *localhost-key.pem

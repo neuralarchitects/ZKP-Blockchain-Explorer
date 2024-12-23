@@ -71,10 +71,10 @@ To manually obtain an SSL certificate for your domains without directly modifyin
 sudo certbot certonly --standalone --preferred-challenges http
 ```
 
-After running the command, enter your web app and admin web app domains separated by a space, like this:
+After running the command, enter your web app domain, like this:
 
 ```
-test.com admin.test.com
+test.com
 ```
 
 - After creating certificates, copy `fullchain.pem` and `privkey.pem` files into `/etc/nginx/ssl`.
@@ -169,33 +169,6 @@ http {
 			add_header Access-Control-Allow-Origin *;
 		}
 	}
-
-
-	server {
-
-
-                ssl_certificate  ssl/fullchainadmin.pem;
-                ssl_certificate_key ssl/privkeyadmin.pem;
-
-		listen 443 ssl;
-		listen [::]:443 ssl;
-		server_name admin.YOUR_DOMAIN.io;
-
-		index index.html index.htm;
-
-		add_header 'Access-Control-Allow-Credentials' 'true';
-		add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-		add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-
-		# This section is for Admin Web App on port 5000
-		location / {
-			proxy_set_header Authorization $http_authorization;
-			proxy_pass_header Authorization;
-			add_header Access-Control-Allow-Origin '*';
-			add_header Access-Control-Allow-Headers '*';
-			proxy_pass https://localhost:5000;
-		}
-	}
 }
 
 ```
@@ -238,10 +211,6 @@ sudo ufw allow 3000
 Allow Web App to connect to the server through port 4000 
 ```
 sudo ufw allow 4000
-```
-Allow Admin Web App to connect to the server through port 4000 
-```
-sudo ufw allow 5000
 ```
 Allow IoT devices to connect to the MQTT broker through port 8883 
 ```

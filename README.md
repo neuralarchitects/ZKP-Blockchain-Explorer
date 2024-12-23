@@ -50,6 +50,68 @@ sudo systemctl disable mongod
 sudo systemctl enable mongod
 ```
 
+### Step 3 — Install mongosh
+MongoDB Shell (mongosh) is a modern shell for MongoDB. You can install it by following these steps:
+
+#### For Ubuntu (20.04)
+**Import the MongoDB GPG Key:**
+```bash
+wget -qO - https://pgp.mongodb.com/server-6.0.asc | sudo tee /usr/share/keyrings/mongodb-server-6.0.gpg > /dev/null
+```
+
+**Create the /etc/apt/sources.list.d/mongodb.list File:**
+```bash
+echo "deb [signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb.list
+```
+
+**Install mongosh:**
+```bash
+sudo apt-get install -y mongodb-mongosh
+```
+
+### Step 4 —  Verify Installation
+After installation, verify that mongosh is installed by running:
+```bash
+mongosh --version
+```
+If this outputs the version number, mongosh is successfully installed.
+
+---
+
+## MongoDB Configuration for Replica Set
+
+### 1. Update Configuration
+Add the following to your \`/etc/mongod.conf\` file to enable replica set mode:
+```yaml
+replication:
+  replSetName: "rs0"
+```
+
+Restart MongoDB after updating the configuration:
+```bash
+sudo systemctl restart mongod
+```
+
+### 2. Initialize the Replica Set
+Run these commands in the MongoDB shell (\`mongosh\`) to initialize the replica set:
+
+**Start the MongoDB shell:**
+```bash
+mongosh
+```
+
+**Initialize the replica set with the primary node:**
+```javascript
+rs.initiate({
+  _id: "rs0",
+  members: [
+    { _id: 0, host: "127.0.0.1:27017" }
+  ]
+});
+```
+
+---
+
 ## 3- Install nginx web server 
 ```
 sudo apt update

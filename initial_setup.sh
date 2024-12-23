@@ -38,16 +38,16 @@ echo "Building frontend..."
 if npm run build; then
     echo "frontend build completed successfully."
     echo "Cleaning up Runner_webapp frontend folder..."
-    if [ ! -d "../Runner_webapp/frontend" ]; then
+    if [ ! -d "Runner_webapp/frontend" ]; then
         echo "Frontend folder does not exist. Creating it..."
-        mkdir "../Runner_webapp/frontend"
+        mkdir "Runner_webapp/frontend"
     else
         echo "Frontend folder exists. Cleaning it up..."
-        rm -rf "../Runner_webapp/frontend"
-        mkdir "../Runner_webapp/frontend"
+        rm -rf "Runner_webapp/frontend"
+        mkdir "Runner_webapp/frontend"
     fi
     echo "Moving frontend files to Runner_webapp/frontend..."
-    mv build/* ../Runner_webapp/frontend/ || { echo "Error: Failed to move frontend files."; exit 1; }
+    mv build/* Runner_webapp/frontend/ || { echo "Error: Failed to move frontend files."; exit 1; }
     echo "frontend files moved successfully."
 else
     echo "Error: frontend build failed."
@@ -56,7 +56,7 @@ fi
 
 
 echo "Installing new packages for frontend/Runner_webapp..."
-cd ../Runner_webapp || { echo "Error: Failed to navigate to Runner_webapp directory."; exit 1; }
+cd Runner_webapp || { echo "Error: Failed to navigate to Runner_webapp directory."; exit 1; }
 if npm install; then
     echo "Packages of Runner_webapp for frontend installed successfully."
 else

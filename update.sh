@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Pull the latest changes from the repository
-echo "Pulling the latest code..."
+echo "Fetching and Pulling the latest code..."
+git fetch
 git pull
 
 # Build the frontend

@@ -6,7 +6,11 @@ export function useSocketConnection() {
 	const [contractCounts, setContractCounts] = useState({});
 
 	useEffect(() => {
-		const socket = io('https://fidesf2-explorer.fidesinnova.io:3000');
+		let API_BASE_URL = `${String(
+			process.env.REACT_APP_API_BASE_URL
+		).replace('/app/v1/', '')}:3000`;
+
+		const socket = io(API_BASE_URL);
 
 		// Set up socket listeners only once
 		if (!socket.hasListeners('connect')) {

@@ -143,10 +143,10 @@ export class EventsGateway
 
     let countOfDayItems = Number(
       await this.blockChainCollection.countDocuments({
-        timestamp: {
+        /* timestamp: {
           $gte: startOfDayUnix,
           $lte: endOfDayUnix,
-        },
+        }, */
         $expr: { $gt: [{ $size: '$transactions' }, 0] },
       }),
     );
@@ -154,25 +154,29 @@ export class EventsGateway
     countOfDayItems =
       countOfDayItems +
       Number(
-        await this.zkpCollection.countDocuments({
+        await this.zkpCollection.countDocuments(/* {
           timestamp: {
             $gte: startOfDayUnix,
             $lte: endOfDayUnix,
           },
-        }),
+        } */),
       );
     countOfDayItems =
       countOfDayItems +
       Number(
-        await this.serviceDeviceCollection.countDocuments({
-          /* TransactionTime: {
+        await this.serviceDeviceCollection.countDocuments(/* {
+          TransactionTime: {
             $gte: startOfDayUnix,
             $lte: endOfDayUnix,
-          }, */
-        }),
+          },
+        } */),
       );
 
+    console.log('Maghollll:', countOfDayItems);
+    
     this.dailyTransactions = this.dailyTransactions + countOfDayItems;
+    
+    console.log('Maghollll 2222:', this.dailyTransactions);
 
     this.blockChainCount = blockChainLastObject[0]?.number || 0;
 

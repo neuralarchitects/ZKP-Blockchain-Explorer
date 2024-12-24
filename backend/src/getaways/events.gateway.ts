@@ -79,10 +79,10 @@ export class EventsGateway
   private serviceDeviceCollection: Collection;
 
   constructor() {
-    setInterval(() => {
+    /* setInterval(() => {
       console.log('Daily Transactions Reseted !');
       this.dailyTransactions = 0;
-    }, 24 * 60 * 60 * 1000);
+    }, 24 * 60 * 60 * 1000); */
   }
 
   // MongoDB connection details
@@ -165,10 +165,10 @@ export class EventsGateway
       countOfDayItems +
       Number(
         await this.serviceDeviceCollection.countDocuments({
-          TransactionTime: {
+          /* TransactionTime: {
             $gte: startOfDayUnix,
             $lte: endOfDayUnix,
-          },
+          }, */
         }),
       );
 

@@ -13,7 +13,7 @@ export default function SearchBar({ initialValue = '' }) {
 		if (String(string).trim().length === 0) {
 			return false;
 		} else {
-			navigateTo(`/search?text=${string}`);
+			navigateTo(`/search?text=${encodeURIComponent(string)}`);
 		}
 	}
 

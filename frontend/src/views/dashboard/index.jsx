@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './style.scss';
 import SearchBar from '../../components/containers/SearchBar';
 import StatusBoxes from '../../components/containers/StatusBoxes';
@@ -7,6 +7,8 @@ import { HiHand } from 'react-icons/hi';
 import BannerSlider from '../../components/containers/BannerSlider';
 import TransactionsTable from '../../components/ui/TransactionsTable';
 import { useNavigate } from 'react-router-dom';
+import TransactionText from '../../components/ui/TransactionText';
+import TransactionChartComponent from '../../components/containers/TransactionsChart';
 
 function getFormattedDate() {
 	const options = {
@@ -21,12 +23,29 @@ function getFormattedDate() {
 }
 
 export default function Dashboard() {
-	const { latestTransactions, serviceDeviceCount, zkpCount, blockChainCount, dailyTransactions } =
-		useSocketConnection();
+	const {
+		latestTransactions,
+		serviceDeviceCount,
+		zkpCount,
+		blockChainCount,
+		totalTransactions,
+		totalOperations,
+	} = useSocketConnection();
 	const navigateTo = useNavigate();
 
+	const [animateTransactionText, setAnimateTransactionText] = useState(false);
+
 	useEffect(() => {
-		console.log('latestTransactions:', latestTransactions);
+		if (latestTransactions && latestTransactions.length > 0) {
+			setAnimateTransactionText(true);
+
+			// Remove animation class after the animation ends
+			const timeout = setTimeout(() => {
+				setAnimateTransactionText(false);
+			}, 1000); // Adjust to match the animation duration
+
+			return () => clearTimeout(timeout);
+		}
 	}, [latestTransactions]);
 
 	return (
@@ -44,26 +63,36 @@ export default function Dashboard() {
 			<BannerSlider />
 
 			<StatusBoxes
-				serviceDeviceCount={serviceDeviceCount}
+				serviceDeviceCount={totalOperations}
 				zkpCount={zkpCount}
 				blockChainCount={blockChainCount}
-				dailyTransactions={dailyTransactions}
+				dailyTransactions={totalTransactions}
 			/>
 
-			<TransactionsTable transactions={latestTransactions} />
+			<TransactionChartComponent />
 
-			<p
-				onClick={() => {
-					navigateTo('/transactions');
-				}}
-				className="all-transactions"
-			>
-				View all operations
-			</p>
-
-			{/* 
-			<ZkpDevices />
-			 */}
+			<div className="transaction-table-holder">
+				<div className="title-holder">
+					<h1 className="title">Recent Transactions</h1>
+					<TransactionText
+						className={`transaction-text-holder ${
+							animateTransactionText ? 'animate' : ''
+						}`}
+					/>
+				</div>
+				<TransactionsTable
+					className="transact-table"
+					transactions={latestTransactions}
+				/>
+				<p
+					onClick={() => {
+						navigateTo('/transactions');
+					}}
+					className="all-transactions"
+				>
+					More
+				</p>
+			</div>
 		</main>
 	);
 }

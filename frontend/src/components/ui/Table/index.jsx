@@ -14,6 +14,7 @@ import { HiArrowLeft, HiArrowRight } from 'react-icons/hi';
 import './style.scss'; // Retain your original styles
 
 const ResponsiveTable = ({
+	className = '',
 	titles,
 	data,
 	onCellClick,
@@ -199,7 +200,7 @@ const ResponsiveTable = ({
 			const actionItems = actions ? row[row.length - 1] : null;
 
 			return (
-				<TableRow key={rowIndex}>
+				<TableRow className={className} key={rowIndex}>
 					{visibleCells.map((cell, cellIndex) => (
 						<TableCell
 							key={cellIndex}

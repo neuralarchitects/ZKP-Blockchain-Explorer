@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 *::-webkit-scrollbar-track {
 	-webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
 	border-radius: 10px;
@@ -17,7 +21,6 @@
 }
 
 body {
-
 	width: 100%; /* Ensure it covers full width after scaling */
 	height: 100%;
 	overflow: hidden; /* Prevent horizontal scroll */

@@ -80,7 +80,10 @@ const eventTypeLabels = {
 	ServiceRemoved: 'Service Unshared',
 };
 
-export default function TransactionsTable({ transactions, ...props }) {
+export default function TransactionsTable({
+	transactions,
+	...props
+}) {
 	const navigateTo = useNavigate();
 	const [isZkpModalOpen, setIsZkpModalOpen] = useState(false);
 	const [proofModal, setProofModal] = useState(false);

@@ -39,7 +39,8 @@ export function useSocketConnection() {
 					serviceDeviceCount: dbCount.serviceDeviceCount,
 					zkpCount: dbCount.zkpCount,
 					blockChainCount: dbCount.blockChainCount,
-					dailyTransactions: dbCount.dailyTransactions,
+					totalTransactions: dbCount.totalTransactions,
+					totalOperations: dbCount.totalOperations,
 				});
 			});
 		}
@@ -56,7 +57,8 @@ export function useSocketConnection() {
 					serviceDeviceCount: dbCount.serviceDeviceCount,
 					zkpCount: dbCount.zkpCount,
 					blockChainCount: dbCount.blockChainCount,
-					dailyTransactions: dbCount.dailyTransactions,
+					totalTransactions: dbCount.totalTransactions,
+					totalOperations: dbCount.totalOperations,
 				});
 			});
 		}
@@ -67,7 +69,8 @@ export function useSocketConnection() {
 					serviceDeviceCount: dbCount.serviceDeviceCount,
 					zkpCount: dbCount.zkpCount,
 					blockChainCount: dbCount.blockChainCount,
-					dailyTransactions: dbCount.dailyTransactions,
+					totalTransactions: dbCount.totalTransactions,
+					totalOperations: dbCount.totalOperations,
 				});
 			});
 		}
@@ -85,7 +88,8 @@ export function useSocketConnection() {
 		serviceDeviceCount: contractCounts.serviceDeviceCount,
 		zkpCount: contractCounts.zkpCount,
 		blockChainCount: contractCounts.blockChainCount,
-		dailyTransactions: contractCounts.dailyTransactions,
+		totalTransactions: contractCounts.totalTransactions,
+		totalOperations: contractCounts.totalOperations,
 		latestTransactions: latestTransactions,
 	};
 }

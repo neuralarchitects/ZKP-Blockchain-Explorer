@@ -28,7 +28,8 @@
 	  }
 	}
   }
-  
+
+
   /************************************/
   /* The container for the SIDE BAR   */
   /************************************/
@@ -86,13 +87,13 @@
 		  display: initial;
 		}
   
-		&.expand {
+		&.custom-expand {
 		  opacity: 1 !important;
 		  left: 0;  // Slide in from the left
 		  top: 0;
 		}
   
-		&.collapse {
+		&.custom-collapse {
 		  opacity: 0 !important;
 		  left: -100%;
 		  top: 0;
@@ -125,6 +126,12 @@
 		}
 	  }
 	}
+  }
+
+  .powered-by {
+	color: white;
+	margin-top: auto;
+	margin-bottom: 16px;
   }
   
   /************************/

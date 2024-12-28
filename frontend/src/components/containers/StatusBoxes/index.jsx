@@ -23,7 +23,7 @@ export default function StatusBoxes({
 				loading={!serviceDeviceCount ? true : false}
 				Icon={TransactionIcon}
 				title={'Protocol Operations'}
-				value={serviceDeviceCount + zkpCount}
+				value={serviceDeviceCount}
 			/>
 			<StatusBox
 				color={'#BAE5F5'}

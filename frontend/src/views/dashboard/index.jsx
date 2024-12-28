@@ -69,7 +69,7 @@ export default function Dashboard() {
 				dailyTransactions={totalTransactions}
 			/>
 
-			<TransactionChartComponent />
+			<TransactionChartComponent days={15} />
 
 			<div className="transaction-table-holder">
 				<div className="title-holder">

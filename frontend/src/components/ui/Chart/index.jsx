@@ -23,7 +23,7 @@ ChartJS.register(
 	Legend
 );
 
-const TransactionChart = ({ data }) => {
+const TransactionChart = ({ data, day }) => {
 	const chartData = {
 		labels: data.map((item) => item.date),
 		datasets: [
@@ -46,7 +46,7 @@ const TransactionChart = ({ data }) => {
 			},
 			title: {
 				display: true,
-				text: 'Transactions in Last 10 Days',
+				text: `Transactions in Last ${day} Days`,
 			},
 		},
 		scales: {
@@ -67,7 +67,13 @@ const TransactionChart = ({ data }) => {
 	};
 
 	return (
-		<div style={{ height: '50vh', display: "flex", justifyContent: "center" }}>
+		<div
+			style={{
+				height: '50vh',
+				display: 'flex',
+				justifyContent: 'center',
+			}}
+		>
 			<Line data={chartData} options={options} />
 		</div>
 	);

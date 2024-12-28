@@ -14,8 +14,8 @@ else:
     exit()
 
 # Contract address and ABI
-# contract_address = '0xfe6dccbc74603414ba1ac8f3f8def6d7e7eb92de'
-contract_address = Web3.to_checksum_address('0xfe6dccbc74603414ba1ac8f3f8def6d7e7eb92de')
+contract_address = '0xfe6dccbc74603414ba1ac8f3f8def6d7e7eb92de'
+# contract_address = Web3.to_checksum_address('0xfe6dccbc74603414ba1ac8f3f8def6d7e7eb92de')
 
 contract_abi = [
     	{

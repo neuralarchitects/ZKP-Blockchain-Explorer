@@ -8,13 +8,25 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GeneralException } from 'src/modules/utility/exceptions/general.exception';
 import { ErrorTypeEnum } from 'src/modules/utility/enums/error-type.enum';
 import { JwtAuthGuard } from 'src/modules/authentication/guard/jwt-auth.guard';
 import { verifyProofDto } from '../dto/contract-dto';
 import { ContractService } from '../services/contract.service';
 import { UserService } from 'src/modules/user/services/user/user.service';
+
+function formatDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
 
 @ApiTags('Smart Contract')
 @Controller('app/v1/contract')
@@ -93,6 +105,41 @@ export class contractController {
     return this.contractService.adminWalletData();
   }
 
+  @Get('/chart-data')
+  @HttpCode(200)
+  @ApiOperation({
+    summary: 'Get chart data',
+    description: 'Fetches transaction counts for a given date range.',
+  })
+  @ApiQuery({
+    name: 'startDate',
+    type: String,
+    required: true,
+    description: 'The start date of the range in YYYY-MM-DD format.',
+  })
+  @ApiQuery({
+    name: 'endDate',
+    type: String,
+    required: true,
+    description: 'The end date of the range in YYYY-MM-DD format.',
+  })
+  async getChartData(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      throw new Error('Invalid date format. Please use YYYY-MM-DD.');
+    }
+
+    return this.contractService.generateTransactionCounts(
+      formatDate(start),
+      formatDate(end),
+    );
+  }
+
   @Get('/faucet-wallet')
   @HttpCode(201)
   @UseGuards(JwtAuthGuard)
@@ -151,8 +198,7 @@ export class contractController {
   @HttpCode(201)
   @ApiOperation({
     summary: 'Verifying an ZKP Proof.',
-    description:
-      'This api return a boolean that proof is verified or not.',
+    description: 'This api return a boolean that proof is verified or not.',
   })
   async zkpVerifyProof(@Body() body: verifyProofDto) {
     return await this.contractService.zkpVerifyProofFromPython(body.proof);

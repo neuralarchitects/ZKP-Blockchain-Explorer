@@ -9,6 +9,7 @@ import {
 import { Socket, Server } from 'socket.io';
 import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
 
+
 interface Transaction {
   hash: string;
   from: string;
@@ -67,7 +68,8 @@ export function transformTransactions(block: Block): TransformedTransaction[] {
 export class EventsGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  private dailyTransactions: number = 0;
+  private totalTransactions: number = 0;
+  private totalOperations: number = 0;
   private blockChainCount: number = 0;
   private zkpCount: number = 0;
   private serviceDeviceCount: number = 0;
@@ -78,12 +80,7 @@ export class EventsGateway
   private zkpCollection: Collection;
   private serviceDeviceCollection: Collection;
 
-  constructor() {
-    /* setInterval(() => {
-      console.log('Daily Transactions Reseted !');
-      this.dailyTransactions = 0;
-    }, 24 * 60 * 60 * 1000); */
-  }
+  constructor() {}
 
   // MongoDB connection details
   private readonly mongoUrl = process.env.MONGO_CONNECTION;
@@ -115,6 +112,7 @@ export class EventsGateway
     const client = new MongoClient(this.mongoUrl);
     await client.connect();
     console.log('Socket Connected to MongoDB');
+
     this.db = client.db(this.dbName);
 
     this.zkpCollection = this.db.collection(this.zkpCollectionName);
@@ -151,6 +149,10 @@ export class EventsGateway
       }),
     );
 
+    this.totalTransactions = this.totalTransactions + countOfDayItems;
+
+    console.log('this.totalTransactions:', this.totalTransactions);
+
     countOfDayItems =
       countOfDayItems +
       Number(
@@ -172,11 +174,9 @@ export class EventsGateway
         } */),
       );
 
-    console.log('Maghollll:', countOfDayItems);
-    
-    this.dailyTransactions = this.dailyTransactions + countOfDayItems;
-    
-    console.log('Maghollll 2222:', this.dailyTransactions);
+    this.totalOperations = this.totalOperations + countOfDayItems;
+
+    console.log('this.totalOperations:', this.totalOperations);
 
     this.blockChainCount = blockChainLastObject[0]?.number || 0;
 
@@ -187,12 +187,14 @@ export class EventsGateway
       if (change.fullDocument?.transactions.length > 0) {
         const transformedData = transformTransactions(change.fullDocument);
         transformedData.forEach((element) => {
-          this.dailyTransactions++;
+          this.totalOperations++;
+          this.totalTransactions++;
           this.server.emit('dbChange', element, {
             zkpCount: this.zkpCount,
             serviceDeviceCount: this.serviceDeviceCount,
             blockChainCount: this.blockChainCount,
-            dailyTransactions: this.dailyTransactions,
+            totalOperations: this.totalOperations,
+            totalTransactions: this.totalTransactions,
           });
         });
       } else {
@@ -200,7 +202,8 @@ export class EventsGateway
           zkpCount: this.zkpCount,
           serviceDeviceCount: this.serviceDeviceCount,
           blockChainCount: this.blockChainCount,
-          dailyTransactions: this.dailyTransactions,
+          totalOperations: this.totalOperations,
+          totalTransactions: this.totalTransactions,
         });
       }
     });
@@ -212,13 +215,14 @@ export class EventsGateway
     const zkpChangeStream = this.zkpCollection.watch();
     zkpChangeStream.on('change', (change: any) => {
       this.zkpCount++;
-      this.dailyTransactions++;
+      this.totalOperations++;
       //console.log('ZKP.fullDocument', change.fullDocument);
       this.server.emit('dbChange', change.fullDocument, {
         zkpCount: this.zkpCount,
         serviceDeviceCount: this.serviceDeviceCount,
         blockChainCount: this.blockChainCount,
-        dailyTransactions: this.dailyTransactions,
+        totalOperations: this.totalOperations,
+        totalTransactions: this.totalTransactions,
       });
     });
 
@@ -230,12 +234,13 @@ export class EventsGateway
         timestamp: TransactionTime,
       };
       this.serviceDeviceCount++;
-      this.dailyTransactions++;
+      this.totalOperations++;
       this.server.emit('dbChange', data, {
         zkpCount: this.zkpCount,
         serviceDeviceCount: this.serviceDeviceCount,
         blockChainCount: this.blockChainCount,
-        dailyTransactions: this.dailyTransactions,
+        totalOperations: this.totalOperations,
+        totalTransactions: this.totalTransactions,
       });
     });
   }
@@ -289,7 +294,8 @@ export class EventsGateway
           zkpCount: this.zkpCount,
           serviceDeviceCount: this.serviceDeviceCount,
           blockChainCount: this.blockChainCount,
-          dailyTransactions: this.dailyTransactions,
+          totalOperations: this.totalOperations,
+          totalTransactions: this.totalTransactions,
         },
       );
     } catch (error) {

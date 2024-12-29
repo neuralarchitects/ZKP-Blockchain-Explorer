@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import './style.css';
 
 const TransactionText = ({ ...params }) => {
 	const [dots, setDots] = useState(0); // State to track the number of active dots
@@ -15,9 +16,10 @@ const TransactionText = ({ ...params }) => {
 	const dotString = '.'.repeat(dots).padEnd(3, ' ');
 
 	return (
-		<p style={{ whiteSpace: 'pre' }} {...params}>
-			Listening For New Transactions{dotString}
-		</p>
+		<div {...params}>
+			<p>Listening For New Transactions</p>
+			<div class="dot-loader"></div>
+		</div>
 	);
 };
 

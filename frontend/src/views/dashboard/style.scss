@@ -6,6 +6,23 @@
 	gap: 25px;
 	height: fit-content;
 
+	.status-chart-container {
+		display: flex;
+		gap: 32px;
+
+		@media (max-width: 1200px) {
+			flex-direction: column;
+		}
+	}
+
+	.move-up {
+		margin-bottom: -65px;
+	}
+
+	.move-up-sm {
+		margin-bottom: -10px;
+	}
+
 	.dashboard-header {
 		display: flex;
 		flex-wrap: nowrap;
@@ -93,32 +110,6 @@
 	}
 }
 
-.transaction-text-holder {
-	position: relative; /* Ensure pseudo-elements are positioned relative to this */
-	display: inline-block; /* Inline for better text alignment */
-	overflow: hidden; /* Prevent content spilling out */
-	transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
-
-	&.animate {
-		animation: fadeInScale 1s ease-in-out; /* Trigger scale animation */
-	}
-
-	/* Water drop effect pseudo-element */
-	&::after {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		left: 50%;
-		transform: translateX(-50%) scale(0.5); /* Centered and initially small */
-		width: 10px;
-		height: 10px;
-		background: rgba(0, 128, 255, 0.5); /* Blue water drop */
-		border-radius: 50%; /* Circle shape */
-		opacity: 0; /* Initially hidden */
-		animation: dropAnimation 1s ease-in-out; /* Trigger drop animation */
-	}
-}
-
 @keyframes fadeInScale {
 	0% {
 		opacity: 0;
@@ -153,10 +144,39 @@
 	}
 }
 
-/* Debugging: Optional background for the transaction text */
 .transaction-text-holder {
 	background-color: rgba(255, 255, 255, 0.1); /* Slight background contrast */
 	padding: 10px; /* Add padding for better visibility */
 	border-radius: 5px; /* Rounded corners */
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+	position: relative; /* Ensure pseudo-elements are positioned relative to this */
+	display: flex; /* Inline for better text alignment */
+	justify-content: space-between;
+	align-items: center;
+	gap: 6px;
+	overflow: hidden; /* Prevent content spilling out */
+	transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+
+	p {
+		height: fit-content;
+	}
+
+	&.animate {
+		animation: fadeInScale 1s ease-in-out; /* Trigger scale animation */
+	}
+
+	/* Water drop effect pseudo-element */
+	&::after {
+		content: '';
+		position: absolute;
+		bottom: 0;
+		left: 50%;
+		transform: translateX(-50%) scale(0.5); /* Centered and initially small */
+		width: 10px;
+		height: 10px;
+		background: rgba(0, 128, 255, 0.5); /* Blue water drop */
+		border-radius: 50%; /* Circle shape */
+		opacity: 0; /* Initially hidden */
+		animation: dropAnimation 1s ease-in-out; /* Trigger drop animation */
+	}
 }

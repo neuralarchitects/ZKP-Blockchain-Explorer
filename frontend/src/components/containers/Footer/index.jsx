@@ -9,7 +9,7 @@ export default function Footer() {
 				<strong>Fidesinnova</strong>. All rights reserved. (v
 				{packageJson.version})
 			</span>
-			<div className="">
+			{/* <div className="">
 				<a
 					className="text-gray"
 					target="_blank"
@@ -17,7 +17,7 @@ export default function Footer() {
 				>
 					Privacy & Policy
 				</a>
-			</div>
+			</div> */}
 		</div>
 	);
 }

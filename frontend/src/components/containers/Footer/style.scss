@@ -1,12 +1,15 @@
-
 .footer-comp {
-    margin-top: auto;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-block: 12px;
-    padding-inline: 16px;
-    width: 100%;
-    color: white;
-    background-color: #0c1e33;
+	margin-top: auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-block: 16px;
+	padding-inline: 24px;
+	width: 100%;
+	color: #0c1e33;
+
+	a:visited {
+		color: #0c1e33;
+		text-decoration: none !important;
+	}
 }

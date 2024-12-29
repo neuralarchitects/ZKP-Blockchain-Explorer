@@ -3,14 +3,11 @@ import './style.scss';
 import StatusBox from '../../ui/StatusBox';
 import BoxIcon from '../../../icons/box';
 import TransactionIcon from '../../../icons/transaction';
-import {
-	HiCheck,
-	HiOutlineCash,
-	HiOutlineSwitchHorizontal,
-	HiOutlineViewGrid,
-} from 'react-icons/hi';
+import { HiCheck, HiOutlineCash, HiOutlineViewGrid } from 'react-icons/hi';
+import { BiServer } from 'react-icons/bi';
 
 export default function StatusBoxes({
+	totalOperations,
 	serviceDeviceCount,
 	zkpCount,
 	blockChainCount,
@@ -23,6 +20,13 @@ export default function StatusBoxes({
 				loading={!serviceDeviceCount ? true : false}
 				Icon={TransactionIcon}
 				title={'Protocol Operations'}
+				value={totalOperations}
+			/>
+			<StatusBox
+				color={'#f7d4fb'}
+				loading={!serviceDeviceCount ? true : false}
+				Icon={BiServer}
+				title={'Services / Devices'}
 				value={serviceDeviceCount}
 			/>
 			<StatusBox

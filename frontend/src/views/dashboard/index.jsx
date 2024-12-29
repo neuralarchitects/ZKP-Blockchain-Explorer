@@ -9,6 +9,7 @@ import TransactionsTable from '../../components/ui/TransactionsTable';
 import { useNavigate } from 'react-router-dom';
 import TransactionText from '../../components/ui/TransactionText';
 import TransactionChartComponent from '../../components/containers/TransactionsChart';
+import { Divider } from '@mui/material';
 
 function getFormattedDate() {
 	const options = {
@@ -61,15 +62,20 @@ export default function Dashboard() {
 			</h1>
 
 			<BannerSlider />
+			
+			<div className="status-chart-container move-up">
+				<StatusBoxes
+					serviceDeviceCount={serviceDeviceCount}
+					totalOperations={totalOperations}
+					zkpCount={zkpCount}
+					blockChainCount={blockChainCount}
+					dailyTransactions={totalTransactions}
+				/>
 
-			<StatusBoxes
-				serviceDeviceCount={totalOperations}
-				zkpCount={zkpCount}
-				blockChainCount={blockChainCount}
-				dailyTransactions={totalTransactions}
-			/>
+				<TransactionChartComponent days={15} />
+			</div>
 
-			<TransactionChartComponent days={15} />
+			<Divider className='move-up-sm' />
 
 			<div className="transaction-table-holder">
 				<div className="title-holder">

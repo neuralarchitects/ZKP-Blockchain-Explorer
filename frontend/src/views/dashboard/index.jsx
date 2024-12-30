@@ -33,7 +33,7 @@ export default function Dashboard() {
 		totalOperations,
 	} = useSocketConnection();
 	const navigateTo = useNavigate();
-
+	const [removeMoveUp, setRemoveMoveUp] = useState(false);
 	const [animateTransactionText, setAnimateTransactionText] = useState(false);
 
 	useEffect(() => {
@@ -49,6 +49,26 @@ export default function Dashboard() {
 		}
 	}, [latestTransactions]);
 
+	useEffect(() => {
+		const handleResize = () => {
+			const width = window.innerWidth;
+			if (width >= 1201 && width <= 1590) {
+				setRemoveMoveUp(true);
+			} else {
+				setRemoveMoveUp(false);
+			}
+		};
+
+		// Add event listener on mount
+		window.addEventListener('resize', handleResize);
+
+		// Check on initial render
+		handleResize();
+
+		// Cleanup event listener on unmount
+		return () => window.removeEventListener('resize', handleResize);
+	}, []);
+
 	return (
 		<main className="dashboard">
 			<section className="dashboard-header">
@@ -61,9 +81,13 @@ export default function Dashboard() {
 				Computing Platform
 			</h1>
 
-			<BannerSlider />
-			
-			<div className="status-chart-container move-up">
+			<BannerSlider className={'move-up-sm'} />
+
+			<div
+				className={`status-chart-container ${
+					removeMoveUp ? '' : 'move-up'
+				}`}
+			>
 				<StatusBoxes
 					serviceDeviceCount={serviceDeviceCount}
 					totalOperations={totalOperations}
@@ -75,7 +99,7 @@ export default function Dashboard() {
 				<TransactionChartComponent days={15} />
 			</div>
 
-			<Divider className='move-up-sm' />
+			<Divider className="move-up-sm" />
 
 			<div className="transaction-table-holder">
 				<div className="title-holder">

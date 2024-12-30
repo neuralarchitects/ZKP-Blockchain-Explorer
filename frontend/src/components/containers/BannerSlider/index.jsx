@@ -3,7 +3,7 @@ import './style.scss';
 import ImageLoader from '../../ui/Image';
 import Slider from 'react-slick';
 
-export default function BannerSlider() {
+export default function BannerSlider({ className = '' }) {
 	const settings = {
 		autoplay: true,
 		autoplaySpeed: 4000,
@@ -39,7 +39,7 @@ export default function BannerSlider() {
 	};
 
 	return (
-		<div className="slider-container">
+			<div className={`slider-container ${className}`}>
 			<Slider {...settings}>
 				{[5, 4].map((folder, index) => (
 					<div

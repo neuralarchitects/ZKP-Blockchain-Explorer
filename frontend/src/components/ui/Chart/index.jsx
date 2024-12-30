@@ -16,10 +16,6 @@ const TransactionChart = ({ data, day }) => {
 			className="transaction-chart-div"
 			style={{ width: '100%', height: '100%' }}
 		>
-			<h3 style={{ textAlign: 'center' }}>
-				Transactions in Last {day} Days
-			</h3>
-
 			<ResponsiveContainer width="100%" height={400}>
 				<AreaChart
 					data={data}
@@ -33,12 +29,13 @@ const TransactionChart = ({ data, day }) => {
 
 					<YAxis
 						label={{
-							value: 'Transaction Count',
+							value: `Transactions in Last ${day} Days`,
 							angle: -90,
-							position: 'insideLeft',
+							dx: -20,
+							style: { fontSize: '11px' },
 						}}
-						tick={{ fontSize: '12px' }}
 					/>
+
 					<Tooltip />
 					<Legend verticalAlign="top" height={36} />
 					<Area

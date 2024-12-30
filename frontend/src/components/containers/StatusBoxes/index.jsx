@@ -19,6 +19,7 @@ export default function StatusBoxes({
 				color={'#FDE1AC'}
 				loading={!serviceDeviceCount ? true : false}
 				Icon={TransactionIcon}
+				iconClass={'check-icon'}
 				title={'Protocol Operations'}
 				value={totalOperations}
 			/>
@@ -27,12 +28,14 @@ export default function StatusBoxes({
 				loading={!serviceDeviceCount ? true : false}
 				Icon={BiServer}
 				title={'Services / Devices'}
+				iconClass={'check-icon'}
 				value={serviceDeviceCount}
 			/>
 			<StatusBox
 				color={'#BAE5F5'}
 				loading={!serviceDeviceCount ? true : false}
 				Icon={BoxIcon}
+				iconClass={'check-icon'}
 				title={'ZKPs'}
 				value={zkpCount}
 			/>

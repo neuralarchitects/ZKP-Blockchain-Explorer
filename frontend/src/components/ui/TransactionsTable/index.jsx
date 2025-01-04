@@ -235,12 +235,12 @@ export default function TransactionsTable({ transactions, ...props }) {
 		setIsDevice(tempData.isDevice);
 
 		if (action === 'ZKP') {
+			setIsZkpModalOpen(true);
+		} else if (action === 'Verify Proof') {
 			try {
 				const { commitmentID } = JSON.parse(tempData.zkp_payload);
 				getCommitmentData(commitmentID);
 			} catch (error) {}
-			setIsZkpModalOpen(true);
-		} else if (action === 'Verify Proof') {
 			handleVerifyButton(tempData);
 			setProofModal(true);
 		} else if (action == 'Transaction Details') {
@@ -337,20 +337,10 @@ export default function TransactionsTable({ transactions, ...props }) {
 				className="zkp-modal"
 				isOpen={isZkpModalOpen}
 				title="ZKP Payload"
-				onClose={() => {
-					setIsZkpModalOpen(false);
-					setCommitmentData(undefined);
-				}}
+				onClose={() => setIsZkpModalOpen(false)}
 			>
 				{(isZKP && (
-					<p>
-						{modalData?.zkp_payload && modalData?.zkp_payload}{' '}
-						<GenerateJsonData
-							isZkp={true}
-							parsedData={commitmentData}
-							loading={commitmentLoading}
-						/>
-					</p>
+					<p>{modalData?.zkp_payload && modalData?.zkp_payload}</p>
 				)) || (
 					<h2 className="no-zkp">
 						The received data does not contain any ZKP.
@@ -363,11 +353,19 @@ export default function TransactionsTable({ transactions, ...props }) {
 				isOpen={proofModal}
 				closable={hackerAnimation}
 				title="Proof Verifier"
-				onClose={() => setProofModal(false)}
+				onClose={() => {
+					setProofModal(false);
+					setCommitmentData(undefined);
+				}}
 			>
 				<LetterAnimation
 					isFinished={hackerAnimation}
 					text={proofResult}
+				/>
+				<GenerateJsonData
+					isZkp={true}
+					parsedData={commitmentData}
+					loading={commitmentLoading}
 				/>
 			</EModal>
 

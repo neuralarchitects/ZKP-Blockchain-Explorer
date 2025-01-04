@@ -194,6 +194,17 @@ export class contractController {
     return await this.contractService.searchData(search);
   }
 
+  @Get('/get-commitment-data')
+  @HttpCode(201)
+  @ApiOperation({
+    summary: 'Searching data by string.',
+    description:
+      'This api return a search result between smart contract data by giving string.',
+  })
+  async getCommitmentDataByCommitmentId(@Query('commitmentId') commitment: string) {
+    return await this.contractService.getCommitmentData(commitment);
+  }
+
   @Post('/verify-proof')
   @HttpCode(201)
   @ApiOperation({
@@ -257,3 +268,5 @@ export class contractController {
     return this.contractService.removeSharedDevice(body.nodeId, body.deviceId)
   } */
 }
+
+

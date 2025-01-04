@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable, Scope } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  OnApplicationBootstrap,
+  Scope,
+} from '@nestjs/common';
 import { ethers } from 'ethers';
 import * as contractData from '../contract-data';
 import { GeneralException } from 'src/modules/utility/exceptions/general.exception';
@@ -68,14 +74,16 @@ export class ContractService implements OnApplicationBootstrap {
   private zkpCollection: Collection;
   private serviceDeviceCollection: Collection;
   private blockChainDb: Db;
-  private blockChainCollection: Collection;
+  private transactionsCollection: Collection;
+  private commitmentCollection: Collection;
   private readonly mongoUrl = process.env.MONGO_CONNECTION;
   private readonly dbName = 'smartcontract_db';
   private readonly zkpCollectionName = 'zkp_smartcontract';
+  private readonly commitmentCollectionName = 'commitment_smartcontract';
   private readonly serviceDeviceCollectionName =
     'services_devices_smartcontract';
   private readonly blockChainDbName = 'blockchain_data';
-  private readonly blockChainCollectionName = 'blocks';
+  private readonly transactionsCollectionName = 'transactions';
   private transactionDataArray = [];
   private serviceDataArray = [];
   private zkpDataArray = [];
@@ -86,9 +94,11 @@ export class ContractService implements OnApplicationBootstrap {
     @Inject(forwardRef(() => ServiceService))
     private readonly serviceService?: ServiceService,
   ) {
-
     setTimeout(() => {
-      console.log("generateTransactionCounts: ", this.generateTransactionCounts("2024-12-18", "2024-12-28"))
+      console.log(
+        'generateTransactionCounts: ',
+        this.generateTransactionCounts('2024-12-18', '2024-12-28'),
+      );
     }, 5000);
 
     this.provider = new ethers.JsonRpcProvider(this.rpcUrl, {
@@ -218,37 +228,41 @@ export class ContractService implements OnApplicationBootstrap {
     this.db = client.db(this.dbName);
     this.blockChainDb = client.db(this.blockChainDbName);
 
+    this.commitmentCollection = this.db.collection(
+      this.commitmentCollectionName,
+    );
+
     this.zkpCollection = this.db.collection(this.zkpCollectionName);
     this.serviceDeviceCollection = this.db.collection(
       this.serviceDeviceCollectionName,
     );
-    this.blockChainCollection = this.blockChainDb.collection(
-      this.blockChainCollectionName,
+
+    this.transactionsCollection = this.blockChainDb.collection(
+      this.transactionsCollectionName,
     );
 
     // Fetch initial data and populate arrays
     this.serviceDataArray = await this.serviceDeviceCollection.find().toArray();
     this.zkpDataArray = await this.zkpCollection.find().toArray();
-    this.transactionDataArray = await this.blockChainCollection
-      .find({ $expr: { $gt: [{ $size: '$transactions' }, 0] } })
+
+    this.transactionDataArray = await this.transactionsCollection
+      .find()
       .toArray();
 
-    const blockChainChangeStream = this.blockChainCollection.watch();
-    blockChainChangeStream.on('change', (change: any) => {
-      if (change.fullDocument?.transactions.length > 0) {
-        switch (change.operationType) {
-          case 'insert':
-            this.handleBlockChainInsert(change.fullDocument);
-            break;
-          /* case "update":
+    const transactionsCollectionStream = this.transactionsCollection.watch();
+    transactionsCollectionStream.on('change', (change: any) => {
+      switch (change.operationType) {
+        case 'insert':
+          this.handleBlockChainInsert(change.fullDocument);
+          break;
+        /* case "update":
             this.handleServiceUpdate(change.documentKey._id, change.updateDescription.updatedFields);
             break;
           case "delete":
             this.handleServiceDelete(change.documentKey._id);
             break; */
-          default:
-            console.log('Unrecognized operation type:', change.operationType);
-        }
+        default:
+          console.log('Unrecognized transaction type:', change.operationType);
       }
     });
 
@@ -293,9 +307,6 @@ export class ContractService implements OnApplicationBootstrap {
     const start = new Date(startDate);
     const end = new Date(endDate);
 
-    console.log("this.transactionDataArray:", this.transactionDataArray);
-    
-
     // Initialize a map to store counts for each date
     const dailyCountsMap: Record<string, number> = {};
 
@@ -316,7 +327,7 @@ export class ContractService implements OnApplicationBootstrap {
         .split('T')[0]; // Convert UNIX timestamp to YYYY-MM-DD
 
       if (dailyCountsMap.hasOwnProperty(transactionDate)) {
-        dailyCountsMap[transactionDate] += transaction.transactions.length;
+        dailyCountsMap[transactionDate] += transaction.length;
       }
     });
 
@@ -426,6 +437,12 @@ export class ContractService implements OnApplicationBootstrap {
     console.log('ZKP deleted from array:', id);
   }
 
+  getCommitmentData = async (commitmentId: string) => {
+    return await this.commitmentCollection
+      .find({ commitmentID: commitmentId })
+      .toArray();
+  };
+
   searchData = async (searchString: string) => {
     let results: any[] = [];
 
@@ -473,13 +490,11 @@ export class ContractService implements OnApplicationBootstrap {
     });
 
     // Search in transactionDataArray
-    this.transactionDataArray.forEach((transactionBlock) => {
-      if (isMatch(transactionBlock, searchString)) {
-        if (transactionBlock?.transactions?.length > 0) {
-          transformTransactions(transactionBlock).forEach((element) => {
-            results.push(element);
-          });
-        }
+    this.transactionDataArray.forEach((transaction) => {
+      if (isMatch(transaction, searchString)) {
+        transformTransactions(transaction).forEach((element) => {
+          results.push(element);
+        });
       }
     });
 

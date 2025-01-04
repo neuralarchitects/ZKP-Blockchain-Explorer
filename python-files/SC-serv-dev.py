@@ -889,29 +889,59 @@ mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = mongo_client["smartcontract_db"]  # Use your database name
 collection = db["services_devices_smartcontract"]  # Use your collection name
 
+
+
+
+# def get_transaction_details(tx_hash):
+#     try:
+#         tx = web3.eth.get_transaction(tx_hash)
+#         tx_receipt = web3.eth.get_transaction_receipt(tx_hash)
+#         current_time = int(time.time())
+        
+#         if 'gasPrice' in tx:
+#             gas_fee = tx_receipt.gasUsed * tx.gasPrice
+#         else:
+#             # EIP-1559 transaction fee calculation
+#             gas_fee = tx_receipt.gasUsed * (tx.maxFeePerGas + tx.maxPriorityFeePerGas)
+        
+#         return {
+#             "transactionHash": tx_hash,
+#             "to": tx.to,
+#             "from": tx['from'],
+#             "gasFee": gas_fee,
+#             "TransactionTime": current_time
+
+#         }
+#     except Exception as e:
+#         logger.error(f"Error fetching transaction details: {e}")
+#         return {}
+
+
 def get_transaction_details(tx_hash):
     try:
-        tx = web3.eth.get_transaction(tx_hash)
         tx_receipt = web3.eth.get_transaction_receipt(tx_hash)
+        tx = web3.eth.get_transaction(tx_hash)
         current_time = int(time.time())
         
-        if 'gasPrice' in tx:
-            gas_fee = tx_receipt.gasUsed * tx.gasPrice
-        else:
-            # EIP-1559 transaction fee calculation
-            gas_fee = tx_receipt.gasUsed * (tx.maxFeePerGas + tx.maxPriorityFeePerGas)
-        
-        return {
-            "transactionHash": tx_hash,
-            "to": tx.to,
-            "from": tx['from'],
-            "gasFee": gas_fee,
-            "TransactionTime": current_time
+        if tx_receipt and tx:
+            tx_hash = tx_hash.hex()
+            if not tx_hash.startswith('0x'):
+                 tx_hash = f"0x{tx_hash}"
+            return {
+                "transactionHash": tx_hash,
+                "to": tx.to,
+                "from": tx["from"],
+                "gasFee": tx_receipt.gasUsed * tx.gasPrice,
+                "transactionTime": current_time
 
-        }
+            }
     except Exception as e:
-        logger.error(f"Error fetching transaction details: {e}")
+        print(f"Error getting transaction details: {e}")
         return {}
+
+
+
+
 
 def save_latest_data(event_data, tx_details):
     try:

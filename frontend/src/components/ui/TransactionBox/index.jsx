@@ -207,7 +207,7 @@ export default function TransactionBox({ data }) {
 							onClick={() => {
 								const encodedHash =
 									encodeURIComponent(transactionHash);
-								navigateTo(`/transactions/${encodedHash}`);
+								navigateTo(`/tx/${encodedHash}`);
 							}}
 						>
 							{transactionHash}
@@ -316,7 +316,7 @@ export default function TransactionBox({ data }) {
 							onClick={() => {
 								const encodedHash =
 									encodeURIComponent(transactionHash);
-								navigateTo(`/transactions/${encodedHash}`);
+								navigateTo(`/tx/${encodedHash}`);
 							}}
 							className="hash"
 						>

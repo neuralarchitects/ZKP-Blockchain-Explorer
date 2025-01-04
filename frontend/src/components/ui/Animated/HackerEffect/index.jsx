@@ -52,17 +52,17 @@ const LetterAnimation = ({ text, isFinished }) => {
 	return (
 		<div className="hacker-container">
 			<div className="low-res">
-				{(isFinished == false && (
-					<Spinner type="double" />
-				)) || <p className="glow">{text}</p>}
+				{(isFinished == false && <Spinner type="double" />) || (
+					<p className="glow">{text}</p>
+				)}
 			</div>
 			<div className="word-container">
 				{animatedText.map((char, index) => (
 					<span
 						key={index}
-						className={
+						className={`${
 							isFinished && index < currentIndex ? 'glow' : ''
-						}
+						} ${char == ' ' && 'space-only'}`}
 					>
 						{char}
 					</span>

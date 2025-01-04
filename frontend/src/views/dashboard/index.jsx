@@ -116,7 +116,7 @@ export default function Dashboard() {
 				/>
 				<p
 					onClick={() => {
-						navigateTo('/transactions');
+						navigateTo('/tx');
 					}}
 					className="all-transactions"
 				>

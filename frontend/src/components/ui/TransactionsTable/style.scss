@@ -165,3 +165,20 @@
 		}
 	}
 }
+
+.commitment-holder {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+
+	&.zkp {
+		margin-top: 32px;
+		gap: 8px;
+
+		p {
+			height: fit-content;
+			padding: 0;
+			margin: 0;
+		}
+	}
+}

@@ -6,6 +6,7 @@ import './style.scss';
 import ImageLoader from '../Image';
 import useFetchData from '../../../services/api/useFetchData';
 import LetterAnimation from '../Animated/HackerEffect';
+import GenerateJsonData from './GenerateJsonData';
 
 function transformTransactionsData(data) {
 	return data.map((item) => {
@@ -43,6 +44,7 @@ function transformTransactionsData(data) {
 		}
 
 		return {
+			...item,
 			transactionHash,
 			formattedDate,
 			formattedTime,
@@ -65,7 +67,16 @@ function transformTransactionsData(data) {
 }
 
 function findItemByTransactionHash(data, transactionHash) {
-	return data.find((item) => item.transactionHash === transactionHash);
+	// Filter all items with the matching transactionHash
+	const matchingItems = data.filter(
+		(item) => item.transactionHash === transactionHash
+	);
+
+	// Check if any of them have zkp_payload and prioritize it
+	const withZkpPayload = matchingItems.find((item) => item.zkp_payload);
+
+	// Return the one with zkp_payload if it exists, otherwise return the first matching item
+	return withZkpPayload || matchingItems[0];
 }
 
 function findItemByTransactionHashFromArray(data, transactionHash) {
@@ -80,11 +91,10 @@ const eventTypeLabels = {
 	ServiceRemoved: 'Service Unshared',
 };
 
-export default function TransactionsTable({
-	transactions,
-	...props
-}) {
+export default function TransactionsTable({ transactions, ...props }) {
 	const navigateTo = useNavigate();
+	const [commitmentLoading, setCommitmentLoading] = useState(false);
+	const [commitmentData, setCommitmentData] = useState();
 	const [isZkpModalOpen, setIsZkpModalOpen] = useState(false);
 	const [proofModal, setProofModal] = useState(false);
 	const [isDataModalOpen, setIsDataModalOpen] = useState(false);
@@ -92,11 +102,12 @@ export default function TransactionsTable({
 	const [isZKP, setIsZKP] = useState(false);
 	const [isDevice, setIsDevice] = useState(false);
 	const [deviceImage, setDeviceImage] = useState('');
+	const [transformedData, setTransformedData] = useState(
+		transformTransactionsData(transactions)
+	);
 	const [hackerAnimation, setHackerAnimation] = useState(false);
 	const [proofResult, setProofResult] = useState('Proof is not verified');
 	const { fetchData } = useFetchData();
-
-	const transformedData = transformTransactionsData(transactions);
 
 	function getDeviceUrlByType(devices, type) {
 		const device = devices.find((device) => {
@@ -104,6 +115,15 @@ export default function TransactionsTable({
 			return regex.test(device.type); // Test the type against the regex
 		});
 		return device ? device.url : null; // Return the URL if found, otherwise null
+	}
+
+	async function getCommitmentData(commitmentId) {
+		setCommitmentLoading(true);
+		const res = await fetchData(
+			`contract/get-commitment-data?commitmentId=${commitmentId}`
+		);
+		setCommitmentLoading(false);
+		setCommitmentData(res.data[0]);
 	}
 
 	async function getDeviceImagesFromNode(nodeId, deviceType) {
@@ -151,13 +171,13 @@ export default function TransactionsTable({
 		}
 	}
 
-	async function handleVerifyButton() {
+	async function handleVerifyButton(theData) {
 		setProofModal(true);
 		let theProof = '';
 		try {
-			theProof = JSON.parse(modalData?.zkp_payload);
+			theProof = JSON.parse(theData?.zkp_payload);
 		} catch (error) {
-			theProof = modalData?.zkp_payload;
+			theProof = theData?.zkp_payload;
 		}
 
 		try {
@@ -175,6 +195,11 @@ export default function TransactionsTable({
 	}
 
 	useEffect(() => {
+		setTransformedData(transformTransactionsData(transactions));
+		console.log('transactions:', transactions);
+	}, [transactions]);
+
+	useEffect(() => {
 		return () => {
 			setHackerAnimation(false);
 		};
@@ -183,25 +208,25 @@ export default function TransactionsTable({
 	function handleCellClick(row, col, item, fullRowData) {
 		if (col === 0 && fullRowData[4].props.children === 'Transaction') {
 			const encodedHash = encodeURIComponent(item);
-			navigateTo(`/transactions/${encodedHash}`);
+			navigateTo(`/tx/${encodedHash}`);
 		}
 	}
 
 	const handleActionClick = async (action, items) => {
 		let tempData = {
-			...findItemByTransactionHash(transactions, items[0]),
 			...findItemByTransactionHash(transformedData, items[0]),
 		};
 
 		try {
-			if (tempData.data_payload) {
-				tempData.data_payload = JSON.parse(tempData.data_payload);
+			if (tempData.zkp_payload) {
+				tempData.zkp_payload = JSON.parse(tempData.zkp_payload);
 			}
 		} catch (error) {
 			console.error(error);
 		}
 
 		setModalData(tempData);
+		console.log('transactions2', transactions);
 		console.log('action', action);
 		console.log('items', items);
 		console.log('ghol:', tempData);
@@ -210,18 +235,26 @@ export default function TransactionsTable({
 		setIsDevice(tempData.isDevice);
 
 		if (action === 'ZKP') {
+			try {
+				const { commitmentID } = JSON.parse(tempData.zkp_payload);
+				getCommitmentData(commitmentID);
+			} catch (error) {}
 			setIsZkpModalOpen(true);
 		} else if (action === 'Verify Proof') {
-			handleVerifyButton();
+			handleVerifyButton(tempData);
 			setProofModal(true);
 		} else if (action == 'Transaction Details') {
 			const encodedHash = encodeURIComponent(items[0]);
-			navigateTo(`/transactions/${encodedHash}`);
+			navigateTo(`/tx/${encodedHash}`);
 		} else {
 			await getDeviceImagesFromNode(
 				tempData?.nodeId,
 				tempData?.deviceType
 			);
+			try {
+				const { commitmentID } = JSON.parse(tempData.zkp_payload);
+				getCommitmentData(commitmentID);
+			} catch (error) {}
 			setIsDataModalOpen(true);
 		}
 	};
@@ -231,7 +264,7 @@ export default function TransactionsTable({
 			<ResponsiveTable
 				{...props}
 				titles={[
-					'Transaction hash',
+					'Transaction Id',
 					'Date',
 					'Time',
 					'Server Name',
@@ -283,7 +316,6 @@ export default function TransactionsTable({
 						formattedDate,
 						formattedTime,
 						nodeId,
-
 						eventType,
 						actions,
 					}) => [
@@ -291,7 +323,6 @@ export default function TransactionsTable({
 						formattedDate,
 						formattedTime,
 						nodeId,
-
 						<span>
 							{eventTypeLabels[eventType]
 								? eventTypeLabels[eventType]
@@ -306,10 +337,20 @@ export default function TransactionsTable({
 				className="zkp-modal"
 				isOpen={isZkpModalOpen}
 				title="ZKP Payload"
-				onClose={() => setIsZkpModalOpen(false)}
+				onClose={() => {
+					setIsZkpModalOpen(false);
+					setCommitmentData(undefined);
+				}}
 			>
 				{(isZKP && (
-					<p>{modalData?.zkp_payload && modalData?.data_payload}</p>
+					<p>
+						{modalData?.zkp_payload && modalData?.zkp_payload}{' '}
+						<GenerateJsonData
+							isZkp={true}
+							parsedData={commitmentData}
+							loading={commitmentLoading}
+						/>
+					</p>
 				)) || (
 					<h2 className="no-zkp">
 						The received data does not contain any ZKP.
@@ -338,7 +379,10 @@ export default function TransactionsTable({
 						? `${isDevice ? 'Device Details' : 'Service Details'}`
 						: 'IoT Data'
 				}`}
-				onClose={() => setIsDataModalOpen(false)}
+				onClose={() => {
+					setIsDataModalOpen(false);
+					setCommitmentData(undefined);
+				}}
 			>
 				{isZKP && (
 					<section className="main-data">
@@ -347,72 +391,28 @@ export default function TransactionsTable({
 								src={deviceImage}
 								className="img device"
 							/>
-							{modalData?.unixtime_payload?.Door && (
-								<p>
-									Door:{' '}
-									<span>
-										{
-											JSON.parse(
-												modalData?.unixtime_payload
-											)?.Door
-										}
-									</span>
-								</p>
-							)}
-							<p>
-								Temperature:{' '}
-								<span>
-									{
-										JSON.parse(modalData?.unixtime_payload)
-											?.Temperature
-									}
-								</span>
-							</p>
-							<p>
-								Humidity:{' '}
-								<span>
-									{
-										JSON.parse(modalData?.unixtime_payload)
-											?.Humidity
-									}
-								</span>
-							</p>
-							<p>
-								Button:{' '}
-								<span>
-									{
-										JSON.parse(modalData?.unixtime_payload)
-											?.Button
-									}
-								</span>
-							</p>
-							<p>
-								Root:{' '}
-								<span>
-									{String(
-										JSON.parse(modalData?.unixtime_payload)
-											?.Root
-									)}
-								</span>
-							</p>
-							<p>
-								Hardware Version:{' '}
-								<span>
-									{
-										JSON.parse(modalData?.unixtime_payload)
-											?.HV
-									}
-								</span>
-							</p>
-							<p>
-								Firmware Version:{' '}
-								<span>
-									{
-										JSON.parse(modalData?.unixtime_payload)
-											?.FV
-									}
-								</span>
-							</p>
+							{modalData?.data_payload &&
+								Object.entries(
+									JSON.parse(modalData?.data_payload)
+								)
+									.sort(
+										([keyA], [keyB]) =>
+											keyB.length - keyA.length
+									)
+									.map(([key, value]) => (
+										<p key={key}>
+											{key.replace(/_/g, ' ')}:{' '}
+											<span>
+												{key === 'Root'
+													? String(value)
+													: value}
+											</span>
+										</p>
+									))}
+							<GenerateJsonData
+								parsedData={commitmentData}
+								loading={commitmentLoading}
+							/>
 						</div>
 					</section>
 				)}

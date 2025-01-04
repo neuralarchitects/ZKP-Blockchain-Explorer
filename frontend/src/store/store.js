@@ -25,7 +25,7 @@ export const usePageStore = create((set) => ({
 			Icon: DashboardIcon,
 		},
 		{
-			route: "/transactions",
+			route: "/tx",
 			title: "All Operations",
 			key: "transactions",
 			component: <AllTransactionsPage />,
@@ -52,7 +52,7 @@ export const usePageStore = create((set) => ({
 			hidden: true,
 		},
 		{
-			route: "/transactions/:id",
+			route: "/tx/:id",
 			key: "transaction-detail",
 			component: <TransactionDetail />,
 			hidden: true,

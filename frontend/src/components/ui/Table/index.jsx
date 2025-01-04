@@ -44,8 +44,6 @@ const ResponsiveTable = ({
 		for (const override of conditionalOverrides) {
 			const { rowExist, columnToApplyClass, className } = override;
 
-			console.log('row:', row);
-
 			// Check if `rowExist` exists in the row
 			const existsInRow = row.some((item) => {
 				if (typeof item === 'string') {

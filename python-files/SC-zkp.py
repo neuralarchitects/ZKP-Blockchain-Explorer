@@ -353,23 +353,30 @@ mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = mongo_client["smartcontract_db"]
 collection = db["zkp_smartcontract"]
 
+
 def get_transaction_details(tx_hash):
     try:
         tx_receipt = web3.eth.get_transaction_receipt(tx_hash)
         tx = web3.eth.get_transaction(tx_hash)
         current_time = int(time.time())
-
+        
         if tx_receipt and tx:
+            tx_hash = tx_hash.hex()
+            if not tx_hash.startswith('0x'):
+                 tx_hash = f"0x{tx_hash}"
             return {
                 "transactionHash": tx_hash,
                 "to": tx.to,
                 "from": tx["from"],
                 "gasFee": tx_receipt.gasUsed * tx.gasPrice,
-
+                "transactionTime": current_time
             }
     except Exception as e:
         print(f"Error getting transaction details: {e}")
         return {}
+
+
+
 
 def save_latest_data(event_data, tx_hash):
     try:
@@ -380,6 +387,8 @@ def save_latest_data(event_data, tx_hash):
         print("Latest data saved to MongoDB")
     except Exception as e:
         print(f"Error saving data to MongoDB: {e}")
+
+
 
 def listen_for_events():
     try:
@@ -400,8 +409,8 @@ def listen_for_events():
                     "hardwareVersion": event.args.hardwareVersion,
                     "firmwareVersion": event.args.firmwareVersion,
                     "data_payload": event.args.data_payload,
-                    "zkp_payload": event.args.zkp_payload,
-                    "unixtime_payload": event.args.unixtime_payload,
+                    #"unixtime_payload": event.args.zkp_payload,
+                    "zkp_payload": event.args.unixtime_payload,
                     "timestamp": event.args.timestamp,
                     "eventType": "ZKPStored"
 
@@ -410,6 +419,10 @@ def listen_for_events():
                 # Save the latest event data
                 save_latest_data(event_data, tx_hash)
             
+
+
+
+
             # Poll for new ZKPDeleted events
             for event in deleted_event_filter.get_new_entries():
                 tx_hash = event.transactionHash.hex()
@@ -430,6 +443,7 @@ def listen_for_events():
                 # Save the latest event data
                 save_latest_data(event_data, tx_hash)
             
+           
             time.sleep(5)  # Polling interval
     except Exception as e:
         print(f"Error listening for events: {e}")

@@ -9,21 +9,15 @@ import {
 import { Socket, Server } from 'socket.io';
 import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
 
-
 interface Transaction {
+  _id: ObjectId;
+  timestamp: number;
+  transaction_id: string;
   hash: string;
   from: string;
   to: string;
   gas: number;
-  blockHash: string;
   gasPrice: number;
-  [key: string]: any; // Additional keys that we don't care about
-}
-
-interface Block {
-  _id: ObjectId;
-  timestamp: number;
-  transactions: Transaction[];
   [key: string]: any; // Additional keys that we don't care about
 }
 
@@ -41,23 +35,23 @@ interface TransformedTransaction {
 }
 
 // Transformation function
-export function transformTransactions(block: Block): TransformedTransaction[] {
-  if (!block.transactions || block.transactions.length === 0) {
-    return [];
-  }
-
-  return block.transactions.map((txn) => ({
-    _id: block._id,
-    unixtime_payload: block.timestamp.toString(),
-    timestamp: block.timestamp,
-    eventType: 'Transaction',
-    nodeId: 'Fidesinnova',
-    deviceId: txn.blockHash,
-    transactionHash: txn.hash || '',
-    to: txn.to || '',
-    from: txn.from || '',
-    gasFee: (txn.gas || 0) * (txn.gasPrice || 0),
-  }));
+export function transformTransactions(
+  transaction: Transaction,
+): TransformedTransaction[] {
+  return [
+    {
+      _id: transaction._id,
+      unixtime_payload: transaction.timestamp.toString(),
+      timestamp: transaction.timestamp,
+      eventType: 'Transaction',
+      nodeId: 'Fidesinnova',
+      deviceId: transaction.transaction_id,
+      transactionHash: transaction.transaction_id || '',
+      to: transaction.to || '',
+      from: transaction.from || '',
+      gasFee: (transaction.gas || 0) * (transaction.gasPrice || 0),
+    },
+  ];
 }
 
 @WebSocketGateway({
@@ -79,6 +73,7 @@ export class EventsGateway
   private blockChainCollection: Collection;
   private zkpCollection: Collection;
   private serviceDeviceCollection: Collection;
+  private transactionsCollection: Collection;
 
   constructor() {}
 
@@ -90,6 +85,7 @@ export class EventsGateway
   private readonly zkpCollectionName = 'zkp_smartcontract';
   private readonly serviceDeviceCollectionName =
     'services_devices_smartcontract';
+  private readonly transactionsCollectionName = 'transactions';
 
   // Called when the gateway is initialized
   afterInit(server: Server) {
@@ -126,6 +122,10 @@ export class EventsGateway
       this.blockChainCollectionName,
     );
 
+    this.transactionsCollection = this.blockChainDb.collection(
+      this.transactionsCollectionName,
+    );
+
     const blockChainLastObject = await this.blockChainCollection
       .find({})
       .sort({ number: -1 })
@@ -140,12 +140,11 @@ export class EventsGateway
     const endOfDayUnix = Math.floor(endOfDay.getTime() / 1000); // Convert to seconds
 
     let countOfDayItems = Number(
-      await this.blockChainCollection.countDocuments({
+      await this.transactionsCollection.countDocuments({
         /* timestamp: {
           $gte: startOfDayUnix,
           $lte: endOfDayUnix,
         }, */
-        $expr: { $gt: [{ $size: '$transactions' }, 0] },
       }),
     );
 
@@ -180,32 +179,33 @@ export class EventsGateway
 
     this.blockChainCount = blockChainLastObject[0]?.number || 0;
 
-    const blockChainChangeStream = this.blockChainCollection.watch();
-    blockChainChangeStream.on('change', (change: any) => {
-      this.blockChainCount++;
-
-      if (change.fullDocument?.transactions.length > 0) {
-        const transformedData = transformTransactions(change.fullDocument);
-        transformedData.forEach((element) => {
-          this.totalOperations++;
-          this.totalTransactions++;
-          this.server.emit('dbChange', element, {
-            zkpCount: this.zkpCount,
-            serviceDeviceCount: this.serviceDeviceCount,
-            blockChainCount: this.blockChainCount,
-            totalOperations: this.totalOperations,
-            totalTransactions: this.totalTransactions,
-          });
-        });
-      } else {
-        this.server.emit('countUpdate', {
+    const transactionsChangeStream = this.transactionsCollection.watch();
+    transactionsChangeStream.on('change', (change: any) => {
+      const transformedData = transformTransactions(change.fullDocument);
+      transformedData.forEach((element) => {
+        this.totalOperations++;
+        this.totalTransactions++;
+        this.server.emit('dbChange', element, {
           zkpCount: this.zkpCount,
           serviceDeviceCount: this.serviceDeviceCount,
           blockChainCount: this.blockChainCount,
           totalOperations: this.totalOperations,
           totalTransactions: this.totalTransactions,
         });
-      }
+      });
+    });
+
+    const blockChainChangeStream = this.blockChainCollection.watch();
+    blockChainChangeStream.on('change', (change: any) => {
+      this.blockChainCount++;
+
+      this.server.emit('countUpdate', {
+        zkpCount: this.zkpCount,
+        serviceDeviceCount: this.serviceDeviceCount,
+        blockChainCount: this.blockChainCount,
+        totalOperations: this.totalOperations,
+        totalTransactions: this.totalTransactions,
+      });
     });
 
     this.zkpCount = await this.zkpCollection.countDocuments();
@@ -216,6 +216,9 @@ export class EventsGateway
     zkpChangeStream.on('change', (change: any) => {
       this.zkpCount++;
       this.totalOperations++;
+
+      console.log('magholllll gholll gholllll');
+
       //console.log('ZKP.fullDocument', change.fullDocument);
       this.server.emit('dbChange', change.fullDocument, {
         zkpCount: this.zkpCount,
@@ -251,15 +254,19 @@ export class EventsGateway
     /* @MessageBody() data: { collection: string }, */
   ) {
     try {
-      let blockChainLastObjects = await this.blockChainCollection
-        .find({ $expr: { $gt: [{ $size: '$transactions' }, 0] } })
-        .sort({ number: -1 })
+      let blockChainLastObjects = await this.transactionsCollection
+        .find()
+        .sort({ timestamp: -1 })
         .limit(10)
         .toArray();
 
+      //console.log("blockChainLastObjects 1:", blockChainLastObjects);
+
       blockChainLastObjects = blockChainLastObjects
-        .map((item) => transformTransactions(item as Block))
+        .map((item) => transformTransactions(item as Transaction))
         .flat();
+
+      //console.log("blockChainLastObjects 2:", blockChainLastObjects);
 
       const zkpLastObjects = await this.zkpCollection
         .find({})

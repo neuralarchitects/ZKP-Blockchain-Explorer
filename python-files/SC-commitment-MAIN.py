@@ -14,24 +14,18 @@ else:
     exit()
 
 # Contract address and ABI
-# contract_address = '0x9d7704502745723cf7363268ad7aac54e9c3a093'
-contract_address = Web3.to_checksum_address('0x9d7704502745723cf7363268ad7aac54e9c3a093')
+contract_address = '0xfe6dccbc74603414ba1ac8f3f8def6d7e7eb92de'
+# contract_address = Web3.to_checksum_address('0xfe6dccbc74603414ba1ac8f3f8def6d7e7eb92de')
 
 contract_abi = [
-	{
+    	{
 		"anonymous": False,
 		"inputs": [
 			{
 				"indexed": False,
-				"internalType": "string",
-				"name": "commitmentID",
-				"type": "string"
-			},
-			{
-				"indexed": False,
-				"internalType": "string",
-				"name": "nodeId",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
 			},
 			{
 				"indexed": False,
@@ -49,37 +43,31 @@ contract_abi = [
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "commitmentID",
+				"name": "manufacturerName",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "nodeId",
+				"name": "deviceType",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "iot_manufacturer_name",
+				"name": "deviceHardwareVersion",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "iot_device_name",
+				"name": "firmwareVersion",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "device_hardware_version",
-				"type": "string"
-			},
-			{
-				"indexed": False,
-				"internalType": "string",
-				"name": "firmware_version",
+				"name": "lines",
 				"type": "string"
 			},
 			{
@@ -101,14 +89,9 @@ contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "commitmentID",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "nodeId",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
 			}
 		],
 		"name": "removeCommitment",
@@ -120,32 +103,27 @@ contract_abi = [
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "commitmentID",
+				"name": "manufacturerName",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "nodeId",
+				"name": "deviceType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_manufacturer_name",
+				"name": "deviceHardwareVersion",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_device_name",
+				"name": "firmwareVersion",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "device_hardware_version",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "firmware_version",
+				"name": "lines",
 				"type": "string"
 			},
 			{
@@ -155,33 +133,8 @@ contract_abi = [
 			}
 		],
 		"name": "storeCommitment",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
+		"outputs": [],
 		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "",
-				"type": "string"
-			}
-		],
-		"name": "commitmentIDs",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "view",
 		"type": "function"
 	},
 	{
@@ -196,32 +149,27 @@ contract_abi = [
 		"outputs": [
 			{
 				"internalType": "string",
-				"name": "commitmentID",
+				"name": "manufacturerName",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "nodeId",
+				"name": "deviceType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_manufacturer_name",
+				"name": "deviceHardwareVersion",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_device_name",
+				"name": "firmwareVersion",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "device_hardware_version",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "firmware_version",
+				"name": "lines",
 				"type": "string"
 			},
 			{
@@ -241,46 +189,36 @@ contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "commitmentID",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "nodeId",
-				"type": "string"
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
 			}
 		],
 		"name": "getCommitment",
 		"outputs": [
 			{
 				"internalType": "string",
-				"name": "commitmentIDResult",
+				"name": "manufacturerName",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "nodeIdResult",
+				"name": "deviceType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_manufacturer_name",
+				"name": "deviceHardwareVersion",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_device_name",
+				"name": "firmwareVersion",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "device_hardware_version",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "firmware_version",
+				"name": "lines",
 				"type": "string"
 			},
 			{
@@ -310,6 +248,7 @@ contract_abi = [
 		"stateMutability": "view",
 		"type": "function"
 	}
+
 ]
 
 # Create a contract instance
@@ -320,31 +259,23 @@ mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
 db = mongo_client["smartcontract_db"]
 collection = db["commitment_smartcontract"]
 
-
 def get_transaction_details(tx_hash):
     try:
         tx_receipt = web3.eth.get_transaction_receipt(tx_hash)
         tx = web3.eth.get_transaction(tx_hash)
         current_time = int(time.time())
-        
+
         if tx_receipt and tx:
-            tx_hash = tx_hash.hex()
-            if not tx_hash.startswith('0x'):
-                 tx_hash = f"0x{tx_hash}"
             return {
                 "transactionHash": tx_hash,
                 "to": tx.to,
                 "from": tx["from"],
                 "gasFee": tx_receipt.gasUsed * tx.gasPrice,
                 "transactionTime": current_time
-
             }
     except Exception as e:
         print(f"Error getting transaction details: {e}")
         return {}
-
-
-
 
 def save_latest_data(event_data, tx_hash):
     try:
@@ -369,12 +300,12 @@ def listen_for_events():
             for event in stored_event_filter.get_new_entries():
                 tx_hash = event.transactionHash.hex()
                 event_data = {
-                    "commitmentID": event.args.commitmentID,
-                    "nodeId": event.args.nodeId,
-                    "iot_manufacturer_name": event.args.iot_manufacturer_name,
-                    "iot_device_name": event.args.iot_device_name,
-                    "device_hardware_version": event.args.device_hardware_version,
-                    "firmware_version": event.args.firmware_version,
+                    "index": event.args.get('index', 'Unknown'),
+                    "manufacturerName": event.args.manufacturerName,
+                    "deviceType": event.args.deviceType,
+                    "deviceHardwareVersion": event.args.deviceHardwareVersion,
+                    "firmwareVersion": event.args.firmwareVersion,
+                    "lines": event.args.lines,
                     "commitmentData": event.args.commitmentData,
                     "timestamp": event.args.timestamp,
                     "eventType": "CommitmentStored"
@@ -387,14 +318,14 @@ def listen_for_events():
             for event in removed_event_filter.get_new_entries():
                 tx_hash = event.transactionHash.hex()
                 event_data = {
-                    "commitmentID": event.args.commitmentID,
-                    "nodeId": event.args.nodeId,
-                    "iot_manufacturer_name": event.args.iot_manufacturer_name,
-                    "iot_device_name": event.args.iot_device_name,
-                    "device_hardware_version": event.args.device_hardware_version,
-                    "firmware_version": event.args.firmware_version,
-                    "commitmentData": event.args.commitmentData,
-                    "timestamp": event.args.timestamp,
+                    "index": event.args.get('index', 'Unknown'),
+                    "manufacturerName": event.args.get('manufacturerName', 'Unknown'),
+                    "deviceType": event.args.get('deviceType', 'Unknown'),
+                    "deviceHardwareVersion": event.args.get('deviceHardwareVersion', 'Unknown'),
+                    "firmwareVersion": event.args.get('firmwareVersion', 'Unknown'),
+                    "lines": event.args.get('lines', 'Unknown'),
+                    "commitmentData": event.args.get('commitmentData', 'Unknown'),
+                    "timestamp": event.args.get('timestamp', 'Unknown'),
                     "eventType": "CommitmentRemoved"
                 }
                 print(f"New CommitmentRemoved event: {event_data}")

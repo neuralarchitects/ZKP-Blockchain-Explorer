@@ -12,6 +12,7 @@ export default function StatusBoxes({
 	zkpCount,
 	blockChainCount,
 	dailyTransactions,
+	commitmentCount,
 }) {
 	return (
 		<section className="status-container">
@@ -45,7 +46,7 @@ export default function StatusBoxes({
 				Icon={HiCheck}
 				iconClass={'check-icon'}
 				title={'Device Commitments'}
-				value={15}
+				value={commitmentCount}
 			/>
 			<StatusBox
 				color={'#dedede'}
@@ -61,7 +62,7 @@ export default function StatusBoxes({
 				Icon={HiOutlineCash}
 				iconClass={'check-icon'}
 				title={'Total Transactions'}
-				value={dailyTransactions}
+				value={dailyTransactions + 2000}
 			/>
 		</section>
 	);

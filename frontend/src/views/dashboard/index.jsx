@@ -31,6 +31,7 @@ export default function Dashboard() {
 		blockChainCount,
 		totalTransactions,
 		totalOperations,
+		commitmentCount
 	} = useSocketConnection();
 	const navigateTo = useNavigate();
 	const [removeMoveUp, setRemoveMoveUp] = useState(false);
@@ -94,6 +95,7 @@ export default function Dashboard() {
 					zkpCount={zkpCount}
 					blockChainCount={blockChainCount}
 					dailyTransactions={totalTransactions}
+					commitmentCount={commitmentCount}
 				/>
 
 				<TransactionChartComponent days={15} />

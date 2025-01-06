@@ -7,6 +7,7 @@ import ImageLoader from '../Image';
 import useFetchData from '../../../services/api/useFetchData';
 import LetterAnimation from '../Animated/HackerEffect';
 import GenerateJsonData from './GenerateJsonData';
+import JsonDisplay from '../JsonDisplay';
 
 function transformTransactionsData(data) {
 	return data.map((item) => {
@@ -54,13 +55,12 @@ function transformTransactionsData(data) {
 			isZKP,
 			isDevice,
 			actions: [
+				isZKP && !isDevice && 'IoT Data',
 				isZKP && 'ZKP',
-				isZKP && 'Verify Proof',
-
 				(isTransaction || isZKP) && 'Transaction Details',
 				!isZKP && !isDevice && !isTransaction && 'Service Details',
 				!isZKP && isDevice && 'Device Details',
-				isZKP && !isDevice && 'IoT Data',
+				isZKP && 'Verify Proof',
 			].filter(Boolean),
 		};
 	});
@@ -106,7 +106,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 		transformTransactionsData(transactions)
 	);
 	const [hackerAnimation, setHackerAnimation] = useState(false);
-	const [proofResult, setProofResult] = useState('Proof is not verified');
+	const [proofResult, setProofResult] = useState('abcdefghijklmn');
 	const { fetchData } = useFetchData();
 
 	function getDeviceUrlByType(devices, type) {
@@ -243,6 +243,10 @@ export default function TransactionsTable({ transactions, ...props }) {
 			} catch (error) {}
 			handleVerifyButton(tempData);
 			setProofModal(true);
+			await getDeviceImagesFromNode(
+				tempData?.nodeId,
+				tempData?.deviceType
+			);
 		} else if (action == 'Transaction Details') {
 			const encodedHash = encodeURIComponent(items[0]);
 			navigateTo(`/tx/${encodedHash}`);
@@ -340,7 +344,13 @@ export default function TransactionsTable({ transactions, ...props }) {
 				onClose={() => setIsZkpModalOpen(false)}
 			>
 				{(isZKP && (
-					<p>{modalData?.zkp_payload && modalData?.zkp_payload}</p>
+					<JsonDisplay
+						jsonData={
+							(modalData?.zkp_payload &&
+								modalData?.zkp_payload) ||
+							''
+						}
+					/>
 				)) || (
 					<h2 className="no-zkp">
 						The received data does not contain any ZKP.
@@ -358,10 +368,25 @@ export default function TransactionsTable({ transactions, ...props }) {
 					setCommitmentData(undefined);
 				}}
 			>
+				<ImageLoader src={deviceImage} className="img device" />
+
 				<LetterAnimation
 					isFinished={hackerAnimation}
 					text={proofResult}
 				/>
+				<div className="iot-data">
+					{modalData?.data_payload &&
+						Object.entries(JSON.parse(modalData?.data_payload))
+							.sort(([keyA], [keyB]) => keyB.length - keyA.length)
+							.map(([key, value]) => (
+								<p key={key}>
+									{key.replace(/_/g, ' ')}:{' '}
+									<span>
+										{key === 'Root' ? String(value) : value}
+									</span>
+								</p>
+							))}
+				</div>
 				<GenerateJsonData
 					isZkp={true}
 					parsedData={commitmentData}

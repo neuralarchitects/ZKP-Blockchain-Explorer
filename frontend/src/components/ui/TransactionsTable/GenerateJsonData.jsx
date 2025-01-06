@@ -14,7 +14,7 @@ function GenerateJsonData({ parsedData, loading, isZkp }) {
 		<div className={`commitment-holder ${(isZkp && 'zkp') || ''}`}>
 			{parsedData.iot_manufacturer_name && (
 				<p>
-					IoT Manufacturer Name:{' '}
+					IoT Developer Name:{' '}
 					<span>{parsedData.iot_manufacturer_name}</span>
 				</p>
 			)}

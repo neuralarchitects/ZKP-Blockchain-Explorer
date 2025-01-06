@@ -39,6 +39,8 @@
 		display: flex;
 		align-items: center;
 		background: #dedede;
+		height: fit-content;
+		margin-block: auto;
 		border-radius: 10px;
 		padding-left: 4%;
 		padding-block: 5px;
@@ -79,6 +81,12 @@
 		display: flex;
 		align-items: center;
 		font-size: var(--font-md);
+
+		&.commitment-data {
+			width: 100%;
+			max-height: 80dvh;
+			align-items: initial;
+		}
 
 		span {
 			margin-inline: 4px;

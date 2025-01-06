@@ -15,6 +15,7 @@ import Spinner from '../../components/ui/Spinner';
 import Badge from '../../components/ui/Badge';
 import { HiCheckCircle, HiOutlineClock } from 'react-icons/hi';
 import GradientCircle from '../../components/ui/GradientCircle';
+import JsonDisplay from '../../components/ui/JsonDisplay';
 
 export default function TransactionDetail() {
 	const { fetchData, loading } = useFetchData();
@@ -27,8 +28,12 @@ export default function TransactionDetail() {
 		const res = await fetchData(
 			`contract/search-data?search=${encodeURIComponent(id)}`
 		);
+
 		if (res.data.length > 0) {
-			setDetailData(res.data[0]);
+			const selectedItem =
+				res.data.find((item) => item.commitmentData) || res.data[0];
+
+			setDetailData(selectedItem);
 		} else {
 			setDetailData(false);
 			navigateTo('/');
@@ -41,7 +46,7 @@ export default function TransactionDetail() {
 
 	return (
 		<main className="transaction-detail-container">
-			<h1 className='main-header'>Transaction Details</h1>
+			<h1 className="main-header">Transaction Details</h1>
 			<Toaster />
 			{loading == false && detailData != false && (
 				<>
@@ -87,9 +92,15 @@ export default function TransactionDetail() {
 						<div className="timestamp-holder">
 							<HiOutlineClock className="icon" />
 							<p className="right-data">
-								{timeStamptimeAgo(detailData.timestamp)}{' '}
+								{timeStamptimeAgo(
+									detailData?.timestamp ||
+										detailData?.transactionTime
+								)}{' '}
 								<span>|</span>{' '}
-								{formatUnixTimestamp(detailData.timestamp)}{' '}
+								{formatUnixTimestamp(
+									detailData?.timestamp ||
+										detailData?.transactionTime
+								)}{' '}
 								<span>{`| Confirmed within <= 4 secs`}</span>
 							</p>
 						</div>
@@ -135,12 +146,56 @@ export default function TransactionDetail() {
 						<div className="line"></div>
 
 						<p className="title">Value</p>
-						<p className="right-data">0 FDS</p>
+						<p className="right-data">
+							{detailData?.value || 0} FDS
+						</p>
 
 						<p className="title">Transaction fee</p>
 						<p className="right-data">
 							{formatBigInt(detailData.gasFee)} FDS
 						</p>
+
+						{detailData?.commitmentData && (
+							<>
+								<div className="line"></div>
+
+								<h1>Commitment Details</h1>
+								<p></p>
+
+								<p className="title">Commitment ID</p>
+								<p className="right-data">
+									{detailData.commitmentID}
+								</p>
+
+								<p className="title">IoT Developer Name</p>
+								<p className="right-data">
+									{detailData.iot_manufacturer_name}
+								</p>
+
+								<p className="title">IoT Device Name</p>
+								<p className="right-data">
+									{detailData.iot_device_name}
+								</p>
+
+								<p className="title">Device Hardware Version</p>
+								<p className="right-data">
+									{detailData.device_hardware_version}
+								</p>
+
+								<p className="title">Device Firmware Version</p>
+								<p className="right-data">
+									{detailData.firmware_version}
+								</p>
+								<p className="title">Commitment Data</p>
+								<p className="right-data commitment-data">
+									<JsonDisplay
+										jsonData={JSON.parse(
+											detailData.commitmentData
+										)}
+									/>
+								</p>
+							</>
+						)}
 					</div>
 				</>
 			)}

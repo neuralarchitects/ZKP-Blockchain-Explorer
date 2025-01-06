@@ -30,6 +30,8 @@ export function useSocketConnection() {
 		if (!socket.hasListeners('lastObjects')) {
 			socket.on('lastObjects', (objects, dbCount) => {
 				//console.log("Received last objects:", objects);
+				console.log("Received last dbCount:", dbCount);
+
 				setLatestTransactions(() =>
 					objects
 						.sort((a, b) => b.timestamp - a.timestamp)
@@ -41,13 +43,14 @@ export function useSocketConnection() {
 					blockChainCount: dbCount.blockChainCount,
 					totalTransactions: dbCount.totalTransactions,
 					totalOperations: dbCount.totalOperations,
+					commitmentCount: dbCount.commitmentCount,
 				});
 			});
 		}
 
 		if (!socket.hasListeners('dbChange')) {
 			socket.on('dbChange', (newData, dbCount) => {
-				console.log('Database change detected:', newData);
+				//console.log('Database change detected:', newData);
 				setLatestTransactions((prevTransactions) =>
 					[...prevTransactions, newData]
 						.sort((a, b) => b.timestamp - a.timestamp)
@@ -59,6 +62,7 @@ export function useSocketConnection() {
 					blockChainCount: dbCount.blockChainCount,
 					totalTransactions: dbCount.totalTransactions,
 					totalOperations: dbCount.totalOperations,
+					commitmentCount: dbCount.commitmentCount,
 				});
 			});
 		}
@@ -71,6 +75,7 @@ export function useSocketConnection() {
 					blockChainCount: dbCount.blockChainCount,
 					totalTransactions: dbCount.totalTransactions,
 					totalOperations: dbCount.totalOperations,
+					commitmentCount: dbCount.commitmentCount,
 				});
 			});
 		}
@@ -90,6 +95,7 @@ export function useSocketConnection() {
 		blockChainCount: contractCounts.blockChainCount,
 		totalTransactions: contractCounts.totalTransactions,
 		totalOperations: contractCounts.totalOperations,
+		commitmentCount: contractCounts.commitmentCount,
 		latestTransactions: latestTransactions,
 	};
 }

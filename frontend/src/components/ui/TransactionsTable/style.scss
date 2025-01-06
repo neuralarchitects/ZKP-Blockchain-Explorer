@@ -52,18 +52,7 @@
 	color: var(--color-secondary);
 	width: 50%;
 	max-height: 85dvh;
-	margin: 0 auto; /* Center within the constrained body */
-
-	p {
-		overflow-y: auto;
-		padding-inline: 10px;
-		margin-block: 25px;
-		text-align: center;
-		line-height: var(--font-2xl);
-		font-weight: 400;
-		font-size: var(--font-md);
-		word-break: break-word;
-	}
+	margin: 0 auto;
 
 	.no-zkp {
 		text-align: center;
@@ -82,8 +71,8 @@
 }
 
 .proof-modal {
+	overflow: hidden;
 	color: var(--color-secondary);
-	width: auto;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
@@ -91,6 +80,23 @@
 	padding: 20px;
 	flex-wrap: wrap;
 	white-space: wrap;
+	max-width: 650px !important;
+	margin-inline: auto;
+
+	.iot-data {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		margin-block: 12px;
+		padding-left: 12px;
+		gap: 12px;
+		text-align: start;
+	}
+
+	@media screen and (min-width: 800px) {
+		min-width: 550px;
+		width: 40%;
+	}
 }
 
 .data-modal {
@@ -167,6 +173,9 @@
 }
 
 .commitment-holder {
+	border: 1px solid;
+	border-radius: 12px;
+	padding: 8px;
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
@@ -178,7 +187,6 @@
 		gap: 16px;
 
 		p {
-			font-size: 20px;
 			height: fit-content;
 			padding: 0;
 			margin: 0;

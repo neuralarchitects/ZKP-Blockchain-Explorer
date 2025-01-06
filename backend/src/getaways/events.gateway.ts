@@ -22,6 +22,7 @@ interface Transaction {
 }
 
 interface TransformedTransaction {
+  value: number;
   _id: ObjectId;
   unixtime_payload: string;
   timestamp: number;
@@ -45,11 +46,14 @@ export function transformTransactions(
       timestamp: transaction.timestamp,
       eventType: 'Transaction',
       nodeId: 'Fidesinnova',
+      value: transaction?.value || 0,
       deviceId: transaction.transaction_id,
       transactionHash: transaction.transaction_id || '',
       to: transaction.to || '',
       from: transaction.from || '',
-      gasFee: (transaction.gas || 0) * (transaction.gasPrice || 0),
+      gasFee: transaction?.gasFee
+        ? transaction?.gasFee
+        : (transaction.gas || 0) * (transaction.gasPrice || 0),
     },
   ];
 }
@@ -67,6 +71,7 @@ export class EventsGateway
   private blockChainCount: number = 0;
   private zkpCount: number = 0;
   private serviceDeviceCount: number = 0;
+  private commitmentCount: number = 0;
   private server: Server;
   private db: Db;
   private blockChainDb: Db;
@@ -74,6 +79,7 @@ export class EventsGateway
   private zkpCollection: Collection;
   private serviceDeviceCollection: Collection;
   private transactionsCollection: Collection;
+  private commitmentCollection: Collection;
 
   constructor() {}
 
@@ -83,6 +89,7 @@ export class EventsGateway
   private readonly blockChainDbName = 'blockchain_data';
   private readonly blockChainCollectionName = 'blocks';
   private readonly zkpCollectionName = 'zkp_smartcontract';
+  private readonly commitmentCollectionName = 'commitment_smartcontract';
   private readonly serviceDeviceCollectionName =
     'services_devices_smartcontract';
   private readonly transactionsCollectionName = 'transactions';
@@ -111,6 +118,10 @@ export class EventsGateway
 
     this.db = client.db(this.dbName);
 
+    this.commitmentCollection = this.db.collection(
+      this.commitmentCollectionName,
+    );
+
     this.zkpCollection = this.db.collection(this.zkpCollectionName);
     this.serviceDeviceCollection = this.db.collection(
       this.serviceDeviceCollectionName,
@@ -138,6 +149,16 @@ export class EventsGateway
     // Convert start and end times to Unix timestamps (if your data is in Unix format)
     const startOfDayUnix = Math.floor(startOfDay.getTime() / 1000); // Convert to seconds
     const endOfDayUnix = Math.floor(endOfDay.getTime() / 1000); // Convert to seconds
+
+    this.commitmentCount = await this.commitmentCollection.countDocuments();
+
+    console.log('this.commitmentCount:', this.commitmentCount);
+
+    const commitmentChangeStream = this.commitmentCollection.watch();
+    commitmentChangeStream.on('change', () => {
+      this.commitmentCount++;
+      this.totalTransactions++;
+    });
 
     let countOfDayItems = Number(
       await this.transactionsCollection.countDocuments({
@@ -191,6 +212,7 @@ export class EventsGateway
           blockChainCount: this.blockChainCount,
           totalOperations: this.totalOperations,
           totalTransactions: this.totalTransactions,
+          commitmentCount: this.commitmentCount,
         });
       });
     });
@@ -204,6 +226,7 @@ export class EventsGateway
         serviceDeviceCount: this.serviceDeviceCount,
         blockChainCount: this.blockChainCount,
         totalOperations: this.totalOperations,
+        commitmentCount: this.commitmentCount,
         totalTransactions: this.totalTransactions,
       });
     });
@@ -226,6 +249,7 @@ export class EventsGateway
         blockChainCount: this.blockChainCount,
         totalOperations: this.totalOperations,
         totalTransactions: this.totalTransactions,
+        commitmentCount: this.commitmentCount,
       });
     });
 
@@ -244,6 +268,7 @@ export class EventsGateway
         blockChainCount: this.blockChainCount,
         totalOperations: this.totalOperations,
         totalTransactions: this.totalTransactions,
+        commitmentCount: this.commitmentCount,
       });
     });
   }
@@ -302,6 +327,7 @@ export class EventsGateway
           serviceDeviceCount: this.serviceDeviceCount,
           blockChainCount: this.blockChainCount,
           totalOperations: this.totalOperations,
+          commitmentCount: this.commitmentCount,
           totalTransactions: this.totalTransactions,
         },
       );

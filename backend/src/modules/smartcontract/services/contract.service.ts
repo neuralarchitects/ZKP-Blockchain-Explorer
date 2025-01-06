@@ -87,6 +87,7 @@ export class ContractService implements OnApplicationBootstrap {
   private transactionDataArray = [];
   private serviceDataArray = [];
   private zkpDataArray = [];
+  private commitmentDataArray = [];
 
   constructor(
     @Inject(forwardRef(() => DeviceService))
@@ -241,11 +242,16 @@ export class ContractService implements OnApplicationBootstrap {
       this.transactionsCollectionName,
     );
 
-    // Fetch initial data and populate arrays
     this.serviceDataArray = await this.serviceDeviceCollection.find().toArray();
+
     this.zkpDataArray = await this.zkpCollection.find().toArray();
 
     this.transactionDataArray = await this.transactionsCollection
+      .find()
+
+      .toArray();
+
+    this.commitmentDataArray = await this.transactionsCollection
       .find()
       .toArray();
 
@@ -321,13 +327,13 @@ export class ContractService implements OnApplicationBootstrap {
     }
 
     // Process each transaction to aggregate counts by day
-    this.transactionDataArray.forEach((transaction) => {
+    this.transactionDataArray.forEach((transaction) => {      
       const transactionDate = new Date(transaction.timestamp * 1000)
         .toISOString()
         .split('T')[0]; // Convert UNIX timestamp to YYYY-MM-DD
 
       if (dailyCountsMap.hasOwnProperty(transactionDate)) {
-        dailyCountsMap[transactionDate] += transaction.length;
+        dailyCountsMap[transactionDate] += 1;
       }
     });
 
@@ -488,6 +494,15 @@ export class ContractService implements OnApplicationBootstrap {
         results.push(zkp); // Add matching zkp to results
       }
     });
+
+    const commitmentRes = await this.commitmentCollection
+      .find({ transactionHash: searchString })
+      .toArray();
+
+      console.log("commitmentRes:", commitmentRes);
+      
+
+    commitmentRes.map((commitment) => results.push(commitment));
 
     // Search in transactionDataArray
     this.transactionDataArray.forEach((transaction) => {

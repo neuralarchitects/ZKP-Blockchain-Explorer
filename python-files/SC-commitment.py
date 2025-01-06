@@ -367,7 +367,7 @@ def listen_for_events():
         while True:
             # Poll for new CommitmentStored events
             for event in stored_event_filter.get_new_entries():
-                tx_hash = event.transactionHash.hex()
+                tx_hash = event.transactionHash
                 event_data = {
                     "commitmentID": event.args.commitmentID,
                     "nodeId": event.args.nodeId,

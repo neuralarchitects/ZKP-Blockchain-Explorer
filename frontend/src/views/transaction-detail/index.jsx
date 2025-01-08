@@ -164,12 +164,12 @@ export default function TransactionDetail() {
 
 								<p className="title">Commitment ID</p>
 								<p className="right-data">
-									{detailData.commitmentID}
+									{detailData.commitment_id}
 								</p>
 
 								<p className="title">IoT Developer Name</p>
 								<p className="right-data">
-									{detailData.iot_manufacturer_name}
+									{detailData.iot_developer_name}
 								</p>
 
 								<p className="title">IoT Device Name</p>

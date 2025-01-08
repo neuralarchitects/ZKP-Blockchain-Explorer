@@ -117,10 +117,10 @@ export default function TransactionsTable({ transactions, ...props }) {
 		return device ? device.url : null; // Return the URL if found, otherwise null
 	}
 
-	async function getCommitmentData(commitmentId) {
+	async function getCommitmentData(commitment_id) {
 		setCommitmentLoading(true);
 		const res = await fetchData(
-			`contract/get-commitment-data?commitmentId=${commitmentId}`
+			`contract/get-commitment-data?commitmentId=${commitment_id}`
 		);
 		setCommitmentLoading(false);
 		setCommitmentData(res.data[0]);
@@ -238,8 +238,8 @@ export default function TransactionsTable({ transactions, ...props }) {
 			setIsZkpModalOpen(true);
 		} else if (action === 'Verify Proof') {
 			try {
-				const { commitmentID } = JSON.parse(tempData.zkp_payload);
-				getCommitmentData(commitmentID);
+				const { commitment_id } = JSON.parse(tempData.zkp_payload);
+				getCommitmentData(commitment_id);
 			} catch (error) {}
 			handleVerifyButton(tempData);
 			setProofModal(true);
@@ -256,8 +256,8 @@ export default function TransactionsTable({ transactions, ...props }) {
 				tempData?.deviceType
 			);
 			try {
-				const { commitmentID } = JSON.parse(tempData.zkp_payload);
-				getCommitmentData(commitmentID);
+				const { commitment_id } = JSON.parse(tempData.zkp_payload);
+				getCommitmentData(commitment_id);
 			} catch (error) {}
 			setIsDataModalOpen(true);
 		}

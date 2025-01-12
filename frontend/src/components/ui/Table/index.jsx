@@ -57,7 +57,7 @@ const ResponsiveTable = ({
 			});
 
 			// Check if conditions match
-			if (existsInRow && cellIndex === columnToApplyClass) {
+			if ((existsInRow || rowExist == true) && cellIndex === columnToApplyClass) {
 				return className; // Apply the class if condition matches
 			}
 		}

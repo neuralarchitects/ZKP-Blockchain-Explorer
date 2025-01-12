@@ -3,12 +3,15 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    width: 100%;
-    height: 100%;
+    width: 100%; /* Make sure it occupies full width of its parent */
+    max-width: 100%; /* Prevent overflow from exceeding parent container */
     align-items: center;
     justify-content: center;
     font-size: 1.5rem;
+    box-sizing: border-box; /* Include padding and border in width/height */
+    overflow: hidden; /* Ensure content stays within bounds */
 }
+
 
 /* Double-sided image styles */
 .double-sided-image {
@@ -24,12 +27,15 @@
 
 /* Syntax Highlighter Customization (Prism) */
 .syntax-highlighter {
-    width: 100%;
+    max-width: 100%; /* Prevents it from exceeding its parent width */
+    width: calc(100% - 32px); /* Adds padding flexibility */
     background-color: #2d2d2d; /* Matches atomDark theme */
     border-radius: 8px;
     padding: 16px;
-    overflow-x: auto;
+    overflow-x: auto; /* Enables horizontal scroll for overflowing content */
     font-family: 'Courier New', Courier, monospace;
     font-size: 1rem;
     line-height: 1.5;
+    box-sizing: border-box; /* Ensure padding doesn't exceed defined width */
 }
+

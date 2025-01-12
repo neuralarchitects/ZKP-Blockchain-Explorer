@@ -103,7 +103,7 @@
 	color: var(--color-secondary);
 	width: auto;
 	max-height: 90dvh;
-	overflow-y: auto;
+	overflow: auto;
 	margin-inline: 20px;
 
 	&.big {
@@ -179,6 +179,10 @@
 	display: flex;
 	flex-direction: column;
 	gap: 16px;
+
+	p {
+		word-break: break-all !important;
+	}
 
 	&.zkp {
 		width: 100%;

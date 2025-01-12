@@ -124,6 +124,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 		);
 		setCommitmentLoading(false);
 		setCommitmentData(res.data[0]);
+		return res.data[0];
 	}
 
 	async function getDeviceImagesFromNode(nodeId, deviceType) {
@@ -206,7 +207,9 @@ export default function TransactionsTable({ transactions, ...props }) {
 	}, [proofModal]);
 
 	function handleCellClick(row, col, item, fullRowData) {
-		if (col === 0 && fullRowData[4].props.children === 'Transaction') {
+		if (
+			col === 0 /* && fullRowData[4].props.children === 'Transaction' */
+		) {
 			const encodedHash = encodeURIComponent(item);
 			navigateTo(`/tx/${encodedHash}`);
 		}
@@ -225,7 +228,15 @@ export default function TransactionsTable({ transactions, ...props }) {
 			console.error(error);
 		}
 
+		tempData = {
+			...tempData,
+			data_payload: {
+				...JSON.parse(tempData.data_payload),
+			},
+		};
+
 		setModalData(tempData);
+
 		console.log('transactions2', transactions);
 		console.log('action', action);
 		console.log('items', items);
@@ -257,7 +268,16 @@ export default function TransactionsTable({ transactions, ...props }) {
 			);
 			try {
 				const { commitment_id } = JSON.parse(tempData.zkp_payload);
-				getCommitmentData(commitment_id);
+				const comitData = await getCommitmentData(commitment_id);
+				tempData = {
+					...tempData,
+					data_payload: {
+						...tempData.data_payload,
+						HV: comitData.device_hardware_version,
+						FV: comitData.firmware_version,
+					},
+				};
+				setModalData(tempData);
 			} catch (error) {}
 			setIsDataModalOpen(true);
 		}
@@ -276,7 +296,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 				]}
 				conditionalOverrides={[
 					{
-						rowExist: 'Transaction',
+						rowExist: true,
 						columnToApplyClass: 0,
 						className: 'transaction-hash-label',
 					},
@@ -376,7 +396,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 				/>
 				<div className="iot-data">
 					{modalData?.data_payload &&
-						Object.entries(JSON.parse(modalData?.data_payload))
+						Object.entries(modalData?.data_payload)
 							.sort(([keyA], [keyB]) => keyB.length - keyA.length)
 							.map(([key, value]) => (
 								<p key={key}>
@@ -400,7 +420,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 				title={`${
 					isZKP == false
 						? `${isDevice ? 'Device Details' : 'Service Details'}`
-						: 'IoT Data'
+						: 'IoT Data and ZKP'
 				}`}
 				onClose={() => {
 					setIsDataModalOpen(false);
@@ -415,9 +435,7 @@ export default function TransactionsTable({ transactions, ...props }) {
 								className="img device"
 							/>
 							{modalData?.data_payload &&
-								Object.entries(
-									JSON.parse(modalData?.data_payload)
-								)
+								Object.entries(modalData?.data_payload)
 									.sort(
 										([keyA], [keyB]) =>
 											keyB.length - keyA.length
@@ -436,6 +454,15 @@ export default function TransactionsTable({ transactions, ...props }) {
 								parsedData={commitmentData}
 								loading={commitmentLoading}
 							/>
+							{isZKP && (
+								<JsonDisplay
+									jsonData={
+										(modalData?.zkp_payload &&
+											modalData?.zkp_payload) ||
+										''
+									}
+								/>
+							)}
 						</div>
 					</section>
 				)}

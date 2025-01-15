@@ -82,6 +82,12 @@
 		align-items: center;
 		font-size: var(--font-md);
 
+		.device-image {
+			width: 100px;
+			height: auto;
+			object-fit: contain;
+		}
+
 		&.commitment-data {
 			width: 100%;
 			max-height: 80dvh;

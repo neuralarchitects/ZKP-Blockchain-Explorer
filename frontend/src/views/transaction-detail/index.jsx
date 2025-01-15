@@ -16,6 +16,7 @@ import Badge from '../../components/ui/Badge';
 import { HiCheckCircle, HiOutlineClock } from 'react-icons/hi';
 import GradientCircle from '../../components/ui/GradientCircle';
 import JsonDisplay from '../../components/ui/JsonDisplay';
+import ImageLoader from '../../components/ui/Image';
 
 export default function TransactionDetail() {
 	const { fetchData, loading } = useFetchData();
@@ -23,6 +24,32 @@ export default function TransactionDetail() {
 	const { id } = useParams();
 	const decodedId = decodeURIComponent(id);
 	const navigateTo = useNavigate();
+	const [deviceImage, setDeviceImage] = useState('');
+
+	function getDeviceUrlByType(devices, type) {
+		const device = devices.find((device) => {
+			const regex = new RegExp(`^${type.replace(/[-_]/g, '[-_]')}$`, 'i'); // Create a regex to match both - and _
+			return regex.test(device.type); // Test the type against the regex
+		});
+		return device ? device.url : null; // Return the URL if found, otherwise null
+	}
+
+	async function getDeviceImagesFromNode(nodeId, deviceType) {
+		let nodeApiUrl = '';
+		if (nodeId == 'developer.fidesinnova.io') {
+			nodeApiUrl = `https://${nodeId}/app/v1/devices`;
+		} else {
+			nodeApiUrl = `https://panel.${nodeId}/app/v1/devices`;
+		}
+		try {
+			const res = await fetchData(nodeApiUrl, {
+				method: 'GET',
+			});
+			setDeviceImage(getDeviceUrlByType(res.data, String(deviceType)));
+		} catch (error) {
+			console.error(error);
+		}
+	}
 
 	async function getTransactionDetail() {
 		const res = await fetchData(
@@ -30,8 +57,24 @@ export default function TransactionDetail() {
 		);
 
 		if (res.data.length > 0) {
-			const selectedItem =
-				res.data.find((item) => item.commitmentData) || res.data[0];
+			let selectedItem =
+				res.data.find(
+					(item) => item.commitmentData || item.zkp_payload
+				) || res.data[0];
+
+			try {
+				if (selectedItem.data_payload) {
+					selectedItem.data_payload = JSON.parse(
+						selectedItem.data_payload
+					);
+					if (selectedItem.deviceType) {
+						getDeviceImagesFromNode(
+							selectedItem.nodeId,
+							selectedItem.deviceType
+						);
+					}
+				}
+			} catch (error) {}
 
 			setDetailData(selectedItem);
 		} else {
@@ -154,6 +197,49 @@ export default function TransactionDetail() {
 						<p className="right-data">
 							{formatBigInt(detailData.gasFee)} FDS
 						</p>
+
+						{detailData?.zkp_payload && (
+							<>
+								<div className="line"></div>
+								<h1>ZKP Details</h1>
+								<p></p>
+
+								<p className="title">Device</p>
+								<p className="right-data">
+									<ImageLoader
+										src={deviceImage}
+										className="device-image"
+									/>
+								</p>
+
+								{detailData?.data_payload &&
+									Object.entries(detailData?.data_payload)
+										.sort(
+											([keyA], [keyB]) =>
+												keyB.length - keyA.length
+										)
+										.map(([key, value]) => (
+											<>
+												<p className="title" key={key}>
+													{key.replace(/_/g, ' ')}
+												</p>
+												<p className="right-data">
+													{key === 'Root'
+														? String(value)
+														: value}
+												</p>
+											</>
+										))}
+								<p className="title">ZKP Payload</p>
+								<p className="right-data commitment-data">
+									<JsonDisplay
+										jsonData={JSON.parse(
+											detailData.zkp_payload
+										)}
+									/>
+								</p>
+							</>
+						)}
 
 						{detailData?.commitmentData && (
 							<>

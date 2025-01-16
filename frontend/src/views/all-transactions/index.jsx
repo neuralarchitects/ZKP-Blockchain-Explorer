@@ -30,13 +30,13 @@ export default function AllTransactionsPage() {
 
 		// Choose the image based on screen width
 		if (width <= 500) {
-			return `/img/banners/${folder}/500.jpg`;
+			return `/img/banners/${folder}/500.png`;
 		} else if (width <= 900) {
-			return `/img/banners/${folder}/900.jpg`;
+			return `/img/banners/${folder}/900.png`;
 		} else if (width <= 1367) {
-			return `/img/banners/${folder}/1367.jpg`;
+			return `/img/banners/${folder}/1367.png`;
 		} else {
-			return `/img/banners/${folder}/2200.jpg`;
+			return `/img/banners/${folder}/2200.png`;
 		}
 	};
 

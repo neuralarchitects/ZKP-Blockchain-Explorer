@@ -26,7 +26,7 @@ export const usePageStore = create((set) => ({
 		},
 		{
 			route: "/tx",
-			title: "All Operations",
+			title: "All Transactions",
 			key: "transactions",
 			component: <AllTransactionsPage />,
 			Icon: HiOutlineCash,

@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import TransactionText from '../../components/ui/TransactionText';
 import TransactionChartComponent from '../../components/containers/TransactionsChart';
 import { Divider } from '@mui/material';
+import AllTransactionsPage from '../all-transactions';
 
 function getFormattedDate() {
 	const options = {
@@ -105,14 +106,16 @@ export default function Dashboard() {
 
 			<div className="transaction-table-holder">
 				<div className="title-holder">
-					<h1 className="title">Recent Transactions</h1>
-					<TransactionText
+					<h1 className="title">Transactions</h1>
+					{/* <TransactionText
 						className={`transaction-text-holder ${
 							animateTransactionText ? 'animate' : ''
 						}`}
-					/>
+					/> */}
 				</div>
-				<TransactionsTable
+
+				<AllTransactionsPage />
+				{/* <TransactionsTable
 					className="transact-table"
 					transactions={latestTransactions}
 				/>
@@ -123,7 +126,7 @@ export default function Dashboard() {
 					className="all-transactions"
 				>
 					More
-				</p>
+				</p> */}
 			</div>
 		</main>
 	);

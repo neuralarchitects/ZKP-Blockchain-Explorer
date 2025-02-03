@@ -4,6 +4,9 @@
 	gap: 32px;
 
 	.main-header {
+		width: 100%;
+		justify-content: space-between;
+		display: flex;
 		font-weight: 700;
 	}
 

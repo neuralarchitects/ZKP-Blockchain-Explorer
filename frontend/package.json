@@ -1,7 +1,7 @@
 {
   "name": "fidesinnova-explorer",
   "proxy": "https://fidesinnova.io",
-  "version": "2.0.0",
+  "version": "2.9.4",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -23,7 +23,7 @@
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.4.0",
     "react-intersection-observer": "^9.13.1",
-    "react-router-dom": "^6.26.2",
+    "react-router-dom": "^6.29.0",
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
     "react-syntax-highlighter": "^15.6.1",

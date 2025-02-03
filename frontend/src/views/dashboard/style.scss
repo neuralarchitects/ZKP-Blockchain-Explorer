@@ -1,182 +1,178 @@
 .dashboard {
-	display: flex;
-	flex-direction: column;
-	flex-grow: 1;
-	height: 100%;
-	gap: 25px;
-	height: fit-content;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: 100%;
+  gap: 25px;
+  height: fit-content;
 
-	.status-chart-container {
-		display: flex;
-		gap: 32px;
+  .status-chart-container {
+    display: flex;
+    gap: 32px;
 
-		@media (max-width: 1200px) {
-			flex-direction: column;
-		}
-	}
+    @media (max-width: 1200px) {
+      flex-direction: column;
+    }
+  }
 
-	.move-up {
-		margin-bottom: -65px;
-	}
+  .move-up {
+    margin-bottom: -65px;
+  }
 
-	.move-up-sm {
-		margin-bottom: -10px;
-	}
+  .move-up-sm {
+    margin-bottom: -10px;
+  }
 
-	.dashboard-header {
-		display: flex;
-		flex-wrap: nowrap;
-		align-items: center;
-		text-align: start;
-		gap: 16px;
-		color: var(--color-primary);
+  .dashboard-header {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    text-align: start;
+    gap: 16px;
+    color: var(--color-primary);
 
-		p {
-			font-size: var(--font-md);
-			white-space: nowrap;
-		}
+    p {
+      font-size: var(--font-md);
+      white-space: nowrap;
+    }
 
-		@media (max-width: 768px) {
-			font-size: var(--font-lg);
-		}
+    @media (max-width: 768px) {
+      font-size: var(--font-lg);
 
-		@media (max-width: 768px) {
-			p {
-				font-size: var(--font-sm);
-			}
-		}
-	}
+      p {
+        display: none;
+      }
+    }
+  }
 
-	.welcome-text {
-		display: flex;
-		gap: 4px;
-		align-items: center;
+  .welcome-text {
+    display: flex;
+    gap: 4px;
+    align-items: center;
 
-		font-size: var(--font-lg);
+    font-size: var(--font-lg);
 
-		.icon {
-			color: #f3cd10;
-			font-size: var(--icon-md);
-		}
-	}
+    .icon {
+      color: #f3cd10;
+      font-size: var(--icon-md);
+    }
+  }
 
-	.transaction-table-holder {
-		display: flex;
-		flex-direction: column;
-		margin-bottom: 12px;
+  .transaction-table-holder {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
 
-		.title-holder {
-			width: 100%;
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			margin-bottom: 12px;
+    .title-holder {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
 
-			.title {
-				font-size: var(--font-lg);
-			}
+      .title {
+        font-size: var(--font-lg);
+      }
 
-			p {
-				font-size: var(--font-sm);
-			}
-		}
-	}
+      p {
+        font-size: var(--font-sm);
+      }
+    }
+  }
 
-	.transact-table {
-		position: relative;
-		z-index: 10;
-	}
+  .transact-table {
+    position: relative;
+    z-index: 10;
+  }
 
-	.all-transactions {
-		cursor: pointer;
-		position: relative;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		background-color: var(--color-secondary);
-		height: 45px;
-		width: 100%;
-		border-radius: 8px;
-		border-top-left-radius: 3px;
-		border-top-right-radius: 3px;
-		color: var(--color-primary);
-		font-size: var(--font-md);
-		box-shadow: 0 0 2px 1px gray;
+  .all-transactions {
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-secondary);
+    height: 45px;
+    width: 100%;
+    border-radius: 8px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    color: var(--color-primary);
+    font-size: var(--font-md);
+    box-shadow: 0 0 2px 1px gray;
 
-		&:hover {
-			color: var(--color-primary);
-			text-decoration: underline;
-		}
-	}
+    &:hover {
+      color: var(--color-primary);
+      text-decoration: underline;
+    }
+  }
 }
 
 @keyframes fadeInScale {
-	0% {
-		opacity: 0;
-		transform: scale(0.8);
-	}
-	50% {
-		opacity: 1;
-		transform: scale(1.05);
-	}
-	100% {
-		transform: scale(1);
-	}
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 @keyframes dropAnimation {
-	0% {
-		opacity: 0;
-		transform: translate(-50%, -10px) scale(0.5); /* Start above and small */
-		box-shadow: 0 0 10px rgba(0, 128, 255, 0.5),
-			0 0 20px rgba(0, 128, 255, 0.3);
-	}
-	50% {
-		opacity: 1;
-		transform: translate(-50%, 20px) scale(1.2); /* Move down and grow */
-		box-shadow: 0 0 15px rgba(0, 128, 255, 0.7),
-			0 0 30px rgba(0, 128, 255, 0.5);
-	}
-	100% {
-		opacity: 0;
-		transform: translate(-50%, 40px) scale(1.5); /* Fade and expand */
-		box-shadow: 0 0 20px rgba(0, 128, 255, 0.1);
-	}
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -10px) scale(0.5); /* Start above and small */
+    box-shadow: 0 0 10px rgba(0, 128, 255, 0.5), 0 0 20px rgba(0, 128, 255, 0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: translate(-50%, 20px) scale(1.2); /* Move down and grow */
+    box-shadow: 0 0 15px rgba(0, 128, 255, 0.7), 0 0 30px rgba(0, 128, 255, 0.5);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, 40px) scale(1.5); /* Fade and expand */
+    box-shadow: 0 0 20px rgba(0, 128, 255, 0.1);
+  }
 }
 
 .transaction-text-holder {
-	background-color: rgba(255, 255, 255, 0.1); /* Slight background contrast */
-	padding: 10px; /* Add padding for better visibility */
-	border-radius: 5px; /* Rounded corners */
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-	position: relative; /* Ensure pseudo-elements are positioned relative to this */
-	display: flex; /* Inline for better text alignment */
-	justify-content: space-between;
-	align-items: center;
-	gap: 6px;
-	overflow: hidden; /* Prevent content spilling out */
-	transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  background-color: rgba(255, 255, 255, 0.1); /* Slight background contrast */
+  padding: 10px; /* Add padding for better visibility */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  position: relative; /* Ensure pseudo-elements are positioned relative to this */
+  display: flex; /* Inline for better text alignment */
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden; /* Prevent content spilling out */
+  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 
-	p {
-		height: fit-content;
-	}
+  p {
+    height: fit-content;
+  }
 
-	&.animate {
-		animation: fadeInScale 1s ease-in-out; /* Trigger scale animation */
-	}
+  &.animate {
+    animation: fadeInScale 1s ease-in-out; /* Trigger scale animation */
+  }
 
-	/* Water drop effect pseudo-element */
-	&::after {
-		content: '';
-		position: absolute;
-		bottom: 0;
-		left: 50%;
-		transform: translateX(-50%) scale(0.5); /* Centered and initially small */
-		width: 10px;
-		height: 10px;
-		background: rgba(0, 128, 255, 0.5); /* Blue water drop */
-		border-radius: 50%; /* Circle shape */
-		opacity: 0; /* Initially hidden */
-		animation: dropAnimation 1s ease-in-out; /* Trigger drop animation */
-	}
+  /* Water drop effect pseudo-element */
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%) scale(0.5); /* Centered and initially small */
+    width: 10px;
+    height: 10px;
+    background: rgba(0, 128, 255, 0.5); /* Blue water drop */
+    border-radius: 50%; /* Circle shape */
+    opacity: 0; /* Initially hidden */
+    animation: dropAnimation 1s ease-in-out; /* Trigger drop animation */
+  }
 }

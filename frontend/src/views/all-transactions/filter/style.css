@@ -1,0 +1,49 @@
+.filter-component {
+  position: relative;
+  width: 200px; /* Square shape */
+  height: 200px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+}
+
+.selected-count {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-weight: bold;
+}
+
+.dropdown-toggle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.dropdown-content {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  right: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  border-top: 1px solid #ccc;
+  padding: 10px;
+  background-color: #fff;
+}
+
+.dropdown-item {
+  display: block;
+  margin: 5px 0;
+  cursor: pointer;
+}
+
+.dropdown-item input {
+  margin-right: 8px;
+}

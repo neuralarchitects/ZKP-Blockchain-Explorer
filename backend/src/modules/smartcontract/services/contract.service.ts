@@ -3,7 +3,6 @@ import {
   Inject,
   Injectable,
   OnApplicationBootstrap,
-  Scope,
 } from '@nestjs/common';
 import { ethers } from 'ethers';
 import * as contractData from '../contract-data';
@@ -14,9 +13,8 @@ import { ServiceService } from 'src/modules/service/services/service.service';
 import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
 import axios from 'axios';
 import { transformTransactions } from 'src/getaways/events.gateway';
-import { MinPriorityQueue } from '@datastructures-js/priority-queue';
 
-function parseProofString(proofString) {
+function parseProofString(proofString: string) {
   let cleanedString = proofString.substring(1, proofString.length - 1);
   let sections = cleanedString.split('],[');
   return sections.map((section) => {
@@ -28,16 +26,6 @@ function parseProofString(proofString) {
 const base64ToHex = (base64String: string) => {
   const buffer = Buffer.from(base64String, 'base64');
   return buffer.toString('hex');
-};
-
-type TransactionData = {
-  _id: ObjectId;
-  number: number;
-  hash: string;
-  parentHash: string;
-  miner: string;
-  timestamp: number; // UNIX timestamp in seconds
-  transactions: any[]; // Assuming the transaction details are not needed for the count
 };
 
 type DailyCount = {
@@ -88,6 +76,7 @@ export class ContractService implements OnApplicationBootstrap {
   private serviceDataArray = [];
   private zkpDataArray = [];
   private commitmentDataArray = [];
+  private sortedRecords: any[] = [];
 
   constructor(
     @Inject(forwardRef(() => DeviceService))
@@ -95,13 +84,6 @@ export class ContractService implements OnApplicationBootstrap {
     @Inject(forwardRef(() => ServiceService))
     private readonly serviceService?: ServiceService,
   ) {
-    setTimeout(() => {
-      console.log(
-        'generateTransactionCounts: ',
-        this.generateTransactionCounts('2024-12-18', '2024-12-28'),
-      );
-    }, 5000);
-
     this.provider = new ethers.JsonRpcProvider(this.rpcUrl, {
       name: 'FidesInnova',
       chainId: this.chainId,
@@ -222,6 +204,69 @@ export class ContractService implements OnApplicationBootstrap {
     }
   }
 
+  private standardizeRecord(record: any): any {
+    const { TransactionTime, transactionTime, timestamp, ...rest } = record;
+    return {
+      ...rest,
+      // Use timestamp if available, otherwise TransactionTime (or fallback to epoch)
+      timestamp: timestamp || transactionTime || TransactionTime || new Date(0),
+    };
+  }
+
+  private insertSorted(arr: any[], newRecord: any): void {
+    // We assume that newRecord.timestamp is a value that can be compared directly (e.g., a Date or a number)
+    let low = 0;
+    let high = arr.length;
+    while (low < high) {
+      let mid = Math.floor((low + high) / 2);
+      // Compare timestamps (if they are dates, ensure you use getTime(), or compare as numbers)
+      if (
+        new Date(arr[mid].timestamp).getTime() <
+        new Date(newRecord.timestamp).getTime()
+      ) {
+        high = mid;
+      } else {
+        low = mid + 1;
+      }
+    }
+    arr.splice(low, 0, newRecord);
+  }
+
+  private initializeSortedRecords(): void {
+    // Process each array to standardize the records
+    const standardizedService = this.serviceDataArray.map((r) =>
+      this.standardizeRecord(r),
+    );
+    const standardizedZkp = this.zkpDataArray.map((r) =>
+      this.standardizeRecord(r),
+    );
+    const standardizedCommitment = this.commitmentDataArray.map((r) =>
+      this.standardizeRecord(r),
+    );
+    // For transactions, be aware of any transformation needed:
+    const standardizedTransactions = this.transactionDataArray
+      .map((item) => transformTransactions(item))
+      .flat()
+      .map((r) => this.standardizeRecord(r));
+
+    // Merge all standardized records
+    const allRecords = [
+      ...standardizedService,
+      ...standardizedZkp,
+      ...standardizedTransactions,
+      ...standardizedCommitment,
+    ];
+
+    // Sort the merged array in descending order by timestamp (newest first)
+    allRecords.sort(
+      (a, b) =>
+        new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime(),
+    );
+
+    // Store into our sortedRecords property
+    this.sortedRecords = allRecords;
+  }
+
   async connectToMongo() {
     const client = new MongoClient(this.mongoUrl);
     await client.connect();
@@ -248,12 +293,28 @@ export class ContractService implements OnApplicationBootstrap {
 
     this.transactionDataArray = await this.transactionsCollection
       .find()
-
       .toArray();
 
-    this.commitmentDataArray = await this.transactionsCollection
-      .find()
-      .toArray();
+    this.commitmentDataArray = await this.commitmentCollection.find().toArray();
+
+    this.initializeSortedRecords();
+
+    const commitmentCollectionStream = this.commitmentCollection.watch();
+    commitmentCollectionStream.on('change', (change: any) => {
+      switch (change.operationType) {
+        case 'insert':
+          this.handleCommitmentInsert(change.fullDocument);
+          break;
+        /* case "update":
+            this.handleServiceUpdate(change.documentKey._id, change.updateDescription.updatedFields);
+            break;
+          case "delete":
+            this.handleServiceDelete(change.documentKey._id);
+            break; */
+        default:
+          console.log('Unrecognized transaction type:', change.operationType);
+      }
+    });
 
     const transactionsCollectionStream = this.transactionsCollection.watch();
     transactionsCollectionStream.on('change', (change: any) => {
@@ -327,7 +388,7 @@ export class ContractService implements OnApplicationBootstrap {
     }
 
     // Process each transaction to aggregate counts by day
-    this.transactionDataArray.forEach((transaction) => {      
+    this.transactionDataArray.forEach((transaction) => {
       const transactionDate = new Date(transaction.timestamp * 1000)
         .toISOString()
         .split('T')[0]; // Convert UNIX timestamp to YYYY-MM-DD
@@ -349,60 +410,97 @@ export class ContractService implements OnApplicationBootstrap {
     };
   }
 
-  getPaginatedRecords = async (limit: number, offset: number): Promise<any> => {
-    const processArray = (array: any[]) =>
-      array.map(({ TransactionTime, ...rest }) => ({
-        ...rest,
-        timestamp: TransactionTime,
-      }));
+  getPaginatedRecords = async (
+    limit: number = 10,
+    offset: number = 1,
+    filter?: string,
+  ): Promise<any> => {
 
-    // Standardize arrays
-    const serviceData = processArray(this.serviceDataArray);
-    const zkpData = this.zkpDataArray; // Assume already has 'timestamp'
+    console.log("filter:", filter);
+    
 
-    const transactionData = this.transactionDataArray
-      .map((item) => transformTransactions(item))
-      .flat();
-
-    const totalCount =
-      serviceData.length + zkpData.length + transactionData.length;
-
-    // Priority Queue for merge
-    const queue = new MinPriorityQueue((item: any) => -item.timestamp); // Negative for descending sort
-
-    // Add all data to the queue
-    [...serviceData, ...zkpData, ...transactionData].forEach((record) =>
-      queue.enqueue(record),
-    );
-
-    // Extract only the required range
-    const paginatedData = [];
-    for (let i = 0; i < offset + limit && !queue.isEmpty(); i++) {
-      const record = queue.dequeue();
-      if (i >= offset) {
-        paginatedData.push(record);
+    // Determine the event types to filter by based on the provided filter.
+    let eventTypes: string[] | null = null;
+    if (filter) {
+      switch (filter) {
+        case 'transaction':
+          eventTypes = ['Transaction'];
+          break;
+        case 'zkp':
+          eventTypes = ['ZKPStored'];
+          break;
+        case 'device':
+          eventTypes = ['DeviceCreated', 'DeviceRemoved'];
+          break;
+        case 'service':
+          eventTypes = ['ServiceCreated', 'ServiceRemoved'];
+          break;
+        case 'commitment':
+          eventTypes = ['CommitmentStored'];
+          break;
+        default:
+          // Unrecognized filter: leave eventTypes null to include all records.
+          eventTypes = null;
       }
     }
 
+    // Start with the full sortedRecords array.
+    let filteredRecords = this.sortedRecords;
+
+    // If a filter is provided (eventTypes is not null), filter by eventType.
+    if (eventTypes) {
+      filteredRecords = filteredRecords.filter(
+        (record) => record.eventType && eventTypes.includes(record.eventType),
+      );
+    }
+
+    // Apply pagination.
+    const total = filteredRecords.length;
+    const startIndex = Number(offset);
+    const paginatedResults = filteredRecords.slice(
+      startIndex,
+      startIndex + Number(limit),
+    );
+
     return {
-      data: paginatedData,
-      count: totalCount,
+      data: paginatedResults,
+      total: Number(total),
+      page: Number(offset)/Number(limit),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / limit),
     };
   };
 
   handleBlockChainInsert(newTransaction: any) {
-    this.transactionDataArray.push(newTransaction); // Sync the new service with the array
-    //console.log('Transaction inserted into array:', newTransaction);
+    // Keep your original array (if needed)
+    this.transactionDataArray.push(newTransaction);
+
+    // Transform and standardize the transaction record.
+    // (If transformTransactions() returns an array, loop over each record.)
+    const transformedRecords = transformTransactions(newTransaction).map(
+      (rec: any) => this.standardizeRecord(rec),
+    );
+    transformedRecords.forEach((record: any) => {
+      this.insertSorted(this.sortedRecords, record);
+    });
+  }
+
+  handleCommitmentInsert(newCommitment: any) {
+    this.commitmentDataArray.push(newCommitment);
+    const standardized = this.standardizeRecord(newCommitment);
+    this.insertSorted(this.sortedRecords, standardized);
   }
 
   handleServiceInsert(newService: any) {
-    this.serviceDataArray.push(newService); // Sync the new service with the array
-    //console.log('Service inserted into array:', newService);
+    this.serviceDataArray.push(newService);
+    const standardized = this.standardizeRecord(newService);
+    this.insertSorted(this.sortedRecords, standardized);
   }
 
-  handleZkpInsert(newDevice: any) {
-    this.zkpDataArray.push(newDevice); // Sync the new device with the array
-    //console.log('ZKP inserted into array:', newDevice);
+  handleZkpInsert(newZkp: any) {
+    this.zkpDataArray.push(newZkp);
+    const standardized = this.standardizeRecord(newZkp);
+    this.insertSorted(this.sortedRecords, standardized);
   }
 
   handleServiceUpdate(id: any, updatedFields: any) {
@@ -449,79 +547,108 @@ export class ContractService implements OnApplicationBootstrap {
       .toArray();
   };
 
-  searchData = async (searchString: string) => {
-    let results: any[] = [];
+  // Add this helper method in your ContractService class:
+  private mergeSortedArrays(arr1: any[], arr2: any[]): any[] {
+    let merged = [];
+    let i = 0,
+      j = 0;
 
-    console.log(
-      'typeof:',
-      typeof this.serviceDeviceCollection,
-      ', serviceDeviceCollection',
-      this.serviceDeviceCollection,
+    // Both arr1 and arr2 must be sorted in descending order by timestamp.
+    while (i < arr1.length && j < arr2.length) {
+      const time1 = new Date(arr1[i].timestamp).getTime();
+      const time2 = new Date(arr2[j].timestamp).getTime();
+      if (time1 >= time2) {
+        merged.push(arr1[i++]);
+      } else {
+        merged.push(arr2[j++]);
+      }
+    }
+    // Append any remaining items
+    while (i < arr1.length) {
+      merged.push(arr1[i++]);
+    }
+    while (j < arr2.length) {
+      merged.push(arr2[j++]);
+    }
+    return merged;
+  }
+
+  private isMatch = (obj: any, searchString: string): boolean => {
+    const hexSearchString = base64ToHex(searchString);
+    return Object.values(obj).some((value: any) => {
+      if (typeof value === 'object' && value !== null) {
+        // Handle binary values like transactionHash
+        if (value._bsontype === 'Binary' && value.sub_type === 0) {
+          const hexValue = value.buffer.toString('hex'); // Convert binary to hex
+          return hexValue === hexSearchString;
+        }
+        // Recursive check for nested objects
+        return this.isMatch(value, searchString);
+      }
+      return String(value).toLowerCase() === searchString.toLowerCase();
+    });
+  };
+
+  searchData = async (
+    searchString: string,
+    page: number = 1,
+    limit: number = 10,
+    filter?: string,
+  ): Promise<any> => {
+    // Determine the event types to filter by, based on the filter value
+    let eventTypes: string[] | null = null;
+    if (filter) {
+      switch (filter) {
+        case 'transaction':
+          eventTypes = ['Transaction'];
+          break;
+        case 'zkp':
+          eventTypes = ['ZKPStored'];
+          break;
+        case 'device':
+          eventTypes = ['DeviceCreated', 'DeviceRemoved'];
+          break;
+        case 'service':
+          eventTypes = ['ServiceCreated', 'ServiceRemoved'];
+          break;
+        case 'commitment':
+          eventTypes = ['CommitmentStored'];
+          break;
+        default:
+          // If the filter value is not recognized, we could either set eventTypes to null
+          // (which will search through all records) or return an empty result.
+          eventTypes = null;
+      }
+    }
+
+    // Filter the sortedRecords array:
+    // 1. If eventTypes is set, only keep records with a matching eventType.
+    // 2. Also filter using your existing isMatch logic.
+    const filteredRecords = this.sortedRecords.filter((record) => {
+      if (eventTypes) {
+        // Only include records that have an eventType property matching one of the values.
+        if (!record.eventType || !eventTypes.includes(record.eventType)) {
+          return false;
+        }
+      }
+      return this.isMatch(record, searchString);
+    });
+
+    // Apply pagination logic.
+    const total = filteredRecords.length;
+    const startIndex = Number(page - 1) * limit;
+    const paginatedResults = filteredRecords.slice(
+      startIndex,
+      Number(startIndex) + Number(limit),
     );
 
-    // Helper function to check if a value in an object matches the search string
-    const isMatch = (obj: any, searchString: string): boolean => {
-      const hexSearchString = base64ToHex(searchString); // Convert Base64 to hex
-
-      return Object.values(obj).some((value: any) => {
-        if (typeof value === 'object' && value !== null) {
-          // Handle binary values like transactionHash
-          if (value._bsontype === 'Binary' && value.sub_type === 0) {
-            const hexValue = value.buffer.toString('hex'); // Convert binary to hex
-            return hexValue === hexSearchString;
-          }
-          // If value is an object, perform a recursive check on nested objects
-          return isMatch(value, searchString);
-        }
-        // Case-insensitive comparison for other values
-        return String(value).toLowerCase() === searchString.toLowerCase();
-      });
+    return {
+      data: paginatedResults,
+      total,
+      page: Number(page),
+      limit: Number(limit),
+      totalPages: Math.ceil(total / limit),
     };
-
-    console.log('ZKP array is:', this.zkpDataArray);
-    console.log('Service array is:', this.serviceDataArray);
-
-    // Search in serviceDataArray
-    this.serviceDataArray.forEach((service) => {
-      if (isMatch(service, searchString)) {
-        results.push(service); // Add matching service to results
-      }
-    });
-
-    // Search in zkpDataArray
-    this.zkpDataArray.forEach((zkp) => {
-      if (isMatch(zkp, searchString)) {
-        results.push(zkp); // Add matching zkp to results
-      }
-    });
-
-    const commitmentRes = await this.commitmentCollection
-      .find({ transactionHash: searchString })
-      .toArray();
-
-      console.log("commitmentRes:", commitmentRes);
-      
-
-    commitmentRes.map((commitment) => results.push(commitment));
-
-    // Search in transactionDataArray
-    this.transactionDataArray.forEach((transaction) => {
-      if (isMatch(transaction, searchString)) {
-        transformTransactions(transaction).forEach((element) => {
-          results.push(element);
-        });
-      }
-    });
-
-    const updatedTimestampResult = results.map((obj) => {
-      const { TransactionTime, timestamp, ...rest } = obj;
-      return {
-        ...rest,
-        timestamp: timestamp || TransactionTime,
-      };
-    });
-
-    return updatedTimestampResult;
   };
 
   async adminWalletData() {

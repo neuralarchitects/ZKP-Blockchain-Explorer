@@ -25,7 +25,8 @@ interface TransformedTransaction {
   value: number;
   _id: ObjectId;
   unixtime_payload: string;
-  timestamp: number;
+  timestamp?: number;
+  TransactionTime?: number;
   nodeId: string;
   eventType: string;
   deviceId: string;

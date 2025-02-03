@@ -5,6 +5,8 @@ import random
 #import sympy as sp
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+from pymongo import MongoClient
+
 
 app = FastAPI()
 
@@ -24,22 +26,36 @@ async def process(data: InputData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+
+# MongoDB connection setup
+MONGO_URI = "mongodb://localhost:27017/"  # Replace with your MongoDB URI
+DATABASE_NAME = "smartcontract_db"
+COLLECTION_NAME = "commitment_smartcontract"
+
+def get_commitment_from_db(commitment_id):
+    # Establish MongoDB connection
+    client = MongoClient(MONGO_URI)
+    db = client[DATABASE_NAME]
+    collection = db[COLLECTION_NAME]
+    
+    # Query the collection for the specified commitment_id
+    document = collection.find_one({"commitmentID": commitment_id})
+    if not document:
+        raise ValueError(f"No document found with commitment_id: {commitment_id}")
+    
+    # Retrieve the commitmentData field
+    commitmentData = document.get("commitmentData")
+    if not commitmentData:
+        raise ValueError(f"'commitmentData' not found for commitment_id: {commitment_id}")
+    
+    return commitmentData
+
+
+
+
 def verifier(proof_data: JSONType) -> bool:
     verify = False
-   # beta3 = 5  # Must be a random number
-   # z_random = 2
-
-
-   # alpha = 10  # a random number based on s_x
-   # beta1 = 22  # beta1 = hashAndExtractLower4Bytes(s_x[8], p)
-   # beta2 = 80  # beta2 = hashAndExtractLower4Bytes(s_x[9], p)
-   #  etaA, etaB, etaC = 2, 30, 100
-   # eta_w_hat, eta_z_hatA, eta_z_hatB, eta_z_hatC = 1, 4, 10, 8
-   # eta_h_0_x, eta_s_x, eta_g_1_x, eta_h_1_x = 32, 45, 92, 11
-   # eta_g_2_x, eta_h_2_x, eta_g_3_x, eta_h_3_x = 1, 5, 25, 63
-
-
-    
 
 
     mappings = [
@@ -63,35 +79,6 @@ def verifier(proof_data: JSONType) -> bool:
 
 
 
-    # Test the function
-    print(Polynomial.get_vk(1, mappings))  # Output: 101
-    print(Polynomial.get_vk(2, mappings))  # Output: 202
-
-
-    # Read setup
-    # with open("ZKP-NEW/final_setup.json", "r") as setup_file:
-    #     setup_data = json.load(setup_file)
-    # Class = setup_data["Class"]
-    # ck = setup_data["ck"]
-    # vk = setup_data["vk"]
-
-    
-
-    # Read commitment
-    with open("program_commitment.json", "r") as commitment_file:
-        commitment_data = json.load(commitment_file)
-    rowA_x = commitment_data["RowA"]
-    colA_x = commitment_data["ColA"]
-    valA_x = commitment_data["ValA"]
-    rowB_x = commitment_data["RowB"]
-    colB_x = commitment_data["ColB"]
-    valB_x = commitment_data["ValB"]
-    rowC_x = commitment_data["RowC"]
-    colC_x = commitment_data["ColC"]
-    valC_x = commitment_data["ValC"]
-    Class = commitment_data["Class"]
-    
-    vk = Polynomial.get_vk(Class, mappings)
 
     # Read proof
    # with open("ZKP-NEW/final_proof.json", "r") as proof_file:
@@ -112,9 +99,7 @@ def verifier(proof_data: JSONType) -> bool:
     g_3_x = proof_data["P14AHP"]
     h_3_x = proof_data["P15AHP"]
     y_prime = proof_data["P16AHP"]
-
     p_17_AHP = proof_data["P17AHP"]
-
     Com1_AHP_x = proof_data["Com1_AHP_x"]   #   Added by Moka
     Com2_AHP_x = proof_data["Com2_AHP_x"]
     Com3_AHP_x = proof_data["Com3_AHP_x"]
@@ -128,10 +113,49 @@ def verifier(proof_data: JSONType) -> bool:
     Com11_AHP_x = proof_data["Com11_AHP_x"]
     Com12_AHP_x = proof_data["Com12_AHP_x"]
     Com13_AHP_x = proof_data["Com13_AHP_x"]
+    commitment_id_proof = proof_data["commitment_id"]
 
-    #curve = proof_data["curve"]
-    #protocol = proof_data["protocol"]
 
+   
+    # Replace this with the input commitment_id
+    try:
+        # Fetch commitment data from MongoDB
+        commitment_data = get_commitment_from_db(commitment_id_proof)
+        commitment_data = json.loads(commitment_data)
+        
+        print("Type of commitment_data:", type(commitment_data))
+
+        print("Commitment data retrieved successfully:", commitment_data)
+        
+        print("000000000000000000000")
+        print("rowA_x:", commitment_data["RowA"])
+        print("000000000000000000000")
+    except Exception as e:
+        print(f"Error fetching commitment: {e}")
+    
+   
+
+
+    # Read commitment
+    # with open("program_commitment.json", "r") as commitment_file:
+    # commitment_data = json.load(commitment_file)
+
+    rowA_x = commitment_data["RowA"]
+    colA_x = commitment_data["ColA"]
+    valA_x = commitment_data["ValA"]
+    rowB_x = commitment_data["RowB"]
+    colB_x = commitment_data["ColB"]
+    valB_x = commitment_data["ValB"]
+    rowC_x = commitment_data["RowC"]
+    colC_x = commitment_data["ColC"]
+    valC_x = commitment_data["ValC"]
+    Class = commitment_data["class"]
+
+    print("11111111111111111")
+
+    vk = Polynomial.get_vk(Class, mappings)
+
+    print("22222222222222222222222")
 
 
     # Read class
@@ -153,6 +177,7 @@ def verifier(proof_data: JSONType) -> bool:
     else:
        raise ValueError(f"Class {Class} not found in class-N.json")
 
+    print("333333333333333333333333333")
 
     x_prime = Polynomial.hash_and_extract_lower_4_bytes(Polynomial.evaluate_polynomial(s_x, 22, p), p)
 
@@ -178,7 +203,8 @@ def verifier(proof_data: JSONType) -> bool:
     eta_g_3_x = Polynomial.hash_and_extract_lower_4_bytes(Polynomial.evaluate_polynomial(s_x, 20, p), p)
     eta_h_3_x = Polynomial.hash_and_extract_lower_4_bytes(Polynomial.evaluate_polynomial(s_x, 21, p), p)
 
-   
+    print("4444444444444444444444444444444444")
+
 
     print("n:", n)
     print("m:", m)
@@ -241,6 +267,11 @@ def verifier(proof_data: JSONType) -> bool:
     Polynomial.print_polynomial(poly_sig_b, "poly_sig_b(x)")
     Polynomial.print_polynomial(poly_sig_c, "poly_sig_c(x)")
 
+    print("555555555555555555555555555555555")
+
+
+
+
     a_x = Polynomial.add_polynomials(
         Polynomial.add_polynomials(
             Polynomial.multiply_polynomials(poly_sig_a, Polynomial.multiply_polynomials(poly_pi_b, poly_pi_c, p), p),
@@ -268,14 +299,16 @@ def verifier(proof_data: JSONType) -> bool:
 
     t = n_i + 1
     
+    print("6666666666666666666666666666666")
+
+
    #   Edited by Moka
     zero_to_t_for_z = [1]
     for i in range(32):
         zero_to_t_for_z.append(Com1_AHP_x[i])
 
     zero_to_t_for_H = H[:t]
-    # for i in range(t):
-    #     zero_to_t_for_H.append(H[i])
+
 
 
     print("ttttttttttttttttt")
@@ -334,9 +367,6 @@ def verifier(proof_data: JSONType) -> bool:
         Polynomial.multiply_polynomial_by_number(z_hatC, eta_z_hatC, p),
         p
     )
-
-
-
     
 
     eq11 = (Polynomial.evaluate_polynomial(h_3_x, beta3, p) * Polynomial.evaluate_polynomial(vK_x, beta3, p)) % p
@@ -379,8 +409,6 @@ def verifier(proof_data: JSONType) -> bool:
 
 
 
-
-
     print("eq12:", eq12)
     print("eq21:", eq21)
     print("eq22:", eq22)
@@ -388,7 +416,6 @@ def verifier(proof_data: JSONType) -> bool:
     print("eq32:", eq32)
     print("eq41:", eq41)
     print("eq42:", eq42)
-
     print("eq51:", eq51)
     print("eq52:", eq52)
 
@@ -400,6 +427,7 @@ def verifier(proof_data: JSONType) -> bool:
         lhs = lhs + p if lhs < 0 else lhs
         rhs = rhs + p if rhs < 0 else rhs
         return lhs == rhs
+    print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
 
     eq11_check = check_equation(eq11, eq12, p)
     eq21_check = check_equation(eq21, eq22, p)
@@ -408,13 +436,10 @@ def verifier(proof_data: JSONType) -> bool:
 
     eq51_check = check_equation(eq51, eq52, p)
 
-
+    print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
+    
+    
     if eq11_check and eq21_check and eq31_check and eq41_check and eq51_check:
         verify = True
 
     return verify
-
-
-#proof_data = {"commitmentID":"123456789","iot_manufacturer_name":"FidesInnova","iot_device_name":"test","device_hardware_version":"1","firmware_version":"2","Class":2,"P1AHP":4255,"P2AHP":[1020376,2374,464250,1413000,739800,1395163],"P3AHP":[1637651,1143959,1552494,192459,1329299,1585875,1371442,1340964,1274738,668958,570137,912320,654004,143609,75338,900171,1252537,774494,1635491,203342,1320737,1510947,1178490,1204928,862657,316104,610953,842661,1116910,1124399,1492922,1242586,55518,287655,1274645,1307213,1299171,448933,206351],"P4AHP":[858339,145039,1195032,1321199,712726,399806,212248,1279615,1081525,957266,105031,1576365,1487920,1234947,453157,1584983,423072,88555,963602,524764,450575,851220,194532,821095,909980,769999,892446,473297,1583809,1486317,889599,580649,1049305,31805,1226599,944384,140612,184944,123420],"P5AHP":[1204343,550082,303889,186455,1403631,1356088,366152,967276,1137276,81625,659729,1596596,1056056,182271,967991,1264680,1460660,1423258,1357289,1417022,1540879,1428005,1178747,1372430,1104680,587361,661698,935079,1176963,608077,506836,744277,24000,1533781,705635,1500307,1448824,1245688,1355747],"P6AHP":[774673,421488,488831,743713,1220920,730387,78325,723440,312820,12268,6677,457348,1299974,58796,581305,892206,813725,414507,571395,1074078,682437,1606167,1142416,633085,750153,263048,1254675,329007,1234740,830757,185987,565818,863642,1273848,1202358,612811,1375207,113047,937812,997566],"P7AHP":[115,3,0,0,20,1,0,17,101,0,5],"P8AHP":[1300703,1542281,335438,512891,767730,949231,1660118,210656,731389,931440,867545,982691,1088580,581458,1270278,977753,1161065,215999,573762,1017661,872792,921395,686339,1475083,1644632,209794,576867,1013568,1143561,185503,478497,438007,777166,1001638,1578662,125583],"P9AHP":[997686,1108973,246943,144008,1612013,1153190,113690,398961,1501589,936838,1610650,56835,226333,328785,1200531,681574,107493,1106626,451610,1677159,1330999,1426598,1369987,587134,72040,1412021,1083474,1419580,629867,974226,502385,1664574,881602,940255,183899,499478,869807,1322604],"P10AHP":1261110,"P11AHP":[455935,231579,1617134,598613,1584743,776228,459663,1099769,156025,1660844,594114,97753,1353223,326672,1122463,1040680,1517619,493745,293268,921639,890064,658008,1323901,1184461,619653,640570,920747,756537,827316,1581200,1578319,1126949,237010,372445,1507749,1318097],"P12AHP":[1669671,42958,1178281,480749,1362264,682456,418224,703377,158422,477866,1631072,258612,951080,267638,1497485,467736,1019454,719681,1658803,1460491,576527,770945,555912,1186791,1609670,576784,499107,1490750,573845,778046,1644427,1139400,392840,762451,1211966,785813],"P13AHP":1613950,"P14AHP":[1310913,1193977,570600,1516613,102958,150467,1648061],"P15AHP":[680773,1341140,98204,88517,393300,643266,1603209,322965,1413684,835298,361520,1227580,1488945,521975,731554,753992,1004432,16443,1220790,1301638,1086405,840161,1526458,1037651,653620,1559734,1617525,1319167,875151,1233121,929072,1662006,732803,158189,332038,211117,588625,1409637,643627,1598091,801330,61748],"P16AHP":693950,"P17AHP":975158}
-#verification_result = verifier(proof_data)
-#print("Verification result:", verification_result)

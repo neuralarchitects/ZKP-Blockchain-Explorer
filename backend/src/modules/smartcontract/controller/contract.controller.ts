@@ -188,10 +188,15 @@ export class contractController {
   @ApiOperation({
     summary: 'Searching data by string.',
     description:
-      'This api return a search result between smart contract data by giving string.',
+      'This API returns a paginated search result between smart contract data by giving a string.',
   })
-  async searchInSmartContracts(@Query('search') search: string) {
-    return await this.contractService.searchData(search);
+  async searchInSmartContracts(
+    @Query('search') search: string,
+    @Query('page') page: number = 1, // Default to page 1
+    @Query('limit') limit: number = 10, // Default to 10 items per page
+    @Query('filter') filter?: string,
+  ) {
+    return await this.contractService.searchData(search, page, limit, filter);
   }
 
   @Get('/get-commitment-data')
@@ -201,7 +206,9 @@ export class contractController {
     description:
       'This api return a search result between smart contract data by giving string.',
   })
-  async getCommitmentDataByCommitmentId(@Query('commitmentId') commitment: string) {
+  async getCommitmentDataByCommitmentId(
+    @Query('commitmentId') commitment: string,
+  ) {
     return await this.contractService.getCommitmentData(commitment);
   }
 
@@ -220,10 +227,12 @@ export class contractController {
   async getData(
     @Query('limit') limit: number,
     @Query('offset') offset: number,
+    @Query('filter') filter?: string,
   ) {
     const records = await this.contractService.getPaginatedRecords(
       Number(limit),
       Number(offset),
+      filter,
     );
     return records;
   }
@@ -268,5 +277,3 @@ export class contractController {
     return this.contractService.removeSharedDevice(body.nodeId, body.deviceId)
   } */
 }
-
-

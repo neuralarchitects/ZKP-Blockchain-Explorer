@@ -1,8 +1,8 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./style.scss";
 import SearchIcon from "../../../icons/search";
 import AnimatedWidth from "../../ui/Animated/Width";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Button,
   Input,
@@ -26,6 +26,17 @@ export default function SearchBar({ initialValue = "" }) {
   const [selectedFilter, setSelectedFilter] = useState(filters[0].value);
   const inputRef = useRef(null);
   const navigateTo = useNavigate();
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const searchFilterString = params.get("filter");
+
+  useEffect(() => {
+    filters.forEach((item) => {
+      if (item.value == searchFilterString) {
+        setSelectedFilter(item.value);
+      }
+    });
+  }, [searchFilterString]);
 
   async function handleSearch(string) {
     if (String(string).trim().length === 0) {

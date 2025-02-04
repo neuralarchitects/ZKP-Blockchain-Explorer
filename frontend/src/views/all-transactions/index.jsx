@@ -23,20 +23,6 @@ export default function AllTransactionsPage({filter = "all"}) {
     getPageData();
   }, [nowOffset]);
 
-  const getResponsiveImage = (folder) => {
-    const width = window.innerWidth;
-
-    // Choose the image based on screen width
-    if (width <= 500) {
-      return `/img/banners/${folder}/500.png`;
-    } else if (width <= 900) {
-      return `/img/banners/${folder}/900.png`;
-    } else if (width <= 1367) {
-      return `/img/banners/${folder}/1367.png`;
-    } else {
-      return `/img/banners/${folder}/2200.png`;
-    }
-  };
 
   return (
     <main className="contract-data-container">

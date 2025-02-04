@@ -13,13 +13,14 @@ import {
 } from "@mui/material";
 
 const filters = [
-  { title: "All Filters", value: "all" },
-  { title: "Transactions", value: "transaction" },
+  { title: "All Transactions", value: "all" },
+  { title: "Fund Transfer", value: "transaction" },
   { title: "Services", value: "service" },
   { title: "Devices", value: "device" },
-  { title: "Device Data+ZKP's", value: "zkp" },
-  { title: "Device Commitments", value: "commitment" },
+  { title: "Device Data+ZKP", value: "zkp" },
+  { title: "Device Commitment", value: "commitment" },
 ];
+
 
 export default function SearchBar({ initialValue = "" }) {
   const [inputValue, setInputValue] = useState(initialValue);
@@ -39,7 +40,12 @@ export default function SearchBar({ initialValue = "" }) {
   }, [searchFilterString]);
 
   async function handleSearch(string) {
-    if (String(string).trim().length === 0) {
+    navigateTo(
+      `/search?text=${encodeURIComponent(
+        string
+      )}&page=1&filter=${selectedFilter}`
+    );
+    /* if (String(string).trim().length === 0) {
       return false;
     } else {
       navigateTo(
@@ -47,7 +53,7 @@ export default function SearchBar({ initialValue = "" }) {
           string
         )}&page=1&filter=${selectedFilter}`
       );
-    }
+    } */
   }
 
   // Handler for dropdown filter change

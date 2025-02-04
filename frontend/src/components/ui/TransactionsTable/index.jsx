@@ -8,6 +8,7 @@ import useFetchData from "../../../services/api/useFetchData";
 import LetterAnimation from "../Animated/HackerEffect";
 import GenerateJsonData from "./GenerateJsonData";
 import JsonDisplay from "../JsonDisplay";
+import { formatDateTime } from "../../../utility/functions";
 
 function transformTransactionsData(data) {
   return data.map((item) => {
@@ -15,17 +16,7 @@ function transformTransactionsData(data) {
       item.timestamp = item.transactionTime;
     }
     const date = new Date(item.timestamp * 1000);
-    const formattedDate = date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-    const formattedTime = date.toLocaleTimeString("en-US", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    });
-
+    
     const transactionHash = item.transactionHash || "";
     const nodeId = item.nodeId || "";
     const idField = item.deviceId || item.serviceId || "";
@@ -52,8 +43,7 @@ function transformTransactionsData(data) {
     return {
       ...item,
       transactionHash,
-      formattedDate,
-      formattedTime,
+      formattedDate: formatDateTime(date),
       nodeId,
       idField,
       eventType,
@@ -292,7 +282,7 @@ export default function TransactionsTable({ transactions, ...props }) {
     <>
       <ResponsiveTable
         {...props}
-        titles={["Transaction Id", "Date", "Time", "Server Name", "Event Type"]}
+        titles={["Transaction Id", "Transaction Date", "Node Id", "Event Type"]}
         pagination={false}
         conditionalOverrides={[
           {
@@ -302,37 +292,37 @@ export default function TransactionsTable({ transactions, ...props }) {
           },
           {
             rowExist: "ZKP Stored",
-            columnToApplyClass: 4,
+            columnToApplyClass: 3,
             className: "event-label zkp",
           },
           {
             rowExist: "Device Shared",
-            columnToApplyClass: 4,
+            columnToApplyClass: 3,
             className: "event-label device",
           },
           {
             rowExist: "Device Unshared",
-            columnToApplyClass: 4,
+            columnToApplyClass: 3,
             className: "event-label device",
           },
           {
             rowExist: "Service Shared",
-            columnToApplyClass: 4,
+            columnToApplyClass: 3,
             className: "event-label service",
           },
           {
             rowExist: "Service Unshared",
-            columnToApplyClass: 4,
+            columnToApplyClass: 3,
             className: "event-label service",
           },
           {
             rowExist: "Commitment Stored",
-            columnToApplyClass: 4,
+            columnToApplyClass: 3,
             className: "event-label commitment",
           },
           {
             rowExist: "Transaction",
-            columnToApplyClass: 4,
+            columnToApplyClass: 3,
             className: "event-label transaction",
           },
         ]}
@@ -343,14 +333,12 @@ export default function TransactionsTable({ transactions, ...props }) {
           ({
             transactionHash,
             formattedDate,
-            formattedTime,
             nodeId,
             eventType,
             actions,
           }) => [
             transactionHash,
             formattedDate,
-            formattedTime,
             nodeId,
             <span>
               {eventTypeLabels[eventType]

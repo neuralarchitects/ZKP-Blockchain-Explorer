@@ -2,6 +2,7 @@ import React from 'react';
 import './style.scss';
 import ResponsiveTable from '../Table';
 import ImageLoader from '../Image';
+import { formatDateTime } from '../../../utility/functions';
 
 function transformDevicesToArray(devices) {
 	return devices.map((device) => [
@@ -16,7 +17,7 @@ function transformDevicesToArray(devices) {
 		</figure>,
 		device.deviceName || '',
 		device.deviceEncryptedId || '',
-		new Date(device.insertDate).toLocaleDateString() || '',
+		formatDateTime(device.insertDate) || '',
 		device.nodeId || '',
 		<div className='fw-hw-holder'>
 			<p>FW: {device.firmwareVersion || 0}</p>
@@ -31,8 +32,8 @@ export default function DevicesTable({ data }) {
 			titles={[
 				'Device',
 				'Name',
-				'Encrypted Id',
-				'Creation Date',
+				'Device Id',
+				'Installation Date',
 				'Node Id',
 				'Firmware/Hardware Version',
 			]}

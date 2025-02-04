@@ -12,9 +12,9 @@ export default function Devices() {
 
 	const fetchAllDevices = async () => {
 		try {
-			const devices = await fetchData('device/get-all-shared-devices', {
+			const devices = await fetchData('device/get-all-shared-devices'/* , {
 				cacheDuration: 60000,
-			});
+			} */);
 			const updatedDevices = devices.data.map((device) => {
 				return {
 					...device,

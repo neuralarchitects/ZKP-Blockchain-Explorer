@@ -415,9 +415,7 @@ export class ContractService implements OnApplicationBootstrap {
     offset: number = 1,
     filter?: string,
   ): Promise<any> => {
-
-    console.log("filter:", filter);
-    
+    console.log('filter:', filter);
 
     // Determine the event types to filter by based on the provided filter.
     let eventTypes: string[] | null = null;
@@ -465,7 +463,7 @@ export class ContractService implements OnApplicationBootstrap {
     return {
       data: paginatedResults,
       total: Number(total),
-      page: Number(offset)/Number(limit),
+      page: Number(offset) / Number(limit),
       limit: Number(limit),
       totalPages: Math.ceil(total / limit),
     };
@@ -595,6 +593,10 @@ export class ContractService implements OnApplicationBootstrap {
     limit: number = 10,
     filter?: string,
   ): Promise<any> => {
+    if (String(searchString).trim().length === 0) {
+      return this.getPaginatedRecords(limit, Number(page - 1) * limit, filter)
+    }
+
     // Determine the event types to filter by, based on the filter value
     let eventTypes: string[] | null = null;
     if (filter) {

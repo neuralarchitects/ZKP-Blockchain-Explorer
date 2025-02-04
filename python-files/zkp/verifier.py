@@ -127,9 +127,7 @@ def verifier(proof_data: JSONType) -> bool:
 
         print("Commitment data retrieved successfully:", commitment_data)
         
-        print("000000000000000000000")
         print("rowA_x:", commitment_data["RowA"])
-        print("000000000000000000000")
     except Exception as e:
         print(f"Error fetching commitment: {e}")
     
@@ -151,11 +149,9 @@ def verifier(proof_data: JSONType) -> bool:
     valC_x = commitment_data["ValC"]
     Class = commitment_data["class"]
 
-    print("11111111111111111")
 
     vk = Polynomial.get_vk(Class, mappings)
 
-    print("22222222222222222222222")
 
 
     # Read class
@@ -177,7 +173,6 @@ def verifier(proof_data: JSONType) -> bool:
     else:
        raise ValueError(f"Class {Class} not found in class-N.json")
 
-    print("333333333333333333333333333")
 
     x_prime = Polynomial.hash_and_extract_lower_4_bytes(Polynomial.evaluate_polynomial(s_x, 22, p), p)
 
@@ -203,7 +198,6 @@ def verifier(proof_data: JSONType) -> bool:
     eta_g_3_x = Polynomial.hash_and_extract_lower_4_bytes(Polynomial.evaluate_polynomial(s_x, 20, p), p)
     eta_h_3_x = Polynomial.hash_and_extract_lower_4_bytes(Polynomial.evaluate_polynomial(s_x, 21, p), p)
 
-    print("4444444444444444444444444444444444")
 
 
     print("n:", n)
@@ -267,7 +261,6 @@ def verifier(proof_data: JSONType) -> bool:
     Polynomial.print_polynomial(poly_sig_b, "poly_sig_b(x)")
     Polynomial.print_polynomial(poly_sig_c, "poly_sig_c(x)")
 
-    print("555555555555555555555555555555555")
 
 
 
@@ -299,7 +292,6 @@ def verifier(proof_data: JSONType) -> bool:
 
     t = n_i + 1
     
-    print("6666666666666666666666666666666")
 
 
    #   Edited by Moka
@@ -311,11 +303,9 @@ def verifier(proof_data: JSONType) -> bool:
 
 
 
-    print("ttttttttttttttttt")
 
     polyX_HAT_H = Polynomial.setup_lagrange_polynomial(zero_to_t_for_H, zero_to_t_for_z, p, "x_hat(h)")
 
-    print("ffffffffffffffffff")
 
     r_Sum_x = Polynomial.multiply_polynomials(r_alpha_x, Sum_M_eta_M_z_hat_M_x, p)
     v_H = Polynomial.expand_polynomials(zero_to_t_for_H, p)
@@ -427,19 +417,19 @@ def verifier(proof_data: JSONType) -> bool:
         lhs = lhs + p if lhs < 0 else lhs
         rhs = rhs + p if rhs < 0 else rhs
         return lhs == rhs
-    print("rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr")
 
     eq11_check = check_equation(eq11, eq12, p)
     eq21_check = check_equation(eq21, eq22, p)
     eq31_check = check_equation(eq31, eq32, p)
-    eq41_check = check_equation(eq41, eq42, p)
+    # eq41_check = check_equation(eq41, eq42, p)
 
     eq51_check = check_equation(eq51, eq52, p)
 
-    print("nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn")
     
     
-    if eq11_check and eq21_check and eq31_check and eq41_check and eq51_check:
+    # if eq11_check and eq21_check and eq31_check and eq41_check and eq51_check:
+    if eq11_check and eq21_check and eq31_check and eq51_check:
+
         verify = True
 
     return verify

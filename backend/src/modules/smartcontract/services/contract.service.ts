@@ -450,6 +450,12 @@ export class ContractService implements OnApplicationBootstrap {
       filteredRecords = filteredRecords.filter(
         (record) => record.eventType && eventTypes.includes(record.eventType),
       );
+
+      if (eventTypes[0] == 'Transaction') {
+        filteredRecords = filteredRecords.filter(
+          (record) => Number(record.value) !== 0,
+        );
+      }
     }
 
     // Apply pagination.
@@ -594,7 +600,7 @@ export class ContractService implements OnApplicationBootstrap {
     filter?: string,
   ): Promise<any> => {
     if (String(searchString).trim().length === 0) {
-      return this.getPaginatedRecords(limit, Number(page - 1) * limit, filter)
+      return this.getPaginatedRecords(limit, Number(page - 1) * limit, filter);
     }
 
     // Determine the event types to filter by, based on the filter value

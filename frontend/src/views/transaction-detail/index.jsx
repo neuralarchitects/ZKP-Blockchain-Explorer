@@ -186,7 +186,8 @@ export default function TransactionDetail() {
 
                 <p className="title">Device</p>
                 <p className="right-data">
-                  <ImageLoader src={deviceImage} className="device-image" />
+                  Siemens IOT2050
+                  {/* <ImageLoader src={deviceImage} className="device-image" /> */}
                 </p>
 
                 {detailData?.data_payload &&

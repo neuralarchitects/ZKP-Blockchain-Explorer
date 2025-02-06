@@ -186,7 +186,7 @@ export default function TransactionDetail() {
 
                 <p className="title">Device</p>
                 <p className="right-data">
-                  Siemens IOT2050
+                  {String(detailData?.deviceType).replace("_", " ")}
                   {/* <ImageLoader src={deviceImage} className="device-image" /> */}
                 </p>
 

@@ -90,6 +90,19 @@
   max-width: 650px !important;
   margin-inline: auto;
 
+  .img {
+    align-self: center;
+    width: 200px;
+    height: auto;
+    border-radius: 10px;
+    overflow: hidden;
+
+    &.device {
+      width: 120px !important;
+      height: auto;
+    }
+  }
+
   .iot-data {
     display: flex;
     flex-direction: column;
@@ -173,7 +186,7 @@
       overflow: hidden;
 
       &.device {
-        width: 100px !important;
+        width: 120px !important;
         height: auto;
       }
     }

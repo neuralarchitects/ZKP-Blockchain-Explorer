@@ -16,7 +16,7 @@ function transformTransactionsData(data) {
       item.timestamp = item.transactionTime;
     }
     const date = new Date(item.timestamp * 1000);
-    
+
     const transactionHash = item.transactionHash || "";
     const nodeId = item.nodeId || "";
     const idField = item.deviceId || item.serviceId || "";
@@ -330,13 +330,7 @@ export default function TransactionsTable({ transactions, ...props }) {
         actions={true}
         onCellClick={handleCellClick}
         data={transformedData.map(
-          ({
-            transactionHash,
-            formattedDate,
-            nodeId,
-            eventType,
-            actions,
-          }) => [
+          ({ transactionHash, formattedDate, nodeId, eventType, actions }) => [
             transactionHash,
             formattedDate,
             nodeId,

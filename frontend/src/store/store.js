@@ -1,9 +1,7 @@
 // store.js
 import { create } from "zustand";
 import Dashboard from "../views/dashboard";
-import {
-  HiOutlineDocumentText,
-} from "react-icons/hi";
+import { HiOutlineDocumentText } from "react-icons/hi";
 import Services from "../views/services";
 import Devices from "../views/devices";
 import SearchPage from "../views/search";
@@ -16,7 +14,6 @@ import { GrBusinessService } from "react-icons/gr";
 import { SiGoogledataflow } from "react-icons/si";
 import { TbWorldShare } from "react-icons/tb";
 
-
 export const usePageStore = create((set) => ({
   searchString: "",
   pages: [
@@ -27,14 +24,13 @@ export const usePageStore = create((set) => ({
       component: <Dashboard />,
       Icon: DashboardIcon,
     },
-    /* {
-			route: "/tx",
-			title: "Transactions",
-			key: "transactions",
-			component: <AllTransactionsPage />,
-			Icon: HiOutlineCash,
-		}, */
-    
+    {
+      route: "/device-data-zkp",
+      title: "Device Data+ZKPs",
+      key: "device commitments",
+      component: <DeviceDataZkp />,
+      Icon: SiGoogledataflow,
+    },
     {
       route: "/shared-devices",
       title: "Shared Devices",
@@ -56,13 +52,7 @@ export const usePageStore = create((set) => ({
       component: <CommitmentData />,
       Icon: HiOutlineDocumentText,
     },
-    {
-      route: "/device-data-zkp",
-      title: "Device Data+ZKPs",
-      key: "device commitments",
-      component: <DeviceDataZkp />,
-      Icon: SiGoogledataflow,
-    },
+
     {
       route: "/search",
       key: "search",
@@ -75,6 +65,13 @@ export const usePageStore = create((set) => ({
       component: <TransactionDetail />,
       hidden: true,
     },
+    /* {
+			route: "/tx",
+			title: "Transactions",
+			key: "transactions",
+			component: <AllTransactionsPage />,
+			Icon: HiOutlineCash,
+		}, */
   ],
   setSearch: (string) => set({ searchString: String(string) }),
 }));

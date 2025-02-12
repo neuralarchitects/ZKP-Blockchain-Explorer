@@ -9,6 +9,7 @@ import LetterAnimation from "../Animated/HackerEffect";
 import GenerateJsonData from "./GenerateJsonData";
 import JsonDisplay from "../JsonDisplay";
 import { formatDateTime } from "../../../utility/functions";
+import { Buffer } from "buffer";
 
 function transformTransactionsData(data) {
   return data.map((item) => {
@@ -393,7 +394,7 @@ export default function TransactionsTable({ transactions, ...props }) {
       </EModal>
 
       <EModal
-        className={`data-modal ${!isZKP && "big"}`}
+        className={`data-modal can-select ${!isZKP && "big"}`}
         isOpen={isDataModalOpen}
         title={`${
           isZKP == false
@@ -409,6 +410,14 @@ export default function TransactionsTable({ transactions, ...props }) {
           <section className="main-data">
             <div className="holder">
               <ImageLoader src={deviceImage} className="img device" />
+              <p>
+                Mac:{" "}
+                <span>
+                  {modalData?.deviceId
+                    ? Buffer.from(modalData.deviceId, "base64").toString("utf8")
+                    : "Not Found"}
+                </span>
+              </p>
               {modalData?.data_payload &&
                 Object.entries(modalData?.data_payload)
                   .sort(([keyA], [keyB]) => keyB.length - keyA.length)
@@ -418,6 +427,7 @@ export default function TransactionsTable({ transactions, ...props }) {
                       <span>{key === "Root" ? String(value) : value}</span>
                     </p>
                   ))}
+
               <GenerateJsonData
                 parsedData={commitmentData}
                 loading={commitmentLoading}

@@ -15,9 +15,9 @@ import {
 const filters = [
   { title: "All Transactions", value: "all" },
   { title: "Fund Transfer", value: "transaction" },
-  { title: "Services", value: "service" },
-  { title: "Devices", value: "device" },
   { title: "Device Data+ZKP", value: "zkp" },
+  { title: "Devices", value: "device" },
+  { title: "Services", value: "service" },
   { title: "Device Commitment", value: "commitment" },
 ];
 

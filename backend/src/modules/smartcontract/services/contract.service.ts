@@ -577,7 +577,7 @@ export class ContractService implements OnApplicationBootstrap {
     return merged;
   }
 
-  private isMatch = (obj: any, searchString: string): boolean => {
+  /* private isMatch = (obj: any, searchString: string): boolean => {
     const hexSearchString = base64ToHex(searchString);
     return Object.values(obj).some((value: any) => {
       if (typeof value === 'object' && value !== null) {
@@ -591,7 +591,28 @@ export class ContractService implements OnApplicationBootstrap {
       }
       return String(value).toLowerCase() === searchString.toLowerCase();
     });
+  }; */
+
+  private isMatch = (obj: any, searchString: string): boolean => {
+    const hexSearchString = base64ToHex(searchString).toLowerCase(); // Convert to hex if needed
+    const lowercaseSearchString = searchString.toLowerCase(); // Standard lowercase comparison
+  
+    return Object.values(obj).some((value: any) => {
+      if (typeof value === 'object' && value !== null) {
+        // Handle binary values like transactionHash
+        if (value._bsontype === 'Binary' && value.sub_type === 0) {
+          const hexValue = value.buffer.toString('hex').toLowerCase(); // Convert binary to hex
+          return hexValue.includes(hexSearchString); // Check if it contains the search string
+        }
+        // Recursive check for nested objects
+        return this.isMatch(value, searchString);
+      }
+  
+      // Convert value to string and check if it includes search string
+      return String(value).toLowerCase().includes(lowercaseSearchString);
+    });
   };
+  
 
   searchData = async (
     searchString: string,

@@ -10,6 +10,8 @@ import GenerateJsonData from "./GenerateJsonData";
 import JsonDisplay from "../JsonDisplay";
 import { formatDateTime } from "../../../utility/functions";
 import { Buffer } from "buffer";
+import ZkpTable from "../ZKPTable";
+import CommitmentTable from "../CommitmentTable";
 
 function transformTransactionsData(data) {
   return data.map((item) => {
@@ -93,7 +95,12 @@ const eventTypeLabels = {
   CommitmentStored: "Commitment Stored",
 };
 
-export default function TransactionsTable({ transactions, ...props }) {
+export default function TransactionsTable({
+  transactions,
+  zkpTransaction = false,
+  commitmentTransaction = false,
+  ...props
+}) {
   const navigateTo = useNavigate();
   const [commitmentLoading, setCommitmentLoading] = useState(false);
   const [commitmentData, setCommitmentData] = useState();
@@ -213,9 +220,25 @@ export default function TransactionsTable({ transactions, ...props }) {
     }
   }
 
+  function isValidHexString(str) {
+    return /^0x[a-fA-F0-9]{64}$/.test(str);
+  }
+
   const handleActionClick = async (action, items) => {
+    let itemHash = "";
+
+    if (isValidHexString(items[0])) {
+      itemHash = items[0];
+    } else if (isValidHexString(items[4])) {
+      itemHash = items[4];
+    } else if (isValidHexString(items[5])) {
+      itemHash = items[5];
+    }
+
+    console.log("itemHash:", itemHash);
+
     let tempData = {
-      ...findItemByTransactionHash(transformedData, items[0]),
+      ...findItemByTransactionHash(transformedData, itemHash),
     };
 
     try {
@@ -258,7 +281,7 @@ export default function TransactionsTable({ transactions, ...props }) {
       setProofModal(true);
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
     } else if (action == "Transaction Details" || action == "Commitment Data") {
-      const encodedHash = encodeURIComponent(items[0]);
+      const encodedHash = encodeURIComponent(itemHash);
       navigateTo(`/tx/${encodedHash}`);
     } else {
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
@@ -281,69 +304,96 @@ export default function TransactionsTable({ transactions, ...props }) {
 
   return (
     <>
-      <ResponsiveTable
-        {...props}
-        titles={["Transaction Id", "Transaction Date", "Node Id", "Event Type"]}
-        pagination={false}
-        conditionalOverrides={[
-          {
-            rowExist: true,
-            columnToApplyClass: 0,
-            className: "transaction-hash-label",
-          },
-          {
-            rowExist: "ZKP Stored",
-            columnToApplyClass: 3,
-            className: "event-label zkp",
-          },
-          {
-            rowExist: "Device Shared",
-            columnToApplyClass: 3,
-            className: "event-label device",
-          },
-          {
-            rowExist: "Device Unshared",
-            columnToApplyClass: 3,
-            className: "event-label device",
-          },
-          {
-            rowExist: "Service Shared",
-            columnToApplyClass: 3,
-            className: "event-label service",
-          },
-          {
-            rowExist: "Service Unshared",
-            columnToApplyClass: 3,
-            className: "event-label service",
-          },
-          {
-            rowExist: "Commitment Stored",
-            columnToApplyClass: 3,
-            className: "event-label commitment",
-          },
-          {
-            rowExist: "Transaction",
-            columnToApplyClass: 3,
-            className: "event-label transaction",
-          },
-        ]}
-        onActionClick={handleActionClick}
-        actions={true}
-        onCellClick={handleCellClick}
-        data={transformedData.map(
-          ({ transactionHash, formattedDate, nodeId, eventType, actions }) => [
-            transactionHash,
-            formattedDate,
-            nodeId,
-            <span>
-              {eventTypeLabels[eventType]
-                ? eventTypeLabels[eventType]
-                : eventType}
-            </span>,
-            actions,
-          ]
-        )}
-      />
+      {zkpTransaction && (
+        <ZkpTable
+          data={transactions}
+          onActionClick={handleActionClick}
+          actions={true}
+        />
+      )}
+      {commitmentTransaction && (
+        <CommitmentTable
+          data={transactions}
+          onActionClick={handleActionClick}
+          actions={true}
+        />
+      )}
+      {!commitmentTransaction && !zkpTransaction && (
+        <ResponsiveTable
+          {...props}
+          titles={[
+            "Transaction Id",
+            "Transaction Date",
+            "Node Id",
+            "Event Type",
+          ]}
+          pagination={false}
+          conditionalOverrides={[
+            {
+              rowExist: true,
+              columnToApplyClass: 0,
+              className: "transaction-hash-label",
+            },
+            {
+              rowExist: "ZKP Stored",
+              columnToApplyClass: 3,
+              className: "event-label zkp",
+            },
+            {
+              rowExist: "Device Shared",
+              columnToApplyClass: 3,
+              className: "event-label device",
+            },
+            {
+              rowExist: "Device Unshared",
+              columnToApplyClass: 3,
+              className: "event-label device",
+            },
+            {
+              rowExist: "Service Shared",
+              columnToApplyClass: 3,
+              className: "event-label service",
+            },
+            {
+              rowExist: "Service Unshared",
+              columnToApplyClass: 3,
+              className: "event-label service",
+            },
+            {
+              rowExist: "Commitment Stored",
+              columnToApplyClass: 3,
+              className: "event-label commitment",
+            },
+            {
+              rowExist: "Transaction",
+              columnToApplyClass: 3,
+              className: "event-label transaction",
+            },
+          ]}
+          onActionClick={handleActionClick}
+          actions={true}
+          onCellClick={handleCellClick}
+          data={transformedData.map(
+            ({
+              transactionHash,
+              formattedDate,
+              nodeId,
+              eventType,
+              actions,
+            }) => [
+              transactionHash,
+              formattedDate,
+              nodeId,
+              <span>
+                {eventTypeLabels[eventType]
+                  ? eventTypeLabels[eventType]
+                  : eventType}
+              </span>,
+              actions,
+            ]
+          )}
+        />
+      )}
 
       <EModal
         className="zkp-modal"
@@ -417,6 +467,9 @@ export default function TransactionsTable({ transactions, ...props }) {
                     ? Buffer.from(modalData.deviceId, "base64").toString("utf8")
                     : "Not Found"}
                 </span>
+              </p>
+              <p>
+                Type: <span>{modalData?.deviceType}</span>
               </p>
               {modalData?.data_payload &&
                 Object.entries(modalData?.data_payload)

@@ -5,6 +5,7 @@ import CommitmentTable from "../../components/ui/CommitmentTable";
 import useFetchData from "../../services/api/useFetchData";
 import Pagination from "../../components/ui/pagination";
 import ZkpTable from "../../components/ui/ZKPTable";
+import TransactionsTable from "../../components/ui/TransactionsTable";
 
 const getResponsiveImage = (folder) => {
   const width = window.innerWidth;
@@ -48,7 +49,7 @@ export default function DeviceDataZkp() {
         height={"auto"}
         style={{ borderRadius: "10px" }}
       />
-      <ZkpTable data={nowData} />
+      <TransactionsTable transactions={nowData} zkpTransaction={true} />
       <Pagination
         eachPageCount={eachPageDataCount}
         totalCount={totalCount}

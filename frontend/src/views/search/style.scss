@@ -1,8 +1,11 @@
+.zkp-table-padding {
+  padding-block: 24px;
+}
+
 .search-page-container {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 100dvh;
 
   .transaction-list {
     padding-block: 24px;

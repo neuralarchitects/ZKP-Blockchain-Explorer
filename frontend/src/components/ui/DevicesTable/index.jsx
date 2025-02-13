@@ -15,6 +15,7 @@ function transformDevicesToArray(devices) {
 				}
 			/>
 		</figure>,
+		device.deviceType || '',
 		device.deviceName || '',
 		device.deviceEncryptedId || '',
 		formatDateTime(device.insertDate) || '',
@@ -31,6 +32,7 @@ export default function DevicesTable({ data }) {
 		<ResponsiveTable
 			titles={[
 				'Device',
+				'Type',
 				'Name',
 				'Device Id',
 				'Installation Date',

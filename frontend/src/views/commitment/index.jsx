@@ -4,6 +4,7 @@ import ImageLoader from "../../components/ui/Image";
 import CommitmentTable from "../../components/ui/CommitmentTable";
 import useFetchData from "../../services/api/useFetchData";
 import Pagination from "../../components/ui/pagination";
+import TransactionsTable from "../../components/ui/TransactionsTable";
 
 const getResponsiveImage = (folder) => {
   const width = window.innerWidth;
@@ -47,7 +48,7 @@ export default function CommitmentData() {
         height={"auto"}
         style={{ borderRadius: "10px" }}
       />
-      <CommitmentTable data={nowData} />
+      <TransactionsTable transactions={nowData} commitmentTransaction={true} />
       <Pagination
         eachPageCount={eachPageDataCount}
         totalCount={totalCount}

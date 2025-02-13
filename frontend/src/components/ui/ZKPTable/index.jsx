@@ -5,16 +5,51 @@ import "./style.scss";
 import { useNavigate } from "react-router-dom";
 
 function transformZkpToArray(zkps) {
-  return zkps.map((zkp) => [
-    zkp.deviceType,
-    zkp.deviceId || "",
-    formatDateTime(new Date(zkp.timestamp * 1000)) || "",
-    zkp.nodeId || "",
-    zkp.transactionHash || "",
-  ]);
+  return zkps.map((zkp) => {
+    const eventType = zkp.eventType || "";
+
+    let isZKP = false;
+    let isDevice = false;
+    let isTransaction = false;
+    let isCommitment = false;
+
+    if (String(eventType) === "ZKPStored") {
+      isZKP = true;
+    } else if (
+      String(eventType) === "DeviceCreated" ||
+      String(eventType) === "DeviceRemoved"
+    ) {
+      isDevice = true;
+    } else if (String(eventType) === "Transaction") {
+      isTransaction = true;
+    } else if (String(eventType) === "CommitmentStored") {
+      isCommitment = true;
+    }
+
+    return [
+      zkp.deviceType,
+      zkp.deviceId || "",
+      formatDateTime(new Date(zkp.timestamp * 1000)) || "",
+      zkp.nodeId || "",
+      zkp.transactionHash || "",
+      [
+        isZKP && !isDevice && "IoT Data",
+        isZKP && "ZKP",
+        (isTransaction || isZKP) && "Transaction Details",
+        !isZKP &&
+          !isDevice &&
+          !isTransaction &&
+          !isCommitment &&
+          "Service Details",
+        !isZKP && isDevice && "Device Details",
+        isZKP && "Verify Proof",
+        isCommitment && "Commitment Data",
+      ].filter(Boolean),
+    ];
+  });
 }
 
-export default function ZkpTable({ data }) {
+export default function ZkpTable({ data, ...props }) {
   const navigateTo = useNavigate();
 
   function handleCellClick(row, col, item, fullRowData) {
@@ -44,6 +79,7 @@ export default function ZkpTable({ data }) {
       pagination={false}
       data={[...transformZkpToArray(data)]}
       itemsPerPage={10}
+      {...props}
     />
   );
 }

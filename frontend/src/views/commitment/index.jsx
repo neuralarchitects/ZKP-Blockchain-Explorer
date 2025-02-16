@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
 import ImageLoader from "../../components/ui/Image";
-import CommitmentTable from "../../components/ui/CommitmentTable";
 import useFetchData from "../../services/api/useFetchData";
 import Pagination from "../../components/ui/pagination";
 import TransactionsTable from "../../components/ui/TransactionsTable";

@@ -32,9 +32,7 @@ const ResponsiveTable = ({
   itemsPerPage = 10,
   conditionalOverrides = [],
 }) => {
-  const [menuAnchor, setMenuAnchor] = useState(null);
   const [columns, setColumns] = useState([]);
-  const [activeRow, setActiveRow] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -54,7 +52,11 @@ const ResponsiveTable = ({
     console.log("columnCount:", columnCount);
 
     // Get the viewport width
-    const viewportWidth = window.innerWidth - sideBarWidth - actionWidth;
+    let viewportWidth = window.innerWidth - sideBarWidth;
+
+    if (actions) {
+      viewportWidth = viewportWidth - actionWidth;
+    }
 
     // Calculate the width for each column, including the actions column
     const columnSizes = titles.reduce(
@@ -64,11 +66,6 @@ const ResponsiveTable = ({
       }),
       {}
     );
-
-    // Add the actions column if it exists
-    if (actions) {
-      columnSizes[titles.length] = actionWidth; // Add the actions column
-    }
 
     return columnSizes;
   }, [titles, actions]); // Ensure `actions` is in the dependency array
@@ -88,21 +85,16 @@ const ResponsiveTable = ({
       cols.push({
         header: "Actions",
         id: "actions",
-        size: defaultColumnSizes[4], // Default column size
+        size: actionWidth, // Default column size
         enableResizing: false,
         cell: ({ row }) => {
           const actionItems = row.original[row.original.length - 1];
-
           return (
             <div className="actions-cell">
               {actionItems?.map((item, index) => (
                 <p
                   className="action-item"
-                  onClick={() => {
-                    console.log("row.original:", row.original);
-
-                    handleDropdownClick(item, row.original);
-                  }}
+                  onClick={() => handleDropdownClick(item, row.original)}
                 >
                   {actionIcons[String(item)] ? actionIcons[String(item)] : item}
                 </p>
@@ -113,7 +105,7 @@ const ResponsiveTable = ({
       });
     }
     setColumns(cols);
-  }, [activeRow]);
+  }, []);
 
   const totalPages = Math.ceil(data.length / itemsPerPage);
 
@@ -141,23 +133,11 @@ const ResponsiveTable = ({
       : text;
   };
 
-  const handleMenuOpen = (event, rowIndex) => {
-    console.log("rowIndex setted:", rowIndex);
-    setActiveRow(rowIndex);
-    setMenuAnchor(event.currentTarget);
-  };
-
-  const handleMenuClose = () => {
-    setActiveRow(null);
-    setMenuAnchor(null);
-  };
-
-  const handleDropdownClick = (action, items) => {
+  function handleDropdownClick(action, items) {
     if (onActionClick) {
-      onActionClick(action, items, activeRow);
+      onActionClick(action, items);
     }
-    handleMenuClose();
-  };
+  }
 
   const handleMouseDown = () => {
     setStartTime(Date.now());

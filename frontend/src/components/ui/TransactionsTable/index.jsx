@@ -114,6 +114,7 @@ export default function TransactionsTable({
   const [transformedData, setTransformedData] = useState(
     transformTransactionsData(transactions)
   );
+  const [refreshTable, setRefreshTable] = useState(0);
   const [hackerAnimation, setHackerAnimation] = useState(false);
   const [proofResult, setProofResult] = useState("abcdefghijklmn");
   const { fetchData } = useFetchData();
@@ -163,6 +164,7 @@ export default function TransactionsTable({
       },
     }).catch((error) => {
       console.error("API call failed:", error);
+
       return null; // Return null or appropriate value if API call fails
     });
 
@@ -203,10 +205,6 @@ export default function TransactionsTable({
   }
 
   useEffect(() => {
-    setTransformedData(transformTransactionsData(transactions));
-  }, [transactions]);
-
-  useEffect(() => {
     return () => {
       setHackerAnimation(false);
     };
@@ -223,8 +221,17 @@ export default function TransactionsTable({
     return /^0x[a-fA-F0-9]{64}$/.test(str);
   }
 
-  const handleActionClick = async (action, items) => {
+  useEffect(() => {
+    setTransformedData(transformTransactionsData(transactions));
+    setRefreshTable((prev) => prev + 1);
+    console.log("Transactions updated:", transactions);
+  }, [transactions]);
+
+  async function handleActionClick(action, items) {
     let itemHash = "";
+
+    console.log("transactions", transactions);
+    console.log("action, items:", action, items);
 
     if (isValidHexString(items[0])) {
       itemHash = items[0];
@@ -234,11 +241,14 @@ export default function TransactionsTable({
       itemHash = items[5];
     }
 
-    console.log("itemHash:", itemHash);
+    console.log("transactions:", transactions);
     console.log("transformedData:", transformedData);
 
     let tempData = {
-      ...findItemByTransactionHash(transformedData, itemHash),
+      ...findItemByTransactionHash(
+        transformTransactionsData(transactions),
+        itemHash
+      ),
     };
 
     console.log("Itemd wdkaodkwo wakdwdwa;d k;dawo:", tempData);
@@ -264,11 +274,6 @@ export default function TransactionsTable({
 
     setModalData(tempData);
 
-    console.log("transactions2", transactions);
-    console.log("action", action);
-    console.log("items", items);
-    console.log("ghol:", tempData);
-
     setIsZKP(tempData.isZKP);
     setIsDevice(tempData.isDevice);
 
@@ -286,8 +291,6 @@ export default function TransactionsTable({
       const encodedHash = encodeURIComponent(itemHash);
       navigateTo(`/tx/${encodedHash}`);
     } else {
-      console.log("dwadwdawdadawdad:", tempData);
-
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
       try {
         const { commitment_id } = JSON.parse(tempData.zkp_payload);
@@ -304,7 +307,11 @@ export default function TransactionsTable({
       } catch (error) {}
       setIsDataModalOpen(true);
     }
-  };
+  }
+
+  /* const handleActionClick = async (action, items) => {
+    
+  }; */
 
   return (
     <>
@@ -313,18 +320,18 @@ export default function TransactionsTable({
           data={transactions}
           onActionClick={handleActionClick}
           actions={true}
+          key={`ZKPTable-${refreshTable}`}
         />
       )}
       {commitmentTransaction && (
         <CommitmentTable
           data={transactions}
-          onActionClick={handleActionClick}
-          actions={true}
+          key={`CommitmentTable-${refreshTable}`}
         />
       )}
       {!commitmentTransaction && !zkpTransaction && (
         <ResponsiveTable
-          {...props}
+          key={`ResponsiveTable-${refreshTable}`}
           titles={[
             "Transaction Id",
             "Transaction Date",

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
 import "./style.scss";
 import ImageLoader from "../../components/ui/Image";
-import CommitmentTable from "../../components/ui/CommitmentTable";
 import useFetchData from "../../services/api/useFetchData";
 import Pagination from "../../components/ui/pagination";
-import ZkpTable from "../../components/ui/ZKPTable";
 import TransactionsTable from "../../components/ui/TransactionsTable";
 
 const getResponsiveImage = (folder) => {

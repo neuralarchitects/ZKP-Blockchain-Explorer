@@ -33,9 +33,9 @@ function transformCommitmentToArray(commitments) {
       commitment.nodeId || "",
       commitment.transactionHash || "",
       [
-        isZKP && !isDevice && "IoT Data",
-        isZKP && "ZKP",
-        (isTransaction || isZKP) && "Transaction Details",
+        isZKP && !isDevice && "IoT Data & ZKP",
+        /* isZKP && "ZKP",
+        (isTransaction || isZKP) && "Transaction Details", */
         !isZKP &&
           !isDevice &&
           !isTransaction &&
@@ -43,7 +43,7 @@ function transformCommitmentToArray(commitments) {
           "Service Details",
         !isZKP && isDevice && "Device Details",
         isZKP && "Verify Proof",
-        isCommitment && "Commitment Data",
+        /* isCommitment && "Commitment Data", */
       ].filter(Boolean),
     ];
   });

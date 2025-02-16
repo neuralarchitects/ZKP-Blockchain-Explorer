@@ -6,9 +6,9 @@ export default function ZKPBox() {
 	return (
 		<section className="zkp-banner">
 			<div className='text-holder'>
-				<h1>Discover Innovation with Fidesinnova!</h1>
+				<h1>Discover Innovation with Fides Innova!</h1>
 				<p>
-					Explore cutting-edge solutions and learn how Fidesinnova
+					Explore cutting-edge solutions and learn how Fides Innova
 					empowers individuals and organizations through innovation.
 					Whether you're looking for resources, insights, or tools, we
 					have everything you need to succeed.

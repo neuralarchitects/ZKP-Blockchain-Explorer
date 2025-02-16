@@ -49,10 +49,11 @@
 
 .transaction-hash-label {
   cursor: pointer;
+  text-decoration: underline;
 }
 
 .transaction-hash-label:hover {
-  text-decoration: underline;
+  font-weight: 600;
 }
 
 .zkp-modal {

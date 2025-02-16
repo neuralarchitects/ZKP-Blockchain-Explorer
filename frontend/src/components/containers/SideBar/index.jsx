@@ -100,7 +100,7 @@ export default function SideBar() {
                   height={50}
                   onClick={handleChildClick}
                 />
-                <p>Fidesinnova</p>
+                <p>Fides Innova</p>
               </div>
             </div>
 

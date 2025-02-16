@@ -1,17 +1,22 @@
-import React, { useState } from "react";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import React, { useState, useMemo, useRef, useEffect } from "react";
+import {
+  useReactTable,
+  getCoreRowModel,
+  getPaginationRowModel,
+  flexRender,
+} from "@tanstack/react-table";
+import { HiArrowLeft, HiArrowRight } from "react-icons/hi";
 import IconButton from "@mui/material/IconButton";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { HiArrowLeft, HiArrowRight } from "react-icons/hi";
-import "./style.scss"; // Retain your original styles
+import Paper from "@mui/material/Paper";
+import "./style.scss";
+import { Button, TableContainer } from "@mui/material";
+import { BsDatabaseFill } from "react-icons/bs";
+import { PiGearFineBold } from "react-icons/pi";
+import { MdPermDeviceInformation } from "react-icons/md";
+import { IoShieldCheckmarkSharp } from "react-icons/io5";
 
 const ResponsiveTable = ({
   morePadding = false,
@@ -25,13 +30,109 @@ const ResponsiveTable = ({
   truncateColumns = [],
   pagination = false,
   itemsPerPage = 10,
-  conditionalOverrides = [], // New prop for condition-based styling
+  conditionalOverrides = [],
 }) => {
   const [menuAnchor, setMenuAnchor] = useState(null);
+  const [columns, setColumns] = useState([]);
   const [activeRow, setActiveRow] = useState(null);
+  const [startTime, setStartTime] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  const actionIcons = {
+    "IoT Data & ZKP": <BsDatabaseFill />,
+    "Service Details": <PiGearFineBold />,
+    "Device Details": <MdPermDeviceInformation />,
+    "Verify Proof": <IoShieldCheckmarkSharp />,
+  };
+
+  const actionWidth = 100;
+  const sideBarWidth = 300;
+
+  const defaultColumnSizes = useMemo(() => {
+    // Calculate the total number of columns, including the actions column if needed
+    const columnCount = titles.length;
+    console.log("columnCount:", columnCount);
+
+    // Get the viewport width
+    const viewportWidth = window.innerWidth - sideBarWidth - actionWidth;
+
+    // Calculate the width for each column, including the actions column
+    const columnSizes = titles.reduce(
+      (acc, _, index) => ({
+        ...acc,
+        [index]: viewportWidth / columnCount,
+      }),
+      {}
+    );
+
+    // Add the actions column if it exists
+    if (actions) {
+      columnSizes[titles.length] = actionWidth; // Add the actions column
+    }
+
+    return columnSizes;
+  }, [titles, actions]); // Ensure `actions` is in the dependency array
+
+  useEffect(() => {
+    let cols = titles.map((title, index) => ({
+      header: title,
+      accessorFn: (row) => row[index],
+      id: index.toString(),
+      size: defaultColumnSizes[index] || 150, // Default column size
+      enableResizing: titles.length - 1 == index && !actions ? false : true,
+    }));
+
+    console.log("defaultColumnSizes:", defaultColumnSizes);
+
+    if (actions) {
+      cols.push({
+        header: "Actions",
+        id: "actions",
+        size: defaultColumnSizes[4], // Default column size
+        enableResizing: false,
+        cell: ({ row }) => {
+          const actionItems = row.original[row.original.length - 1];
+
+          return (
+            <div className="actions-cell">
+              {actionItems?.map((item, index) => (
+                <p
+                  className="action-item"
+                  onClick={() => {
+                    console.log("row.original:", row.original);
+
+                    handleDropdownClick(item, row.original);
+                  }}
+                >
+                  {actionIcons[String(item)] ? actionIcons[String(item)] : item}
+                </p>
+              ))}
+            </div>
+          );
+        },
+      });
+    }
+    setColumns(cols);
+  }, [activeRow]);
+
   const totalPages = Math.ceil(data.length / itemsPerPage);
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    state: {
+      columnVisibility: {
+        actions: actions,
+      },
+    },
+    ...(pagination && {
+      getPaginationRowModel: getPaginationRowModel(),
+      initialState: { pagination: { pageSize: itemsPerPage } },
+    }),
+    enableColumnResizing: true,
+    columnResizeMode: "onChange",
+  });
 
   const truncateText = (text) => {
     if (typeof text !== "string") return text;
@@ -40,42 +141,15 @@ const ResponsiveTable = ({
       : text;
   };
 
-  // Function to evaluate conditional styles
-  const getClassName = (rowIndex, cellIndex, row) => {
-    for (const override of conditionalOverrides) {
-      const { rowExist, columnToApplyClass, className } = override;
-
-      // Check if `rowExist` exists in the row
-      const existsInRow = row.some((item) => {
-        if (typeof item === "string") {
-          return item === String(rowExist);
-        }
-        if (typeof item === "object" && item?.type === "span") {
-          // Check if the React element contains the text
-          return item.props.children === String(rowExist);
-        }
-        return false;
-      });
-
-      // Check if conditions match
-      if (
-        (existsInRow || rowExist == true) &&
-        cellIndex === columnToApplyClass
-      ) {
-        return className; // Apply the class if condition matches
-      }
-    }
-    return ""; // Return empty if no condition matches
-  };
-
   const handleMenuOpen = (event, rowIndex) => {
-    setMenuAnchor(event.currentTarget);
+    console.log("rowIndex setted:", rowIndex);
     setActiveRow(rowIndex);
+    setMenuAnchor(event.currentTarget);
   };
 
   const handleMenuClose = () => {
-    setMenuAnchor(null);
     setActiveRow(null);
+    setMenuAnchor(null);
   };
 
   const handleDropdownClick = (action, items) => {
@@ -85,10 +159,28 @@ const ResponsiveTable = ({
     handleMenuClose();
   };
 
-  const handlePageChange = (page) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page);
+  const handleMouseDown = () => {
+    setStartTime(Date.now());
+  };
+
+  const getClassName = (row, columnId) => {
+    for (const override of conditionalOverrides) {
+      const { rowExist, columnToApplyClass, className } = override;
+      const existsInRow = row.original.some((item) => {
+        if (typeof item === "string") return item === String(rowExist);
+        if (typeof item === "object" && item?.type === "span")
+          return item.props.children === String(rowExist);
+        return false;
+      });
+
+      if (
+        (existsInRow || rowExist === true) &&
+        columnId === columnToApplyClass.toString()
+      ) {
+        return className;
+      }
     }
+    return "";
   };
 
   const handlePrevious = () => {
@@ -104,6 +196,13 @@ const ResponsiveTable = ({
   };
 
   const renderPagination = () => {
+    const currentPage = table.getState().pagination.pageIndex + 1;
+    const totalPages = table.getPageCount();
+
+    const handlePageChange = (page) => {
+      table.setPageIndex(page - 1);
+    };
+
     const pages = [];
     pages.push(
       <button
@@ -183,92 +282,90 @@ const ResponsiveTable = ({
     );
   };
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedData = data.slice(startIndex, startIndex + itemsPerPage);
-  const [startTime, setStartTime] = useState(null);
-
-  const handleMouseDown = () => {
-    setStartTime(Date.now());
-  };
-
-  const renderTableRows = (rows) =>
-    rows.map((row, rowIndex) => {
-      const visibleCells = actions ? row.slice(0, -1) : row;
-      const actionItems = actions ? row[row.length - 1] : null;
-
-      return (
-        <TableRow className={className} key={rowIndex}>
-          {visibleCells.map((cell, cellIndex) => (
-            <TableCell
-              key={cellIndex}
-              onMouseDown={handleMouseDown}
-              onMouseUp={() => {
-                const endTime = Date.now();
-                const clickDuration = endTime - startTime;
-
-                // Define a threshold for a "fast click" (e.g., 200ms)
-                const fastClickThreshold = 200;
-
-                if (clickDuration <= fastClickThreshold) {
-                  if (onCellClick) {
-                    onCellClick(rowIndex, cellIndex, cell, visibleCells);
-                  }
-                }
-              }}
-              className={getClassName(rowIndex, cellIndex, row)}
-            >
-              {truncateColumns.includes(cellIndex) ? truncateText(cell) : cell}
-            </TableCell>
-          ))}
-          {actions && (
-            <TableCell>
-              <IconButton onClick={(e) => handleMenuOpen(e, rowIndex)}>
-                <MoreVertIcon />
-              </IconButton>
-              {activeRow === rowIndex && (
-                <Menu
-                  anchorEl={menuAnchor}
-                  open={Boolean(menuAnchor)}
-                  onClose={handleMenuClose}
-                >
-                  {actionItems.map((item, index) => (
-                    <MenuItem
-                      key={index}
-                      className="action-item"
-                      onClick={() => handleDropdownClick(item, row)}
-                    >
-                      {item}
-                    </MenuItem>
-                  ))}
-                </Menu>
-              )}
-            </TableCell>
-          )}
-        </TableRow>
-      );
-    });
-
   return (
     <div className="responsive-table-container can-select">
       <TableContainer
         component={Paper}
-        className={`responsive-table ${morePadding && `no-action`}`}
+        className={`responsive-table ${morePadding && "no-action"}`}
       >
-        <Table>
-          <TableHead>
-            <TableRow>
-              {titles.map((title, index) => (
-                <TableCell key={index} className="table-header">
-                  {title}
-                </TableCell>
-              ))}
-              {actions && (
-                <TableCell className="table-header">Actions</TableCell>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>{renderTableRows(paginatedData)}</TableBody>
-        </Table>
+        <div className="MuiTable-root">
+          <div className="thead">
+            {table.getHeaderGroups().map((headerGroup) => (
+              <div key={headerGroup.id} className="tr">
+                {headerGroup.headers.map((header) => (
+                  <div
+                    key={header.id}
+                    className="th table-header"
+                    style={{
+                      width: header.getSize(),
+                      position: "relative",
+                    }}
+                  >
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                    {header.column.columnDef.enableResizing && (
+                      <div
+                        onMouseDown={header.getResizeHandler()}
+                        onTouchStart={header.getResizeHandler()}
+                        className="resizer"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+
+          <div className="tbody">
+            {table.getRowModel().rows.map((row) => (
+              <div key={row.id} className="tr">
+                {row.getVisibleCells().map((cell) => {
+                  const column = cell.column;
+                  const cellValue = cell.getValue();
+                  const shouldTruncate = truncateColumns.includes(
+                    parseInt(column.id)
+                  );
+
+                  if (cellValue == undefined) {
+                    return (
+                      <div key={cell.id}>
+                        {flexRender(column.columnDef.cell, cell.getContext())}
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <div
+                      key={cell.id}
+                      className={`td ${getClassName(row, column.id)}`}
+                      onMouseDown={handleMouseDown}
+                      onMouseUp={() => {
+                        const clickDuration = Date.now() - startTime;
+                        if (clickDuration <= 200 && onCellClick) {
+                          onCellClick(
+                            row.index,
+                            parseInt(column.id),
+                            cellValue,
+                            row.original
+                          );
+                        }
+                      }}
+                      style={{
+                        width: column.getSize(),
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
+                      {shouldTruncate ? truncateText(cellValue) : cellValue}
+                    </div>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
       </TableContainer>
       {pagination && renderPagination()}
     </div>

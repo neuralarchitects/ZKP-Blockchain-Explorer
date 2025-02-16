@@ -14,11 +14,11 @@ import {
 
 const filters = [
   { title: "All Transactions", value: "all" },
-  { title: "Fund Transfer", value: "transaction" },
-  { title: "Device Data+ZKP", value: "zkp" },
+  { title: "Device ZKP Proofs", value: "zkp" },
   { title: "Devices", value: "device" },
   { title: "Services", value: "service" },
-  { title: "Device Commitment", value: "commitment" },
+  { title: "Device Commitments", value: "commitment" },
+  { title: "Fund Transfer", value: "transaction" },
 ];
 
 

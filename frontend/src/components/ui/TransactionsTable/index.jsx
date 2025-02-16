@@ -53,9 +53,9 @@ function transformTransactionsData(data) {
       isZKP,
       isDevice,
       actions: [
-        isZKP && !isDevice && "IoT Data",
-        isZKP && "ZKP",
-        (isTransaction || isZKP) && "Transaction Details",
+        isZKP && !isDevice && "IoT Data & ZKP",
+        /* isZKP && "ZKP", */
+        /* (isTransaction || isZKP) && "Transaction Details", */
         !isZKP &&
           !isDevice &&
           !isTransaction &&
@@ -63,7 +63,7 @@ function transformTransactionsData(data) {
           "Service Details",
         !isZKP && isDevice && "Device Details",
         isZKP && "Verify Proof",
-        isCommitment && "Commitment Data",
+        /* isCommitment && "Commitment Data", */
       ].filter(Boolean),
     };
   });
@@ -204,7 +204,6 @@ export default function TransactionsTable({
 
   useEffect(() => {
     setTransformedData(transformTransactionsData(transactions));
-    console.log("transactions:", transactions);
   }, [transactions]);
 
   useEffect(() => {
@@ -236,10 +235,13 @@ export default function TransactionsTable({
     }
 
     console.log("itemHash:", itemHash);
+    console.log("transformedData:", transformedData);
 
     let tempData = {
       ...findItemByTransactionHash(transformedData, itemHash),
     };
+
+    console.log("Itemd wdkaodkwo wakdwdwa;d k;dawo:", tempData);
 
     try {
       if (tempData.zkp_payload) {
@@ -284,6 +286,8 @@ export default function TransactionsTable({
       const encodedHash = encodeURIComponent(itemHash);
       navigateTo(`/tx/${encodedHash}`);
     } else {
+      console.log("dwadwdawdadawdad:", tempData);
+
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
       try {
         const { commitment_id } = JSON.parse(tempData.zkp_payload);
@@ -449,7 +453,7 @@ export default function TransactionsTable({
         title={`${
           isZKP == false
             ? `${isDevice ? "Device Details" : "Service Details"}`
-            : "IoT Data and ZKP"
+            : "IoT Data & ZKP"
         }`}
         onClose={() => {
           setIsDataModalOpen(false);
@@ -485,6 +489,8 @@ export default function TransactionsTable({
                 parsedData={commitmentData}
                 loading={commitmentLoading}
               />
+              <br />
+              <h1>ZKP Payload:</h1>
               {isZKP && (
                 <JsonDisplay
                   jsonData={

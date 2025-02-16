@@ -78,7 +78,7 @@ export default function Dashboard() {
       <section className="dashboard-header">
         <h1 className="welcome-text">
           {" "}
-          <HiHand className="icon" /> Welcome, Fidesinnova Verifiable Computing
+          <HiHand className="icon" /> Welcome, Fides Innova Verifiable Computing
           Platform
         </h1>
         <p>{getFormattedDate()}</p>

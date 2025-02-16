@@ -6,7 +6,7 @@ export default function Footer() {
 		<div className="footer-comp">
 			<span>
 				&copy; {`${new Date().getFullYear()}`}{' '}
-				<strong>Fidesinnova</strong>. All rights reserved. (v
+				<strong>Fides Innova</strong>. All rights reserved. (v
 				{packageJson.version})
 			</span>
 			{/* <div className="">

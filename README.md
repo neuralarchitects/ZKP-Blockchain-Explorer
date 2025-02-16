@@ -1,6 +1,7 @@
 <p align="center">
-  <a href="https://fidesinnova.io/" target="blank"><img src="https://fidesinnova.io/Download/logo/g-c-web-back.png" /></a>
+  <a href="https://fidesinnova.io/" target="blank"><img src="g-c-web-back.png" /></a>
 </p>
+
 
 # Step-by-step Installation Instructions for ZKP Node 
 
@@ -12,7 +13,7 @@
 <a href="https://discord.com/invite/NQdM6JGwcs" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
 <a href="https://twitter.com/FidesInnova" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
 
-To install the back-end and front-end components of the FidesInnova platform, including both the web app and mobile app, you can follow the steps below. These instructions assume that you have a basic understanding of setting up development environments and are familiar with JavaScript, Node.js, and related technologies.
+To install the back-end and front-end components of the Fides Innova platform, including both the web app and mobile app, you can follow the steps below. These instructions assume that you have a basic understanding of setting up development environments and are familiar with JavaScript, Node.js, and related technologies.
 
 
 

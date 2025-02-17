@@ -2,8 +2,7 @@
   <a href="https://fidesinnova.io/" target="blank"><img src="g-c-web-back.png" /></a>
 </p>
 
-
-# Step-by-step Installation Instructions for ZKP Node 
+# Step-by-step Installation Instructions for ZKP Explorer 
 
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
 <a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
@@ -11,37 +10,36 @@
 <a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
 <a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
 <a href="https://discord.com/invite/NQdM6JGwcs" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://twitter.com/FidesInnova" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
+<a href="https://twitter.com/Fidesinnova" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
 
 To install the back-end and front-end components of the Fides Innova platform, including both the web app and mobile app, you can follow the steps below. These instructions assume that you have a basic understanding of setting up development environments and are familiar with JavaScript, Node.js, and related technologies.
 
 
 
 
-# How to Install ZKP BackEnd
+# Step A. Prepare operating system
+First of all install Ubuntu 24.04 LTS on your server. 
 
-
-## 1- Prepare operating system
-First of all install Ubuntu 20.04 LTS on your server. 
-
-## 2- Install MongoDB
-### Step 1 — Installing MongoDB
-Install MongoDB version 4.4
+## A.1. Install MongoDB
+- Install MongoDB version 8.0
 ```
-curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
-apt-key list
-echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+sudo apt update
+sudo apt upgrade
+sudo apt install -y gnupg curl
+curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | sudo gpg -o /usr/share/keyrings/mongodb-server-8.0.gpg --dearmor
+echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
 sudo apt update
 sudo apt install -y mongodb-org
 ```
-### Step 2 — Starting the MongoDB Service and Testing the Database
+
+- Start the MongoDB service and test the database
 ```
+sudo systemctl start mongod
 sudo systemctl start mongod.service
-sudo systemctl status mongod
 sudo systemctl enable mongod
 ```
 
-### Note: For managing the MongoDB Service you can use the following commands:
+- Note: To manage the MongoDB service you can use the following commands
 ```
 sudo systemctl status mongod
 sudo systemctl stop mongod
@@ -51,57 +49,33 @@ sudo systemctl disable mongod
 sudo systemctl enable mongod
 ```
 
-### Step 3 — Install mongosh
-MongoDB Shell (mongosh) is a modern shell for MongoDB. You can install it by following these steps:
-
-#### For Ubuntu (20.04)
-**Import the MongoDB GPG Key:**
-```bash
-wget -qO - https://pgp.mongodb.com/server-6.0.asc | sudo tee /usr/share/keyrings/mongodb-server-6.0.gpg > /dev/null
-```
-
-**Create the /etc/apt/sources.list.d/mongodb.list File:**
-```bash
-echo "deb [signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/6.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb.list
-```
-
-**Install mongosh:**
+- Install mongosh
 ```bash
 sudo apt-get install -y mongodb-mongosh
 ```
 
-### Step 4 —  Verify Installation
-After installation, verify that mongosh is installed by running:
+- Verify mongosh Installation
 ```bash
 mongosh --version
 ```
-If this outputs the version number, mongosh is successfully installed.
 
----
-
-## MongoDB Configuration for Replica Set
-
-### 1. Update Configuration
+- MongoDB Configuration for Replica Set
 Add the following to your \`/etc/mongod.conf\` file to enable replica set mode:
 ```yaml
 replication:
   replSetName: "rs0"
 ```
 
-Restart MongoDB after updating the configuration:
+- Restart MongoDB after updating the configuration:
 ```bash
 sudo systemctl restart mongod
 ```
 
-### 2. Initialize the Replica Set
-Run these commands in the MongoDB shell (\`mongosh\`) to initialize the replica set:
-
-**Start the MongoDB shell:**
+- Run these commands in the MongoDB shell (\`mongosh\`) to initialize the replica set:
 ```bash
 mongosh
 ```
-
-**Initialize the replica set with the primary node:**
+Then, initialize the replica set with the primary node:
 ```javascript
 rs.initiate({
   _id: "rs0",
@@ -111,37 +85,46 @@ rs.initiate({
 });
 ```
 
----
-
-## 3- Install nginx web server 
+## A.2. Install nginx web server 
 ```
 sudo apt update
 sudo apt -y install nginx
-systemctl status nginx
 ```
-### How to Take SSL by Certbot
+## A.3. Install Certbot
+- First, stop the `nginx`
+```
+sudo systemctl stop nginx
+```
+- Now, install the `certbot`
 ```
 sudo apt-get update
 sudo apt-get install certbot
-sudo certbot certonly --standalone --preferred-challenges http
 ```
-
-### Obtain an SSL Certificate
-
-To manually obtain an SSL certificate for your domains without directly modifying your web server configurations, run the following command:
-
+- To manually obtain an SSL certificate for your domains without directly modifying your web server configurations, run the following command:
 ```
 sudo certbot certonly --standalone --preferred-challenges http
 ```
-
-After running the command, enter your web app domain, like this:
-
+-  Make sure to create the certificate for domain and all subdomains
+After running the command, enter your web app and admin web app domains separated by a space, like this:
 ```
-test.com
+panel.YOUR_DOMAIN admin.YOUR_DOMAIN
 ```
-
-- After creating certificates, copy `fullchain.pem` and `privkey.pem` files into `/etc/nginx/ssl`.
-- Required commands for SSL by Certbot:
+- The 'certbot' command generates `fullchain.pem` and `privkey.pem` in either `/etc/letsencrypt/admin.YOURDOMAIN.COM` or `/etc/letsencrypt/panel.YOURDOMAIN.COM`.
+- Create the `ssl` folder inside `/etc/nginx` 
+```
+sudo mkdir /etc/nginx/ssl
+```
+- Copy both `fullchain.pem` and `privkey.pem` into `/etc/nginx/ssl`. 
+```
+sudo cp /etc/letsencrypt/live/panel.YOUR_DOMAIN/fullchain.pem /etc/nginx/ssl/
+sudo cp /etc/letsencrypt/live/panel.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
+```
+or
+```
+sudo cp /etc/letsencrypt/live/admin.YOUR_DOMAIN/fullchain.pem /etc/nginx/ssl/
+sudo cp /etc/letsencrypt/live/admin.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
+```
+<!-- - Required commands for SSL by Certbot:
   - Check the expiration date of your SSL certificates:
   ```
   sudo certbot certificates
@@ -149,9 +132,10 @@ test.com
   - Renew your SSL certificate:
   ```
   sudo certbot renew
-  ```
+  ``` -->
 
-### Update the `nginx.conf` file in `/etc/nginx/nginx.conf`
+## A.4. Update the `nginx.conf` file
+- Replace the following configuration in your `nginx.conf` file located at `/etc/nginx/nginx.conf`.
 ```
 user www-data;
 worker_processes auto;
@@ -209,7 +193,7 @@ http {
 		listen [::]:443 ssl;
 
 		index index.html index.htm;
-		server_name panel.YOUR_DOMAIN.io;
+		server_name panel.YOUR_DOMAIN;
 
 		root /var/www/html/wikifidesdoc/site;
 
@@ -232,76 +216,94 @@ http {
 			add_header Access-Control-Allow-Origin *;
 		}
 	}
+
+
+	server {
+
+
+		ssl_certificate  /etc/nginx/ssl/fullchain.pem;
+		ssl_certificate_key /etc/nginx/ssl/privkey.pem;
+
+		listen 443 ssl;
+		listen [::]:443 ssl;
+		server_name admin.YOUR_DOMAIN;
+
+		index index.html index.htm;
+
+		add_header 'Access-Control-Allow-Credentials' 'true';
+		add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+		add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
+
+		# This section is for Admin Web App on port 5000
+		location / {
+			proxy_set_header Authorization $http_authorization;
+			proxy_pass_header Authorization;
+			add_header Access-Control-Allow-Origin '*';
+			add_header Access-Control-Allow-Headers '*';
+			proxy_pass https://localhost:5000;
+		}
+	}
 }
 
 ```
--  Make sure to edit `server_name` to subdomain.yourdomain.com
--  Make sure to create the certificate for domain and all subdomains
+- Please update YOUR_DOMAIN with your actual domain name in admin.YOUR_DOMAIN.
+- Please update YOUR_DOMAIN with your actual domain name in panel.YOUR_DOMAIN.
   
-### Restart Nginx
+- Restart Nginx 
 ```
-systemctl restart nginx
+sudo systemctl restart nginx
 ```
 
-## 4- Installation of Node.js (Version 20.9.0) and NestJS on Ubuntu
+## A.5. Instal Node.js and NestJS
 ```
 sudo apt update
 sudo apt install nodejs
 sudo apt install npm
 sudo npm install -g n
-n 20.9.0
-npm i -g @nestjs/cli 
+sudo n 20.9.0
+sudo npm i -g @nestjs/cli 
 ```
 
-## 5- Configure Firewall 
-### Allow connections
-Install `ufw`
+## A.6. Configure Firewall 
+- Install `ufw`, allow OpenSSH connection, allow nginx connection. Then, allow ports 3000, 4000, and 5000 on the server for Mobile App, Web App, and Admin Web App, respectively. Also, open ports 8883 and 8081 to let IoT devices to connect to the MQTT broker and the web socket, respectively.
 ```
-apt install ufw
-```
-Allow OpenSSH connection
-```
+sudo apt install ufw
 sudo ufw allow OpenSSH
-```
-Allow nginx connection
-```
 sudo ufw allow 'nginx full'
-```
-Allow Mobile App to connect to the server through port 3000 
-```
 sudo ufw allow 3000
-```
-Allow Web App to connect to the server through port 4000 
-```
 sudo ufw allow 4000
-```
-Allow IoT devices to connect to the MQTT broker through port 8883 
-```
+sudo ufw allow 5000
 sudo ufw allow 8883
-```
-Allow IoT devices to connect to the MQTT web socket through port 8081 
-```
 sudo ufw allow 8081
 ```
-
-### Enable firewall 
+- Note: If you’re using Amazon EC2 or a similar platform, ensure that inbound traffic for TCP 8883 is open. This port is required for secure MQTT communication between the IoT server and users’ IoT devices.
+- Enable the firewall
 ```
 sudo ufw enable
 ```
-### Check the firewall status
+- Check the firewall status
 ```
 sudo ufw status
 ```
-## 6- Clone the project
-Install `git`
+
+## A.7. Install PM2
 ```
-apt install git
+sudo npm install -g pm2
 ```
-In the home directory clone the project
+
+## A.8. Clone the project
+- Install `git`
+```
+sudo apt install git
+```
+- Clone the project
 ```
 cd /home
-git clone https://github.com/FidesInnova/zkp_explorer.git
+sudo git clone https://github.com/FidesInnova/iot-server.git
 ```
+
+# Step B. Prepare the app
+
 
 ## 7- Prepare app host configuration
 -  In project root folder, create `.env` file and edit parameters based on your node URL info

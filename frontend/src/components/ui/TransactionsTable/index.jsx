@@ -459,7 +459,7 @@ export default function TransactionsTable({
         isOpen={isDataModalOpen}
         title={`${
           isZKP == false
-            ? `${isDevice ? "Device Details" : "Service Details"}`
+            ? `${isDevice == true ? "Device Details" : "Service Details"}`
             : "IoT Data & ZKP"
         }`}
         onClose={() => {
@@ -492,6 +492,12 @@ export default function TransactionsTable({
                     </p>
                   ))}
 
+              <p>
+                Submission Date:{" "}
+                <span>
+                  {formatDateTime(new Date(modalData?.timestamp * 1000))}
+                </span>
+              </p>
               <GenerateJsonData
                 parsedData={commitmentData}
                 loading={commitmentLoading}
@@ -538,13 +544,20 @@ export default function TransactionsTable({
                 Execution Price: <span>{modalData?.executionPrice} FDS</span>
               </p>
               <p>
-                Installation Price: <span>{modalData?.installationPrice} FDS</span>
+                Installation Price:{" "}
+                <span>{modalData?.installationPrice} FDS</span>
               </p>
               <p>
                 IoT Server Id: <span>{modalData?.nodeId}</span>
               </p>
               <p>
                 Event Type: <span>{modalData?.eventType}</span>
+              </p>
+              <p>
+                Transaction Date:{" "}
+                <span>
+                  {formatDateTime(new Date(modalData?.timestamp * 1000))}
+                </span>
               </p>
             </div>
           </div>
@@ -572,6 +585,12 @@ export default function TransactionsTable({
               </p>
               <p>
                 Owner Id: <span>{modalData?.ownerId}</span>
+              </p>
+              <p>
+                Transaction Date:{" "}
+                <span>
+                  {formatDateTime(new Date(modalData?.timestamp * 1000))}
+                </span>
               </p>
             </div>
           </div>

@@ -267,49 +267,31 @@ sudo git clone https://github.com/FidesInnova/zkp-explorer.git
 ```
 
 # Step B. Prepare the app
-
-
-## 7- Prepare app host configuration
--  In project root folder, create `.env` file and edit parameters based on your node URL info
+## B.1. Backend configurations
+- In project root folder, create `.env` file and edit parameters based on your node URL info
 ```
-cd ~/zkp_explorer/backend
+cd /home/xkp-explorer/backend
 sudo nano .env
 ```
-- Inside the `.env` file, past the parameters.
-- Note that your domain must be "panel.NODE_ID". This domain provides access to the node's control and monitoring panel (e.g., "panel.zksensor.tech").
+- Inside the `.env` file, paste the following parameters. Note that your user web app URL is "explorer<NAME or NUMBER>.YOUR_DOMAIN"  (e.g., "explorer2.fidesinnova.io").
+
 ```
-NODE_ID = "yournode.url" # Set this with your node URL (e.g., "zksensor.tech")
+NODE_ID = "explorer<NAME or NUMBER>.YOUR_DOMAIN" # Set this with your node URL (e.g., "explorer2.fidesinnova.io")
 PORT = 5000
-NODE_NAME = "your_node_name" Set this with your node name (e.g., "zksensor.tech")
+NODE_NAME = "your_node_name" Set this with your node name (e.g., "Fides Innova Chain Explorer 2")
 SWAGGER_LOCAL_SERVER = http://localhost:5000
 
 # Rpc Url
 RPC_URL = 'https://fidesf1-rpc.fidesinnova.io'
 
-# Smart contract user & pass
-REMIX_USER = 'rmadmin'
-REMIX_PASS = 'rm123'
-
-# Zkp user & pass
-ZKP_USER = 'zkpadmin'
-ZKP_PASS = 'zkp123'
-
-# Faucet Wallet Private Key
-FAUCET_WALLET_PRIVATE_KEY = 'YOUR_FAUCET_WALLET_PRIVATE_KEY'
-
 # Admin Wallet Private Key
-ADMIN_WALLET_PRIVATE_KEY = 'YOUR_ADMIN_WALLET_PRIVATE_KEY'
+ADMIN_WALLET_PRIVATE_KEY = 'YOUR_WALLET_PRIVATE_KEY'
 
 # Server Configuration
 HOST_PROTOCOL = 'https://'
-HOST_NAME_OR_IP = 'panel.YOUR_DOMAIN.COM'
+HOST_NAME_OR_IP = 'explorer<NAME or NUMBER>.YOUR_DOMAIN'
 HOST_PORT = '3000'
 HOST_SUB_DIRECTORY = 'app'
-
-# StorX Config
-STORX_BUCKET_NAME = 'fidesinnova'
-STORX_HOST = 'https://b2.storx.io'
-STORX_AUTH_HOST = 'https://auth.storx.io'
 
 # Mongo Database Configuration
 MONGO_DATABASE_NAME = fidesinnova
@@ -319,153 +301,94 @@ MONGO_PORT = 27017
 MONGO_HOST = mongodb://127.0.0.1
 MONGO_CONNECTION = mongodb://127.0.0.1:27017/fidesinnova
 
-# Email Configuration
-NOTIFICATION_BY_MAIL = 'enabled'
-NOTIFICATION_BY_NOTIFICATION = 'enabled'
-
-# Mail server
-MAIL_HOST = YOUR_HOST_MAIL_SERVER_PROVIDER
-MAIL_PORT = 465
-MAIL_USER = noreply@YOUR_DOMAIN.COM
-MAIL_PASSWORD = YOUR_MAIL_SERVER_PASSWORD
-MAIL_FROM = noreply@YOUR_DOMAIN.COM
-# optional
-MAIL_TRANSPORT = smtp://${MAIL_USER}:${MAIL_PASSWORD}@${MAIL_HOST}
-
-# Mobile theme ( hex color code without # )
-THEME_LOGO = "www.example.com/image.png"
-THEME_TEXT = "ffffff"
-THEME_BACKGROUND = "212838"
-THEME_BOX = "2d355c"
-THEME_BUTTON = "4e46e7"
-
-ACCESS_TOKEN_ISSUER = 'https://fidesinnova.io'
-ACCESS_TOKEN_EXPIRATION_TIME = 1200000000     # Miliseconds
-ACCESS_TOKEN_SECRET_KEY = '?#6KRVytq*zn5zhWWLHksL$MJj7Krkan^&^^BzZD?fqUjs4mhWNExZZ8S7CPXXkPGYMEzj2y$bK7@TWwYaja=7j^+ccFqG8#EpM4&4ppmST?A7?F_a3bq=m6B&CwRrb3'
-# ACCESS_TOKEN_ALGORITHM = 'PS384'
-ACCESS_TOKEN_ALGORITHM = 'HS384'
-
-REFRESH_TOKEN_ISSUER = 'https://fidesinnova.io'
-REFRESH_TOKEN_EXPIRATION_TIME = 2400000000    # Miliseconds
-REFRESH_TOKEN_SECRET_KEY = 'Cn3ZU$EQcpc_C9Yyqc*t3pur#Rg_Q9xUt4GUVnf8=Q4ruE?f@8^ngFgKpE7Nh=gytxzY3!tcpBZ4STj-ehCfb2k-&C43sFgYfSfZ&ALP!XJhe3R%hNGTMmHXCMsm9Bfv'
-REFRESH_TOKEN_ALGORITHM = 'HS384'
-
-SUPER_ADMIN_EMAILS = ["admin.email.@example.com"] # your admins emails that can make other users into admin
-
 # Multer Configuration     # Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files.
 MULTER_MEDIA_PATH = ./storages/resources
 MULTER_MEDIA_SIZE = 10000000    # 10 MB
 ```
+
 Update these parameters:
 ```
-NODE_NAME = "your-node-name"
 NODE_ID = "your-node-url" # Set this to your node URL
-
-HOST_NAME_OR_IP = 'panel.YOUR-DOMAIN.COM'
-
-FAUCET_WALLET_PRIVATE_KEY = "your-faucet-wallet-private-key"
-ADMIN_WALLET_PRIVATE_KEY = 'your-admin-wallet-private-key'
-
-
-MAIL_HOST = YOUR-HOST-MAIL-SERVER-PROVIDER
-MAIL_PORT = 465
-MAIL_USER = noreply@YOUR-DOMAIN.COM
-MAIL_PASSWORD = YOUR-MAIL-SERVER-PASSWORD
-MAIL_FROM = noreply@YOUR_-DOMAIN.COM
-
-THEME_LOGO = 'your-logo-url'
-
-REMIX_USER = 'your-remix-username'
-REMIX_PASS = 'your-remix-password'
-
-ZKP_USER = 'your-zkp-username'
-ZKP_PASS = 'your-zkp-password'
-
-RPC_URL = 'your-rpc-url'
+NODE_NAME = "your-node-name"
+HOST_NAME_OR_IP = 'explorer<NAME or NUMBER>.YOUR_DOMAIN'
 ```
 -------------------------------------------------------------------------------------------------
 
-# How to Install ZKP WebApp
+# Step C. Install Explorer Web App
 
-### Note:
-  * If you are a Node owner, contact FidesInnova team at info@fidesinnova.io to add your Web App URL address to FidesInnova website.
-## 1- Prepare app configuration
+## C.1. Prepare app configuration
 In project root folder, create `.env` file and edit parameters based on your node URL info
 ```
-cd ~/zkp_explorer/frontend
+cd /home/zkp-explorer/frontend
 sudo nano .env
 ```
 Inside the `.env` file, past the parameters.
 *  Make sure to add `/app/` to the end of the `VITE_URL` path!
 *  Enter your node name in `VITE_NODE_NAME` for showing in website
 ```
-VITE_URL='https://panel.YOUR_DOMAIN.COM/app/'
-VITE_NODE_NAME = 'your.node.name'
+VITE_URL='https://explorer<NAME or NUMBER>.YOUR_DOMAIN/app/'
+VITE_NODE_NAME = 'explorer<NAME or NUMBER>.YOUR_DOMAIN'
 ```
 In Runner_webapp folder, create `.env` file and edit parameters based on your node URL info
 ```
-cd ~/zkp_explorer/frontend/Runner_webapp
+cd /home/zkp-explorer/frontend/Runner_webapp
 sudo nano .env
 ```
 Inside the `.env` file, past the parameters.
 ```
 PORT=4000
 ```
-## 2- Configure Firewall
-Allow Web App to connect to the server through port 4000 
+## C.3. Build and Execute
+To automate the setup and build processes for both the backend and frontend applications, run the `initial_setup.sh` script located in the root directory of the project. This script will handle building both the backend and frontend applications and configuring PM2 services automatically.
+   ```
+   cd /home/iot-server/
+   sudo chmod +x initial_setup.sh
+   sudo ./initial_setup.sh
+   ```
+## Maintenance: IoT Server Code or Config Change
+- Every time Fidesinnova core development team push a new version of the code on GitHub.
 ```
-sudo ufw allow 4000
+cd /home/iot-server/
+sudo git fetch
+sudo git pull
+```
+- Every time you pull a new version of the server code from GitHub or you make a change to any `.env` files in the system, you should apply the changes to your production server via update script.
+```
+cd /home/iot-server/
+sudo chmod +x update.sh
+sudo ./update.sh
 ```
 
--------------------------------------------------------------------------------------------------
-# Building and Running
+- Useful commands for troubleshooting
+```
+# to make file writable and other permissions :
+chmod +rwx chainthreed
 
-To automate the setup and build processes for both the backend and frontend applications, run the `initial_setup.sh` script located in the root directory of the project.
+# see busy ports
+sudo netstat -tulpn | grep LISTEN
 
-### Steps:
-1. **Set the appropriate permissions** (one-time step):
-   Before running the setup script for the first time, ensure it has executable permissions by running the following command in the terminal:
+# something similar to the top one
+sudo ss -ltn
 
-   ```
-   cd ~/zkp_explorer/
-   chmod +x initial_setup.sh
-   ```
+# kill a port
+sudo kill -9 $(sudo lsof -t -i:6060)
 
-2. **Run the setup script**:
-   After setting the permissions, execute the setup script to build the applications and create PM2 services:
+# see firewall status
+systemctl status ufw
 
-   ```
-   cd ~/zkp_explorer/
-   ./initial_setup.sh
-   ```
+# restart the firewall
+systemctl restart ufw
 
-This script will handle building both the backend and frontend applications and configuring PM2 services automatically.
+# move something into something else:
+mv source target
 
-## Subsequent Updates
-After the initial setup, you only need to run the update process to keep the applications up to date. Please refer to the `Update Process` section for instructions on how to do this.
+# delete a directory or file
+rm -rf directoryName
 
-
--------------------------------------------------------------------------------------------------
-
-# Update Process
-
-To update both the backend and frontend applications, simply run the `update.sh` script located in the root directory of the project. 
-
-### Steps:
-1. **Set the appropriate permissions** (one-time step):
-   Before running the update script for the first time, ensure it has executable permissions by running the following command in the terminal:
-
-   ```
-   cd ~/zkp_explorer/
-   chmod +x update.sh
-   ```
-
-2. **Run the update script**:
-   After setting the permissions, update the applications automatically by running:
-
-   ```
-   cd ~/zkp_explorer/
-   ./update.sh
-   ```
-
-This script will handle pulling the latest changes, rebuilding the apps, and restarting services automatically.
+pm2 list                               # Show running processes  
+pm2 show my-app                        # Show details of a specific process  
+pm2 stop my-app                        # Stop a process  
+pm2 restart my-app                     # Restart a process  
+pm2 delete my-app                      # Remove a process from PM2
+pm2 logs                               # Show logs of all processes  
+```

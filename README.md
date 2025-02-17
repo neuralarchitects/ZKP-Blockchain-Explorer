@@ -272,7 +272,7 @@ sudo git clone https://github.com/FidesInnova/zkp-explorer.git
 cd /home/zkp-explorer/backend
 sudo nano .env
 ```
-- Inside the `.env` file, paste the following parameters. Note that your user web app URL is "explorer.YOUR_DOMAIN"  (e.g., "explorer.motioncertified.online").
+- Inside the `.env` file, paste the following parameters. Note that your app URL is "explorer.YOUR_DOMAIN"  (e.g., "explorer.motioncertified.online").
 
 ```
 NODE_ID = "explorer.YOUR_DOMAIN" # Set this with your node URL (e.g., "explorer.motioncertified.online")

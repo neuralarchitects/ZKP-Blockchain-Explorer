@@ -59,8 +59,7 @@ sudo apt-get install -y mongodb-mongosh
 mongosh --version
 ```
 
-- MongoDB Configuration for Replica Set
-Add the following to your \`/etc/mongod.conf\` file to enable replica set mode:
+- Add the following to your \`/etc/mongod.conf\` file to enable replica set mode:
 ```yaml
 replication:
   replSetName: "rs0"

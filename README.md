@@ -70,7 +70,7 @@ replication:
 sudo systemctl restart mongod
 ```
 
-- Run these commands in the MongoDB shell (\`mongosh\`) to initialize the replica set:
+- Run MongoDB shell (\`mongosh\`) to initialize the replica set:
 ```bash
 mongosh
 ```

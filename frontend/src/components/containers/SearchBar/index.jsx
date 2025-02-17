@@ -14,7 +14,7 @@ import {
 
 const filters = [
   { title: "All Transactions", value: "all" },
-  { title: "Device ZKP Proofs", value: "zkp" },
+  { title: "Device Zero-Knowledge Proofs", value: "zkp" },
   { title: "Devices", value: "device" },
   { title: "Services", value: "service" },
   { title: "Device Commitments", value: "commitment" },

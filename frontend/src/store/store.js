@@ -26,7 +26,7 @@ export const usePageStore = create((set) => ({
     },
     {
       route: "/device-data-zkp",
-      title: "Device ZKP Proofs",
+      title: "Device Zero-Knowledge Proofs",
       key: "device commitments",
       component: <DeviceDataZkp />,
       Icon: SiGoogledataflow,

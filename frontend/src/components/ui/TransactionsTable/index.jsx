@@ -497,7 +497,7 @@ export default function TransactionsTable({
                 loading={commitmentLoading}
               />
               <br />
-              <h1>ZKP Payload:</h1>
+              <h1>Zero-Knowledge Proof Payload:</h1>
               {isZKP && (
                 <JsonDisplay
                   jsonData={
@@ -523,12 +523,6 @@ export default function TransactionsTable({
 
             <div className="holder service">
               <p>
-                IoT Server Id: <span>{modalData?.nodeId}</span>
-              </p>
-              <p>
-                Event Type: <span>{modalData?.eventType}</span>
-              </p>
-              <p>
                 Service Name: <span>{modalData?.name}</span>
               </p>
               <p>
@@ -541,10 +535,16 @@ export default function TransactionsTable({
                 Description: <span>{modalData?.description}</span>
               </p>
               <p>
-                Execution Price: <span>{modalData?.executionPrice}</span>
+                Execution Price: <span>{modalData?.executionPrice} FDS</span>
               </p>
               <p>
-                Installation Price: <span>{modalData?.installationPrice}</span>
+                Installation Price: <span>{modalData?.installationPrice} FDS</span>
+              </p>
+              <p>
+                IoT Server Id: <span>{modalData?.nodeId}</span>
+              </p>
+              <p>
+                Event Type: <span>{modalData?.eventType}</span>
               </p>
             </div>
           </div>

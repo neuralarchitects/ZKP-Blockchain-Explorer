@@ -104,25 +104,21 @@ sudo apt-get install certbot
 sudo certbot certonly --standalone --preferred-challenges http
 ```
 -  Make sure to create the certificate for domain and all subdomains
-After running the command, enter your web app and admin web app domains separated by a space, like this:
+After running the command, enter your web app domain like this:
 ```
-panel.YOUR_DOMAIN admin.YOUR_DOMAIN
+explorer<NAME or NUMBER>.YOUR_DOMAIN
 ```
-- The 'certbot' command generates `fullchain.pem` and `privkey.pem` in either `/etc/letsencrypt/admin.YOURDOMAIN.COM` or `/etc/letsencrypt/panel.YOURDOMAIN.COM`.
+- The 'certbot' command generates `fullchain.pem` and `privkey.pem` in  `/etc/letsencrypt/explorer<NAME or NUMBER>.YOURDOMAIN`
 - Create the `ssl` folder inside `/etc/nginx` 
 ```
 sudo mkdir /etc/nginx/ssl
 ```
 - Copy both `fullchain.pem` and `privkey.pem` into `/etc/nginx/ssl`. 
 ```
-sudo cp /etc/letsencrypt/live/panel.YOUR_DOMAIN/fullchain.pem /etc/nginx/ssl/
-sudo cp /etc/letsencrypt/live/panel.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
+sudo cp /etc/letsencrypt/live/explorer<NAME or NUMBER>.YOUR_DOMAIN/fullchain.pem /etc/nginx/ssl/
+sudo cp /etc/letsencrypt/live/explorer<NAME or NUMBER>.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
 ```
-or
-```
-sudo cp /etc/letsencrypt/live/admin.YOUR_DOMAIN/fullchain.pem /etc/nginx/ssl/
-sudo cp /etc/letsencrypt/live/admin.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
-```
+
 <!-- - Required commands for SSL by Certbot:
   - Check the expiration date of your SSL certificates:
   ```
@@ -192,7 +188,7 @@ http {
 		listen [::]:443 ssl;
 
 		index index.html index.htm;
-		server_name panel.YOUR_DOMAIN;
+		server_name explorer<NAME or NUMBER>.YOUR_DOMAIN;
 
 		root /var/www/html/wikifidesdoc/site;
 
@@ -215,38 +211,10 @@ http {
 			add_header Access-Control-Allow-Origin *;
 		}
 	}
-
-
-	server {
-
-
-		ssl_certificate  /etc/nginx/ssl/fullchain.pem;
-		ssl_certificate_key /etc/nginx/ssl/privkey.pem;
-
-		listen 443 ssl;
-		listen [::]:443 ssl;
-		server_name admin.YOUR_DOMAIN;
-
-		index index.html index.htm;
-
-		add_header 'Access-Control-Allow-Credentials' 'true';
-		add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
-		add_header 'Access-Control-Allow-Headers' 'DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Authorization';
-
-		# This section is for Admin Web App on port 5000
-		location / {
-			proxy_set_header Authorization $http_authorization;
-			proxy_pass_header Authorization;
-			add_header Access-Control-Allow-Origin '*';
-			add_header Access-Control-Allow-Headers '*';
-			proxy_pass https://localhost:5000;
-		}
-	}
 }
 
 ```
-- Please update YOUR_DOMAIN with your actual domain name in admin.YOUR_DOMAIN.
-- Please update YOUR_DOMAIN with your actual domain name in panel.YOUR_DOMAIN.
+- Please update YOUR_DOMAIN with your actual domain name in explorer<NAME or NUMBER>.YOUR_DOMAIN.
   
 - Restart Nginx 
 ```
@@ -264,16 +232,13 @@ sudo npm i -g @nestjs/cli
 ```
 
 ## A.6. Configure Firewall 
-- Install `ufw`, allow OpenSSH connection, allow nginx connection. Then, allow ports 3000, 4000, and 5000 on the server for Mobile App, Web App, and Admin Web App, respectively. Also, open ports 8883 and 8081 to let IoT devices to connect to the MQTT broker and the web socket, respectively.
+- Install `ufw`, allow OpenSSH connection, allow nginx connection. Then, allow ports 3000, and 4000 on the server for Mobile App, and Web App, respectively. 
 ```
 sudo apt install ufw
 sudo ufw allow OpenSSH
 sudo ufw allow 'nginx full'
 sudo ufw allow 3000
 sudo ufw allow 4000
-sudo ufw allow 5000
-sudo ufw allow 8883
-sudo ufw allow 8081
 ```
 - Note: If you’re using Amazon EC2 or a similar platform, ensure that inbound traffic for TCP 8883 is open. This port is required for secure MQTT communication between the IoT server and users’ IoT devices.
 - Enable the firewall
@@ -298,7 +263,7 @@ sudo apt install git
 - Clone the project
 ```
 cd /home
-sudo git clone https://github.com/FidesInnova/iot-server.git
+sudo git clone https://github.com/FidesInnova/zkp-explorer.git
 ```
 
 # Step B. Prepare the app

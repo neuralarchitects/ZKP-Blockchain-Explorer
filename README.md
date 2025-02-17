@@ -270,15 +270,15 @@ sudo git clone https://github.com/FidesInnova/zkp-explorer.git
 ## B.1. Backend configurations
 - In project root folder, create `.env` file and edit parameters based on your node URL info
 ```
-cd /home/xkp-explorer/backend
+cd /home/zkp-explorer/backend
 sudo nano .env
 ```
-- Inside the `.env` file, paste the following parameters. Note that your user web app URL is "explorer.YOUR_DOMAIN"  (e.g., "explorer2.fidesinnova.io").
+- Inside the `.env` file, paste the following parameters. Note that your user web app URL is "explorer.YOUR_DOMAIN"  (e.g., "explorer.motioncertified.online").
 
 ```
-NODE_ID = "explorer.YOUR_DOMAIN" # Set this with your node URL (e.g., "explorer2.fidesinnova.io")
+NODE_ID = "explorer.YOUR_DOMAIN" # Set this with your node URL (e.g., "explorer.motioncertified.online")
 PORT = 5000
-NODE_NAME = "your_node_name" Set this with your node name (e.g., "Fides Innova Chain Explorer 2")
+NODE_NAME = "your_node_name" Set this with your node name (e.g., "Fides Innova Chain Explorer")
 SWAGGER_LOCAL_SERVER = http://localhost:5000
 
 # Rpc Url

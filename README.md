@@ -341,20 +341,20 @@ PORT=4000
 ## C.3. Build and Execute
 To automate the setup and build processes for both the backend and frontend applications, run the `initial_setup.sh` script located in the root directory of the project. This script will handle building both the backend and frontend applications and configuring PM2 services automatically.
    ```
-   cd /home/iot-server/
+   cd /home/zkp-explorer/
    sudo chmod +x initial_setup.sh
    sudo ./initial_setup.sh
    ```
-## Maintenance: IoT Server Code or Config Change
+## Maintenance: ZKP Explorer Code or Config Change
 - Every time Fidesinnova core development team push a new version of the code on GitHub.
 ```
-cd /home/iot-server/
+cd /home/zkp-explorer/
 sudo git fetch
 sudo git pull
 ```
 - Every time you pull a new version of the server code from GitHub or you make a change to any `.env` files in the system, you should apply the changes to your production server via update script.
 ```
-cd /home/iot-server/
+cd /home/zkp-explorer/
 sudo chmod +x update.sh
 sudo ./update.sh
 ```

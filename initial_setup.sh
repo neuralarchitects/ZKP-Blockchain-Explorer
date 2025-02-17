@@ -93,6 +93,9 @@ cd zkp
 
 echo "Installing ZKP verifier python libraries and starting the source..."
 
+sudo apt install python3 python3-pip -y
+sudo pip install web3
+
 pip install fastapi uvicorn
 pm2 start "uvicorn verifier:app --host 0.0.0.0 --port 7000" --name "PY ZKP Verifier"
 

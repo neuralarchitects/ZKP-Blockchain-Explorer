@@ -240,7 +240,6 @@ sudo ufw allow 'nginx full'
 sudo ufw allow 3000
 sudo ufw allow 4000
 ```
-- Note: If you’re using Amazon EC2 or a similar platform, ensure that inbound traffic for TCP 8883 is open. This port is required for secure MQTT communication between the IoT server and users’ IoT devices.
 - Enable the firewall
 ```
 sudo ufw enable

@@ -106,17 +106,17 @@ sudo certbot certonly --standalone --preferred-challenges http
 -  Make sure to create the certificate for domain and all subdomains
 After running the command, enter your web app domain like this:
 ```
-explorer<NAME or NUMBER>.YOUR_DOMAIN
+explorer.YOUR_DOMAIN
 ```
-- The 'certbot' command generates `fullchain.pem` and `privkey.pem` in  `/etc/letsencrypt/explorer<NAME or NUMBER>.YOURDOMAIN`
+- The 'certbot' command generates `fullchain.pem` and `privkey.pem` in  `/etc/letsencrypt/explorer.YOURDOMAIN`
 - Create the `ssl` folder inside `/etc/nginx` 
 ```
 sudo mkdir /etc/nginx/ssl
 ```
 - Copy both `fullchain.pem` and `privkey.pem` into `/etc/nginx/ssl`. 
 ```
-sudo cp /etc/letsencrypt/live/explorer<NAME or NUMBER>.YOUR_DOMAIN/fullchain.pem /etc/nginx/ssl/
-sudo cp /etc/letsencrypt/live/explorer<NAME or NUMBER>.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
+sudo cp /etc/letsencrypt/live/explorer.YOUR_DOMAIN/fullchain.pem /etc/nginx/ssl/
+sudo cp /etc/letsencrypt/live/explorer.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
 ```
 
 <!-- - Required commands for SSL by Certbot:
@@ -188,7 +188,7 @@ http {
 		listen [::]:443 ssl;
 
 		index index.html index.htm;
-		server_name explorer<NAME or NUMBER>.YOUR_DOMAIN;
+		server_name explorer.YOUR_DOMAIN;
 
 		root /var/www/html/wikifidesdoc/site;
 
@@ -214,7 +214,7 @@ http {
 }
 
 ```
-- Please update YOUR_DOMAIN with your actual domain name in explorer<NAME or NUMBER>.YOUR_DOMAIN.
+- Please update YOUR_DOMAIN with your actual domain name in explorer.YOUR_DOMAIN.
   
 - Restart Nginx 
 ```
@@ -273,10 +273,10 @@ sudo git clone https://github.com/FidesInnova/zkp-explorer.git
 cd /home/xkp-explorer/backend
 sudo nano .env
 ```
-- Inside the `.env` file, paste the following parameters. Note that your user web app URL is "explorer<NAME or NUMBER>.YOUR_DOMAIN"  (e.g., "explorer2.fidesinnova.io").
+- Inside the `.env` file, paste the following parameters. Note that your user web app URL is "explorer.YOUR_DOMAIN"  (e.g., "explorer2.fidesinnova.io").
 
 ```
-NODE_ID = "explorer<NAME or NUMBER>.YOUR_DOMAIN" # Set this with your node URL (e.g., "explorer2.fidesinnova.io")
+NODE_ID = "explorer.YOUR_DOMAIN" # Set this with your node URL (e.g., "explorer2.fidesinnova.io")
 PORT = 5000
 NODE_NAME = "your_node_name" Set this with your node name (e.g., "Fides Innova Chain Explorer 2")
 SWAGGER_LOCAL_SERVER = http://localhost:5000
@@ -289,7 +289,7 @@ ADMIN_WALLET_PRIVATE_KEY = 'YOUR_WALLET_PRIVATE_KEY'
 
 # Server Configuration
 HOST_PROTOCOL = 'https://'
-HOST_NAME_OR_IP = 'explorer<NAME or NUMBER>.YOUR_DOMAIN'
+HOST_NAME_OR_IP = 'explorer.YOUR_DOMAIN'
 HOST_PORT = '3000'
 HOST_SUB_DIRECTORY = 'app'
 
@@ -310,7 +310,7 @@ Update these parameters:
 ```
 NODE_ID = "your-node-url" # Set this to your node URL
 NODE_NAME = "your-node-name"
-HOST_NAME_OR_IP = 'explorer<NAME or NUMBER>.YOUR_DOMAIN'
+HOST_NAME_OR_IP = 'explorer.YOUR_DOMAIN'
 ```
 -------------------------------------------------------------------------------------------------
 
@@ -326,8 +326,8 @@ Inside the `.env` file, past the parameters.
 *  Make sure to add `/app/` to the end of the `VITE_URL` path!
 *  Enter your node name in `VITE_NODE_NAME` for showing in website
 ```
-VITE_URL='https://explorer<NAME or NUMBER>.YOUR_DOMAIN/app/'
-VITE_NODE_NAME = 'explorer<NAME or NUMBER>.YOUR_DOMAIN'
+VITE_URL='https://explorer.YOUR_DOMAIN/app/'
+VITE_NODE_NAME = 'explorer.YOUR_DOMAIN'
 ```
 In Runner_webapp folder, create `.env` file and edit parameters based on your node URL info
 ```

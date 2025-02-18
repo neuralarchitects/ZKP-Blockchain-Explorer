@@ -33,14 +33,14 @@ export default function DeviceBox({ data }) {
 	return (
 		<div className="device-box-container">
 			<figure className="image-holder">
-				<img
+				{/* <img
 					src={
 						deviceType == "E-CARD"
 							? "/img/e_card.png"
 							: "/img/multi_sensor.png"
 					}
 					alt=""
-				/>
+				/> */}
 			</figure>
 			<p>{deviceName}</p>
 			<p>{deviceEncryptedId}</p>

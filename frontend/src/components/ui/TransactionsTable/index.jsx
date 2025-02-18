@@ -12,6 +12,12 @@ import { formatDateTime } from "../../../utility/functions";
 import { Buffer } from "buffer";
 import ZkpTable from "../ZKPTable";
 import CommitmentTable from "../CommitmentTable";
+import {
+  HiCheckCircle,
+  HiOutlineCheckCircle,
+  HiOutlineXCircle,
+  HiXCircle,
+} from "react-icons/hi";
 
 function transformTransactionsData(data) {
   return data.map((item) => {
@@ -90,8 +96,8 @@ const eventTypeLabels = {
   ZKPStored: "ZKP Stored",
   DeviceCreated: "Device Shared",
   DeviceRemoved: "Device Unshared",
-  ServiceCreated: "Service Shared",
-  ServiceRemoved: "Service Unshared",
+  ServiceCreated: "Service Published",
+  ServiceRemoved: "Service Unpublished",
   CommitmentStored: "Commitment Stored",
 };
 
@@ -148,8 +154,11 @@ export default function TransactionsTable({
       const res = await fetchData(nodeApiUrl, {
         method: "GET",
       });
+      console.log("res.data:", res.data);
+
       setDeviceImage(getDeviceUrlByType(res.data, String(deviceType)));
     } catch (error) {
+      setDeviceImage("/img/default-device.png");
       console.error(error);
     }
   }
@@ -217,32 +226,40 @@ export default function TransactionsTable({
     }
   }
 
-  function isValidHexString(str) {
-    return /^0x[a-fA-F0-9]{64}$/.test(str);
+  function isValidHexOrBase64(str) {
+    // Regular expression for a 64-character hexadecimal string
+    const hex64Regex = /^[0-9a-fA-F]{64}$/;
+
+    // Regular expression for a Base64-encoded string
+    const base64Regex = /^[A-Za-z0-9+/]+={0,2}$/;
+
+    // Check if the string matches either of the patterns
+    return hex64Regex.test(str) || base64Regex.test(str);
   }
 
   useEffect(() => {
     setTransformedData(transformTransactionsData(transactions));
     setRefreshTable((prev) => prev + 1);
-    console.log("Transactions updated:", transactions);
+    //console.log("Transactions updated:", transactions);
   }, [transactions]);
 
   async function handleActionClick(action, items) {
     let itemHash = "";
 
-    console.log("transactions", transactions);
-    console.log("action, items:", action, items);
+    //console.log("transactions", transactions);
+    //console.log("action, items:", action, items);
 
-    if (isValidHexString(items[0])) {
+    if (isValidHexOrBase64(items[0])) {
       itemHash = items[0];
-    } else if (isValidHexString(items[4])) {
+    } else if (isValidHexOrBase64(items[4])) {
       itemHash = items[4];
-    } else if (isValidHexString(items[5])) {
+    } else if (isValidHexOrBase64(items[5])) {
       itemHash = items[5];
     }
 
     console.log("transactions:", transactions);
-    console.log("transformedData:", transformedData);
+    console.log("itemHash:", itemHash);
+    //console.log("transformedData:", transformedData);
 
     let tempData = {
       ...findItemByTransactionHash(
@@ -250,8 +267,6 @@ export default function TransactionsTable({
         itemHash
       ),
     };
-
-    console.log("Itemd wdkaodkwo wakdwdwa;d k;dawo:", tempData);
 
     try {
       if (tempData.zkp_payload) {
@@ -291,6 +306,8 @@ export default function TransactionsTable({
       const encodedHash = encodeURIComponent(itemHash);
       navigateTo(`/tx/${encodedHash}`);
     } else {
+      console.log("tempData:", tempData);
+      
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
       try {
         const { commitment_id } = JSON.parse(tempData.zkp_payload);
@@ -361,12 +378,12 @@ export default function TransactionsTable({
               className: "event-label device",
             },
             {
-              rowExist: "Service Shared",
+              rowExist: "Service Published",
               columnToApplyClass: 3,
               className: "event-label service",
             },
             {
-              rowExist: "Service Unshared",
+              rowExist: "Service Unpublished",
               columnToApplyClass: 3,
               className: "event-label service",
             },
@@ -435,7 +452,19 @@ export default function TransactionsTable({
       >
         <ImageLoader src={deviceImage} className="img device" />
 
-        <LetterAnimation isFinished={hackerAnimation} text={proofResult} />
+        <div className="proof-header">
+          <LetterAnimation isFinished={hackerAnimation} text={proofResult} />
+          {hackerAnimation && (
+            <>
+              {proofResult == "Proof is Verified" ? (
+                <HiOutlineCheckCircle className="header-icon check" />
+              ) : (
+                <HiOutlineXCircle className="header-icon x" />
+              )}
+            </>
+          )}
+        </div>
+
         <div className="iot-data">
           {modalData?.data_payload &&
             Object.entries(modalData?.data_payload)
@@ -446,6 +475,10 @@ export default function TransactionsTable({
                   <span>{key === "Root" ? String(value) : value}</span>
                 </p>
               ))}
+          <p>
+            Submission Date:{" "}
+            <span>{formatDateTime(new Date(modalData?.timestamp * 1000))}</span>
+          </p>
         </div>
         <GenerateJsonData
           isZkp={true}
@@ -520,10 +553,8 @@ export default function TransactionsTable({
             <ImageLoader
               width={200}
               height={100}
-              src={
-                (modalData?.imageURL && modalData?.imageURL) ||
-                "/img/default-service.jpg"
-              }
+              defaultImage="/img/default-service.jpg"
+              src={modalData?.imageURL}
               className="img"
             />
 
@@ -565,7 +596,11 @@ export default function TransactionsTable({
 
         {isZKP == false && isDevice == true && (
           <div className="main-data">
-            <ImageLoader src={deviceImage} className="img device" />
+            <ImageLoader
+              defaultImage="/img/default-device.png"
+              src={deviceImage}
+              className="img device"
+            />
             <div className="holder service">
               <p>
                 IoT Server Id: <span>{modalData?.nodeId}</span>

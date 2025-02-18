@@ -91,6 +91,24 @@
   max-width: 650px !important;
   margin-inline: auto;
 
+  .proof-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .header-icon {
+      font-size: 55px;
+
+      &.x {
+        color: red;
+      }
+
+      &.check {
+        color: #00ff00;
+      }
+    }
+  }
+
   .img {
     align-self: center;
     width: 200px;

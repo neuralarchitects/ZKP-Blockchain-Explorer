@@ -15,7 +15,15 @@
 To install the chain ZKP explorer components of the Fides Innova platform, you can follow the steps below. These instructions assume that you have a basic understanding of setting up development environments and are familiar with JavaScript, Node.js, and related technologies.
 
 
-
+# Step 0. Create a Virtaul Environment
+```
+sudo su
+sudo apt update && sudo apt install python3-venv python3-full -y
+sudo python3 -m venv web3env
+source web3env/bin/activate
+sudo pip install web3
+python -c "import web3; print(web3.__version__)"
+```
 
 # Step A. Prepare operating system
 First of all install Ubuntu 24.04 LTS on your server. 

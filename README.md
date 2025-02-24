@@ -391,3 +391,14 @@ pm2 restart my-app                     # Restart a process
 pm2 delete my-app                      # Remove a process from PM2
 pm2 logs                               # Show logs of all processes  
 ```
+
+- Installing web3 package in a virtual enviroment
+```
+sudo apt update && sudo apt install python3-venv -y
+python3 -m venv web3env
+source web3env/bin/activate
+pip install web3
+python -c "import web3; print(web3.__version__)"
+
+deactivate
+```

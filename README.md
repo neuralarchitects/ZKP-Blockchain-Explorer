@@ -407,6 +407,9 @@ sudo apt update && sudo apt install python3-venv python3-full -y
 sudo python3 -m venv web3env
 source web3env/bin/activate
 sudo pip install web3
+sudo pip install pymongo
+sudo pip install polynomial
+sudo pip install numpy sympy
 python -c "import web3; print(web3.__version__)"
 
 deactivate

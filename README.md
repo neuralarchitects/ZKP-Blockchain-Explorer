@@ -392,7 +392,7 @@ pm2 delete my-app                      # Remove a process from PM2
 pm2 logs                               # Show logs of all processes  
 ```
 
-- Installing web3 package in a virtual enviroment
+- If the Python services fails, installing web3 package in a virtual enviroment
 ```
 sudo su
 sudo apt update && sudo apt install python3-venv python3-full -y

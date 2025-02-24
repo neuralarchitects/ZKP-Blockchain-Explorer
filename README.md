@@ -15,7 +15,7 @@
 To install the chain ZKP explorer components of the Fides Innova platform, you can follow the steps below. These instructions assume that you have a basic understanding of setting up development environments and are familiar with JavaScript, Node.js, and related technologies.
 
 
-# Step 0. Create a Virtaul Environment
+# Step 0. Create a Virtual Environment
 ```
 sudo su
 sudo apt update && sudo apt install python3-venv python3-full -y

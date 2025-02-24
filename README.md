@@ -293,11 +293,11 @@ HOST_PORT = '3000'
 HOST_SUB_DIRECTORY = 'app'
 
 # Mongo Database Configuration
-MONGO_DATABASE_NAME = fidesinnova
-MONGO_USER = Administrator
+# MONGO_DATABASE_NAME = fidesinnova
+# MONGO_USER = Administrator
 # MONGO_PASSWORD = 'PASSWORD'
-MONGO_PORT = 27017
-MONGO_HOST = mongodb://127.0.0.1
+# MONGO_PORT = 27017
+# MONGO_HOST = mongodb://127.0.0.1
 MONGO_CONNECTION = mongodb://127.0.0.1:27017/fidesinnova
 
 # Multer Configuration     # Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files.

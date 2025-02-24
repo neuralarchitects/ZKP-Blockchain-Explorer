@@ -396,7 +396,7 @@ pm2 logs                               # Show logs of all processes
 ```
 sudo apt update && sudo apt install python3-venv -y
 sudo python3 -m venv web3env
-sudo source web3env/bin/activate
+source web3env/bin/activate
 sudo pip install web3
 sudo python -c "import web3; print(web3.__version__)"
 

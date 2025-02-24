@@ -394,7 +394,8 @@ pm2 logs                               # Show logs of all processes
 
 - Installing web3 package in a virtual enviroment
 ```
-sudo apt update && sudo apt install python3-venv -y
+sudo su
+sudo apt update && sudo apt install python3-venv python3-full -y
 sudo python3 -m venv web3env
 source web3env/bin/activate
 sudo pip install web3

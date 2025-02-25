@@ -34,31 +34,6 @@ import { ServiceModule } from '../service/service.module';
     MulterModule.registerAsync({
       useClass: MulterConfigService,
     }),
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.MAIL_HOST,
-        port: Number(process.env.MAIL_PORT.toString()),
-        secure: false,
-        auth: {
-          user: process.env.MAIL_USER,
-          pass: process.env.MAIL_PASSWORD,
-        },
-        tls: {
-          rejectUnauthorized: false,
-        },
-        connectionTimeout: 10000,
-      },
-      defaults: {
-        from: `"${process.env.NODE_NAME}" <` + process.env.MAIL_FROM + '>',
-      },
-      template: {
-        dir: join(__dirname, 'templates/mail-templates'),
-        adapter: new HandlebarsAdapter(),
-        options: {
-          strict: true,
-        },
-      },
-    }),
   ],
   providers: [
     OTPService,

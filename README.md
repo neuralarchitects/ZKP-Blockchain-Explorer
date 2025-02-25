@@ -410,6 +410,7 @@ pip install web3
 pip install pymongo
 pip install polynomial
 pip install numpy sympy
+pip install fastapi
 python -c "import web3; print(web3.__version__)"
 
 deactivate

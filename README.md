@@ -330,11 +330,9 @@ cd /home/zkp-explorer/frontend
 sudo nano .env
 ```
 Inside the `.env` file, past the parameters.
-*  Make sure to add `/app/` to the end of the `VITE_URL` path!
-*  Enter your node name in `VITE_NODE_NAME` for showing in website
+*  Make sure to add your explorer address to the config.
 ```
-VITE_URL='https://explorer.YOUR_DOMAIN/app/'
-VITE_NODE_NAME = 'explorer.YOUR_DOMAIN'
+REACT_APP_API_BASE_URL='https://<EXPLORER>/app/v1/'
 ```
 In Runner_webapp folder, create `.env` file and edit parameters based on your node URL info
 ```

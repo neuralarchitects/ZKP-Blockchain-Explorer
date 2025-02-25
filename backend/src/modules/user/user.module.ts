@@ -40,10 +40,6 @@ import { BuildingModule } from '../building/building.module';
     MulterModule.registerAsync({
       useClass: MulterConfigService,
     }),
-    JwtModule.register({
-      secret: process.env.ACCESS_TOKEN_SECRET_KEY,
-      signOptions: { expiresIn: '120m' },
-    }),
   ],
   providers: [
     UserService,

@@ -19,10 +19,6 @@ import { UtilityModule } from '../utility/utility.module';
       isGlobal: true,
     }),
     PassportModule,
-    JwtModule.register({
-      secret: process.env.ACCESS_TOKEN_SECRET_KEY,
-      signOptions: { expiresIn: '2m' },
-    }),
     MongooseModule.forFeature(userFeature),
     UserModule,
     UtilityModule,

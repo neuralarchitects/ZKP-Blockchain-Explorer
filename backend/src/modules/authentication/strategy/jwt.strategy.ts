@@ -5,31 +5,7 @@ import { GeneralException } from 'src/modules/utility/exceptions/general.excepti
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor() {
-    console.log('process.env.ACCESS_TOKEN_SECRET_KEY:1111111111111111111');
-    console.log(process.env.ACCESS_TOKEN_SECRET_KEY);
-
-    super({
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: process.env.ACCESS_TOKEN_SECRET_KEY,
-      algorithms: [
-        'HS256',
-        'HS384',
-        'HS512',
-        'RS256',
-        'RS384',
-        'RS512',
-        'ES256',
-        'ES384',
-        'ES512',
-        'PS256',
-        'PS384',
-        'PS512',
-        'none',
-      ],
-    });
-  }
+  
 
   async validate(payload: any) {
     var util = require('util');

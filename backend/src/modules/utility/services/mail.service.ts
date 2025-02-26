@@ -1,5 +1,4 @@
 import { Inject, Injectable, forwardRef } from '@nestjs/common';
-import { MailerService } from '@nestjs-modules/mailer';
 import { User } from './user.entity';
 import { GeneralException } from '../exceptions/general.exception';
 import { ErrorTypeEnum } from '../enums/error-type.enum';
@@ -12,7 +11,6 @@ import { NotificationService } from 'src/modules/notification/notification/notif
 @Injectable()
 export class MailService {
   constructor(
-    private readonly mailerService?: MailerService,
     private readonly notificationService?: NotificationService,
   ) {}
 
@@ -20,7 +18,7 @@ export class MailService {
     // const url = `example.com/auth/confirm?token=${token}`;
     const url = 'https://programming.cpvanda.com/auth/confirm?token=${token}';
 
-    await this.mailerService
+    /* await this.mailerService
       .sendMail({
         to: user.email,
         // from: '"Support Team" <support@example.com>', // override default from
@@ -42,14 +40,14 @@ export class MailService {
           ErrorTypeEnum.UNPROCESSABLE_ENTITY,
           errorMessage,
         );
-      });
+      }); */
   }
 
   async sendRegistrationToken(user: User, token: string) {
     // const url = `example.com/auth/confirm?token=${token}`;
     const url = 'https://programming.cpvanda.com/auth/confirm?token=${token}';
 
-    await this.mailerService
+    /* await this.mailerService
       .sendMail({
         to: user.email,
         // from: '"Support Team" <support@example.com>', // override default from
@@ -71,7 +69,7 @@ export class MailService {
           ErrorTypeEnum.UNPROCESSABLE_ENTITY,
           errorMessage,
         );
-      });
+      }); */
   }
 
   async sendRegistrationOTP(email: string, otp: string, otpType: string) {
@@ -94,7 +92,7 @@ export class MailService {
 
     console.log('email url: ', url);
 
-    await this.mailerService
+    /* await this.mailerService
       .sendMail({
         to: email,
         // from: '"Support Team" <support@example.com>', // override default from
@@ -107,17 +105,7 @@ export class MailService {
           NodeImageSrc: process.env.THEME_LOGO,
           url: url,
         },
-        /*attachments: [
-          {
-            filename: 'logo-fidesinnova-black.png',
-            // path: __dirname +'../../../../../assets/images/logo-fidesinnova-black.png',
-            path: join(
-              __dirname,
-              '../../../../assets/images/logo-fidesinnova-black.png',
-            ),
-            cid: 'logo',
-          },
-        ],*/
+        
       })
       .then((data) => {
         console.log(data);
@@ -130,7 +118,7 @@ export class MailService {
           ErrorTypeEnum.UNPROCESSABLE_ENTITY,
           errorMessage,
         );
-      });
+      }); */
   }
 
   async sendChangePasswordOTP(email: string, otp: string, otpType: string) {
@@ -156,7 +144,7 @@ export class MailService {
     try {
       console.log('Sending email');
 
-      await this.mailerService
+      /* await this.mailerService
         .sendMail({
           to: email,
           subject: `${process.env.NODE_NAME}. Password Reset.`,
@@ -170,7 +158,7 @@ export class MailService {
         })
         .then((data) => {
           console.log(data);
-        });
+        }); */
       console.log('email sended');
     } catch (error) {
       console.log(error);
@@ -204,7 +192,7 @@ export class MailService {
 
     console.log('url: ', url);
 
-    await this.mailerService
+    /* await this.mailerService
       .sendMail({
         to: email,
         // from: '"Support Team" <support@example.com>', // override default from
@@ -217,17 +205,7 @@ export class MailService {
           NodeImageSrc: process.env.THEME_LOGO,
           url: url,
         },
-        /*attachments: [
-          {
-            filename: 'logo-fidesinnova-black.png',
-            // path: __dirname +'../../../../../assets/images/logo-fidesinnova-black.png',
-            path: join(
-              __dirname,
-              '../../../../assets/images/logo-fidesinnova-black.png',
-            ),
-            cid: 'logo',
-          },
-        ],*/
+     
       })
       .then((data) => {
         console.log(data);
@@ -240,7 +218,7 @@ export class MailService {
           ErrorTypeEnum.UNPROCESSABLE_ENTITY,
           errorMessage,
         );
-      });
+      }); */
   }
 
   async getCurrentTimeFormatted() {
@@ -278,7 +256,7 @@ export class MailService {
     console.log('url: ', url);
 
     if (process.env.NOTIFICATION_BY_MAIL == 'enabled') {
-      await this.mailerService
+      /* await this.mailerService
         .sendMail({
           to: email,
           // from: '"Support Team" <support@example.com>', // override default from
@@ -293,17 +271,7 @@ export class MailService {
             subject: subject,
             date: this.getCurrentTimeFormatted(),
           },
-          /*attachments: [
-            {
-              filename: 'logo-fidesinnova-black.png',
-              // path: __dirname +'../../../../../assets/images/logo-fidesinnova-black.png',
-              path: join(
-                __dirname,
-                '../../../../assets/images/logo-fidesinnova-black.png',
-              ),
-              cid: 'logo',
-            },
-          ],*/
+       
         })
         .then((data) => {
           console.log(data);
@@ -316,7 +284,7 @@ export class MailService {
             ErrorTypeEnum.UNPROCESSABLE_ENTITY,
             errorMessage,
           );
-        });
+        }); */
     } else if (process.env.NOTIFICATION_BY_MAIL == 'disabled') {
       console.log(`\x1b[33m \nSending email is disabled.\x1b[0m`);
     }

@@ -223,8 +223,12 @@ export default function TransactionDetail() {
                 <p className="title">IoT Developer Name</p>
                 <p className="right-data">{detailData.iot_manufacturer_name}</p>
 
-                <p className="title">IoT Device Name</p>
-                <p className="right-data">{detailData.iot_device_name}</p>
+                <p className="title">IoT Device Type</p>
+                <p className="right-data">
+                  {detailData?.iot_device_name
+                    ? detailData?.iot_device_name
+                    : detailData?.iot_device_type}
+                </p>
 
                 <p className="title">Device Hardware Version</p>
                 <p className="right-data">
@@ -236,7 +240,12 @@ export default function TransactionDetail() {
                 <p className="title">Commitment Data</p>
                 <p className="right-data commitment-data">
                   <JsonDisplay
-                    jsonData={JSON.parse(detailData.commitmentData)}
+                    jsonData={JSON.parse(
+                      String(detailData.commitmentData).replace(
+                        "iot_device_name",
+                        "iot_device_type"
+                      )
+                    )}
                   />
                 </p>
               </>

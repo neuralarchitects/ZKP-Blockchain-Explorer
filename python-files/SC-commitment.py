@@ -369,16 +369,16 @@ def listen_for_events():
             for event in stored_event_filter.get_new_entries():
                 tx_hash = event.transactionHash
                 event_data = {
-                    "commitmentID": event.args.commitmentID,
-                    "nodeId": event.args.nodeId,
-                    "iot_manufacturer_name": event.args.iot_manufacturer_name,
-                    "iot_device_name": event.args.iot_device_name,
-                    "device_hardware_version": event.args.device_hardware_version,
-                    "firmware_version": event.args.firmware_version,
-                    "commitmentData": event.args.commitmentData,
-                    "timestamp": event.args.timestamp,
-                    "eventType": "CommitmentStored"
-                }
+					"commitmentID": event.args.commitmentID,
+					"nodeId": event.args.nodeId,
+					"iot_manufacturer_name": event.args.iot_manufacturer_name,
+					"iot_device_name": event.args.iot_device_name if event.args.iot_device_name else event.args.iot_device_type,
+					"device_hardware_version": event.args.device_hardware_version,
+					"firmware_version": event.args.firmware_version,
+					"commitmentData": event.args.commitmentData,
+					"timestamp": event.args.timestamp,
+					"eventType": "CommitmentStored"
+				}
                 print(f"New CommitmentStored event: {event_data}")
                 # Save the latest event data
                 save_latest_data(event_data, tx_hash)
@@ -390,7 +390,7 @@ def listen_for_events():
                     "commitmentID": event.args.commitmentID,
                     "nodeId": event.args.nodeId,
                     "iot_manufacturer_name": event.args.iot_manufacturer_name,
-                    "iot_device_name": event.args.iot_device_name,
+					"iot_device_name": event.args.iot_device_name if event.args.iot_device_name else event.args.iot_device_type,
                     "device_hardware_version": event.args.device_hardware_version,
                     "firmware_version": event.args.firmware_version,
                     "commitmentData": event.args.commitmentData,

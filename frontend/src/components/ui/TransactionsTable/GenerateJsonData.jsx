@@ -24,9 +24,9 @@ function GenerateJsonData({ parsedData, loading, isZkp }) {
 					<span>{parsedData.iot_manufacturer_name}</span>
 				</p>
 			)}
-			{parsedData.iot_device_name && (
+			{parsedData?.iot_device_name || parsedData?.iot_device_type && (
 				<p>
-					IoT Device Name: <span>{parsedData.iot_device_name}</span>
+					IoT Device Type: <span>{parsedData?.iot_device_name ? parsedData?.iot_device_name : parsedData?.iot_device_type}</span>
 				</p>
 			)}
 			{parsedData.device_hardware_version && (

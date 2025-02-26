@@ -26,7 +26,7 @@ function transformCommitmentToArray(commitments) {
       isCommitment = true;
     }
     return [
-      commitment.iot_device_name,
+      commitment?.iot_device_name ? commitment?.iot_device_name : commitment?.iot_device_type,
       commitment.iot_manufacturer_name || "",
       commitment.commitmentID || "",
       formatDateTime(new Date(commitment.timestamp * 1000)) || "",
@@ -70,7 +70,7 @@ export default function CommitmentTable({ data, ...props }) {
       ]}
       onCellClick={handleCellClick}
       titles={[
-        "Device Name",
+        "Device Type",
         "Developer Name",
         "Commitment Id",
         "Creation Date",

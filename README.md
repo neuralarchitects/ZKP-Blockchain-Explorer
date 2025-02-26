@@ -292,6 +292,7 @@ SWAGGER_LOCAL_SERVER = http://localhost:5000
 RPC_URL = 'https://fidesf1-rpc.fidesinnova.io'
 
 # Admin Wallet Private Key
+# SC-serv-dev smart contract should be run and add an admin
 ADMIN_WALLET_PRIVATE_KEY = 'YOUR_WALLET_PRIVATE_KEY'
 
 # Server Configuration

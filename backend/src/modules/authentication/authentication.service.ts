@@ -1,5 +1,4 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import axios from 'axios';
 import * as bcrypt from 'bcrypt';
 import { SignOptions } from 'jsonwebtoken';
@@ -21,7 +20,6 @@ var jwt = require('jsonwebtoken');
 export class AuthenticationService {
   constructor(
     private userService: UserService,
-    private jwtService: JwtService,
   ) {}
 
   async validateUser(mobile: string, pass: string): Promise<any> {
@@ -170,21 +168,21 @@ export class AuthenticationService {
     // const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY, { expiresIn: '1h', algorithm: 'HS256' } );
     // const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY, refreshSignOptions );
 
-    const accessToken = this.jwtService.sign(payload, {
+    /* const accessToken = this.jwtService.sign(payload, {
       ...accessSignOptions,
       secret: process.env.ACCESS_TOKEN_SECRET_KEY,
     });
     const refreshToken = this.jwtService.sign(payload, {
       ...refreshSignOptions,
       secret: process.env.REFRESH_TOKEN_SECRET_KEY,
-    });
+    }); */
 
-    const tokens = {
+    /* const tokens = {
       accessToken: accessToken,
       refreshToken: refreshToken,
-    };
+    }; */
 
-    return tokens;
+    //return tokens;
   }
 
   async createNewTokens(data, user: any) {
@@ -298,10 +296,10 @@ export class AuthenticationService {
       }
 
       // const accessToken = this.jwtService.sign(payload);
-      const accessToken = this.jwtService.sign(payload, {
+      /* const accessToken = this.jwtService.sign(payload, {
         ...accessSignOptions,
         secret: process.env.ACCESS_TOKEN_SECRET_KEY,
-      });
+      }); */
 
       // const signOptions: SignOptions = { algorithm: 'HS256' };
       const refreshSignOptions: SignOptions = {};
@@ -358,7 +356,7 @@ export class AuthenticationService {
       // const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY, { expiresIn: '1h', algorithm: 'HS256' } );
       // const refreshToken = sign(payload, process.env.REFRESH_TOKEN_SECRET_KEY, refreshSignOptions );
 
-      const refreshToken = this.jwtService.sign(payload, {
+      /* const refreshToken = this.jwtService.sign(payload, {
         ...refreshSignOptions,
         secret: process.env.REFRESH_TOKEN_SECRET_KEY,
       });
@@ -368,7 +366,7 @@ export class AuthenticationService {
         refreshToken: refreshToken,
       };
 
-      return tokens;
+      return tokens; */
     }
 
     return {};
@@ -420,7 +418,7 @@ export class AuthenticationService {
       refreshSignOptions.expiresIn = process.env.REFRESH_TOKEN_EXPIRATION_TIME;
       refreshSignOptions.issuer = process.env.REFRESH_TOKEN_ISSUER;
       //   refreshSignOptions.algorithm = process.env.REFRESH_TOKEN_ALGORITHM;
-      const accessToken = this.jwtService.sign(payload, {
+      /* const accessToken = this.jwtService.sign(payload, {
         ...accessSignOptions,
         secret: process.env.ACCESS_TOKEN_SECRET_KEY,
       });
@@ -428,15 +426,15 @@ export class AuthenticationService {
       const refreshToken = this.jwtService.sign(payload, {
         ...refreshSignOptions,
         secret: process.env.REFRESH_TOKEN_SECRET_KEY,
-      });
+      }); */
 
-      const tokens = {
+      /* const tokens = {
         accessToken: accessToken,
         refreshToken: refreshToken,
       };
       const response: any = await this.userService.myProfileResponse(user);
 
-      return { ...response, tokens };
+      return { ...response, tokens }; */
     } catch (err) {
       throw new BadRequestException('token is invalid');
     }
@@ -488,7 +486,7 @@ export class AuthenticationService {
       refreshSignOptions.expiresIn = process.env.REFRESH_TOKEN_EXPIRATION_TIME;
       refreshSignOptions.issuer = process.env.REFRESH_TOKEN_ISSUER;
       //   refreshSignOptions.algorithm = process.env.REFRESH_TOKEN_ALGORITHM;
-      const accessToken = this.jwtService.sign(payload, {
+      /* const accessToken = this.jwtService.sign(payload, {
         ...accessSignOptions,
         secret: process.env.ACCESS_TOKEN_SECRET_KEY,
       });
@@ -505,7 +503,7 @@ export class AuthenticationService {
       console.log(user);
       const response: any = await this.userService.myProfileResponse(user);
 
-      return { ...response, tokens };
+      return { ...response, tokens }; */
     } catch (err) {
       throw new BadRequestException('token is invalid');
     }

@@ -79,26 +79,3 @@ sudo pm2 start main.js --name "Web App" || { echo "Error: Failed to start Web Ap
 
 cd ../../ || { echo "Error: Failed to return to base directory."; exit 1; }
 
-
-echo "Navigating to python-files directory and starting Python Sources..."
-cd python-files
-
-sudo pm2 start monitor_blocks.py --name "PY Monitor Blocks"
-sudo pm2 start SC-commitment.py --name "PY SC Commitment"
-sudo pm2 start SC-serv-dev.py --name "PY SC Servrice Device"
-sudo pm2 start SC-zkp.py --name "PY SC ZKP"
-
-echo "Navigating to python-files/zkp directory..."
-cd zkp
-
-echo "Installing ZKP verifier python libraries and starting the source..."
-
-sudo pip install fastapi uvicorn
-sudo pm2 start "uvicorn verifier:app --host 0.0.0.0 --port 7000" --name "PY ZKP Verifier"
-
-# Save PM2 process list and ensure PM2 startup
-echo "Saving PM2 process list and setting up PM2 startup..."
-sudo pm2 save || { echo "Error: Failed to save PM2 processes."; exit 1; }
-sudo pm2 startup || { echo "Error: Failed to setup PM2 startup."; exit 1; }
-
-echo "All services started successfully."

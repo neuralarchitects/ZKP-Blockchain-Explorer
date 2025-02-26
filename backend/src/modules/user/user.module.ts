@@ -17,7 +17,6 @@ import { UserPermissionService } from './services/user-permission/user-permissio
 import { UserRoleService } from './services/user-role/user-role.service';
 import { UserService } from './services/user/user.service';
 import { MulterConfigService } from '../utility/services/multer-configuration.service';
-import { JwtModule } from '@nestjs/jwt';
 import { PanelModule } from '../panel/panel.module';
 import { DeviceModule } from '../device/device.module';
 import { ServiceModule } from '../service/service.module';

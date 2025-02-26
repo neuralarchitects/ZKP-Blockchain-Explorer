@@ -12,7 +12,6 @@ import * as bcrypt from 'bcrypt';
 import { UserVerificationStatusEnum } from '../../enums/user-verification-status.enum';
 import { UserRoleService } from '../user-role/user-role.service';
 import { MediaService } from 'src/modules/utility/services/media.service';
-import { JwtService } from '@nestjs/jwt';
 import { requestActivationCodeRepeatedlyException } from './../../exception/request-activation-code-repeatedly.exception';
 import { UserInfoRepository } from './../../repositories/user-info.repository';
 import { verify } from 'jsonwebtoken';
@@ -51,7 +50,6 @@ export class UserService {
     private readonly userInfoRepository?: UserInfoRepository,
     private readonly userRoleService?: UserRoleService,
     private readonly userRoleRepository?: UserRoleRepository,
-    private jwtService?: JwtService,
     private readonly mediaService?: MediaService,
     private readonly deviceService?: DeviceService,
     private readonly deviceLogService?: DeviceLogService,
@@ -96,7 +94,7 @@ export class UserService {
       refreshSignOptions.expiresIn = process.env.REFRESH_TOKEN_EXPIRATION_TIME;
       refreshSignOptions.issuer = process.env.REFRESH_TOKEN_ISSUER;
       //   refreshSignOptions.algorithm = process.env.REFRESH_TOKEN_ALGORITHM;
-      const accessToken = this.jwtService.sign(payload, {
+      /* const accessToken = this.jwtService.sign(payload, {
         ...accessSignOptions,
         secret: process.env.ACCESS_TOKEN_SECRET_KEY,
       });
@@ -111,7 +109,7 @@ export class UserService {
         refreshToken: refreshToken,
       };
 
-      return { ...newUser.toObject(), tokens };
+      return { ...newUser.toObject(), tokens }; */
     } else {
       throw new requestActivationCodeRepeatedlyException(
         (new Date(this.otp[this.otp.length - 1].expiryDate).getTime() -
@@ -1305,7 +1303,7 @@ export class UserService {
     refreshSignOptions.issuer = process.env.REFRESH_TOKEN_ISSUER;
     refreshSignOptions.algorithm = process.env.REFRESH_TOKEN_ALGORITHM;
 
-    const accessToken = this.jwtService.sign(payload, {
+    /* const accessToken = this.jwtService.sign(payload, {
       ...accessSignOptions,
       secret: process.env.ACCESS_TOKEN_SECRET_KEY,
     });
@@ -1319,7 +1317,7 @@ export class UserService {
       refreshToken: refreshToken,
     };
 
-    return tokens;
+    return tokens; */
   }
 
   async changeActivationStatusOfUser(userId, data): Promise<any> {
@@ -1744,7 +1742,7 @@ export class UserService {
         refreshSignOptions.issuer = process.env.REFRESH_TOKEN_ISSUER;
         refreshSignOptions.algorithm = process.env.REFRESH_TOKEN_ALGORITHM;
 
-        const accessToken = this.jwtService.sign(payload, {
+        /* const accessToken = this.jwtService.sign(payload, {
           ...accessSignOptions,
           secret: process.env.ACCESS_TOKEN_SECRET_KEY,
         });
@@ -1761,7 +1759,7 @@ export class UserService {
         const response: any = await this.myProfileResponse(this.user);
         response.tokens = tokens;
 
-        return await response;
+        return await response; */
       } else {
         throw new GeneralException(ErrorTypeEnum.NOT_FOUND, 'User not found.');
       }
@@ -1820,7 +1818,7 @@ export class UserService {
         refreshSignOptions.issuer = process.env.REFRESH_TOKEN_ISSUER;
         refreshSignOptions.algorithm = process.env.REFRESH_TOKEN_ALGORITHM;
 
-        const accessToken = this.jwtService.sign(payload, {
+        /* const accessToken = this.jwtService.sign(payload, {
           ...accessSignOptions,
           secret: process.env.ACCESS_TOKEN_SECRET_KEY,
         });
@@ -1837,7 +1835,7 @@ export class UserService {
         const response: any = await this.myProfileResponse(this.user);
         response.tokens = tokens;
 
-        return await response;
+        return await response; */
       } else {
         throw new GeneralException(ErrorTypeEnum.NOT_FOUND, 'User not found.');
       }
@@ -1963,7 +1961,7 @@ export class UserService {
       refreshSignOptions.issuer = process.env.REFRESH_TOKEN_ISSUER;
       refreshSignOptions.algorithm = process.env.REFRESH_TOKEN_ALGORITHM;
 
-      const accessToken = this.jwtService.sign(payload, {
+      /* const accessToken = this.jwtService.sign(payload, {
         ...accessSignOptions,
         secret: process.env.ACCESS_TOKEN_SECRET_KEY,
       });
@@ -1977,7 +1975,7 @@ export class UserService {
         refreshToken: refreshToken,
       };
 
-      return tokens;
+      return tokens; */
     }
   }
 

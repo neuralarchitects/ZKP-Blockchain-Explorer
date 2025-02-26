@@ -5,7 +5,6 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { LocalStrategy } from './strategy/local.strategy';
-import { JwtStrategy } from './strategy/jwt.strategy';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UserModule } from '../user/user.module';
 import { userFeature } from '../user/features/user.feature';
@@ -23,7 +22,7 @@ import { UtilityModule } from '../utility/utility.module';
     UserModule,
     UtilityModule,
   ],
-  providers: [AuthenticationService, LocalStrategy, JwtStrategy],
+  providers: [AuthenticationService, LocalStrategy],
   controllers: [AuthenticationController],
   exports: [AuthenticationService],
 })

@@ -89,10 +89,10 @@ export class ContractService implements OnApplicationBootstrap {
       chainId: this.chainId,
     });
 
-    this.faucetWallet = new ethers.Wallet(
+    /* this.faucetWallet = new ethers.Wallet(
       process.env.FAUCET_WALLET_PRIVATE_KEY,
       this.provider,
-    );
+    ); */
 
     this.adminWallet = new ethers.Wallet(
       process.env.ADMIN_WALLET_PRIVATE_KEY,

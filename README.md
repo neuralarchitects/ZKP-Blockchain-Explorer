@@ -341,11 +341,13 @@ Inside the `.env` file, past the parameters.
 PORT=4000
 ```
 ## C.3. Build and Execute
-To automate the setup and build processes for both the backend and frontend applications, run the `initial_setup.sh` script located in the root directory of the project. This script will handle building both the backend and frontend applications and configuring PM2 services automatically.
+To automate the setup and build processes for both the backend and frontend applications, run the `initial_setup.sh` script located in the root directory of the project. This script will handle building both the backend and frontend applications and configuring PM2 services automatically. If you are installinng the exlorer on an EC2 AWS instance, use the following command.
    ```
    cd /home/zkp-explorer/
-   sudo chmod +x initial_setup.sh
-   sudo ./initial_setup.sh
+   sudo chmod +x initial_setup_backfrontend.sh
+   sudo chmod +x initial_setup_python.sh
+   ./initial_setup_backfrontend.sh
+   ./initial_setup_python.sh
    ```
 ## Maintenance: ZKP Explorer Code or Config Change
 - Every time Fidesinnova core development team push a new version of the code on GitHub.

@@ -287,42 +287,34 @@ sudo nano .env
 - Inside the `.env` file, paste the following parameters. Note that your app URL is "explorer.YOUR_DOMAIN"  (e.g., "explorer.motioncertified.online").
 
 ```
-NODE_ID = "explorer.YOUR_DOMAIN" # Set this with your node URL (e.g., "explorer.motioncertified.online")
-PORT = 5000
-NODE_NAME = "your_node_name" Set this with your node name (e.g., "Fides Innova Chain Explorer")
-SWAGGER_LOCAL_SERVER = http://localhost:5000
+NODE_ID='explorer2.fidesinnova.io' # Set this with your node URL (e.g., "explorer.motioncertified.online")
+NODE_NAME='Exlorer 2 Fides Innova' Set this with your node name (e.g., "Fides Innova Chain Explorer")
+SWAGGER_LOCAL_SERVER='http://localhost:5000'
 
 # Rpc Url
-RPC_URL = 'https://fidesf1-rpc.fidesinnova.io'
+RPC_URL='https://fidesf1-rpc.fidesinnova.io'
 
 # Admin Wallet Private Key
-# SC-serv-dev smart contract should be run and add an admin
-ADMIN_WALLET_PRIVATE_KEY = 'YOUR_WALLET_PRIVATE_KEY'
+ADMIN_WALLET_PRIVATE_KEY='xxxxx'
 
 # Server Configuration
-HOST_PROTOCOL = 'https://'
-HOST_NAME_OR_IP = 'explorer.YOUR_DOMAIN'
-HOST_PORT = '3000'
-HOST_SUB_DIRECTORY = 'app'
+HOST_PROTOCOL='https://'
+HOST_NAME_OR_IP='explorer2.fidesinnova.io'
+HOST_PORT=3000
+HOST_SUB_DIRECTORY='app'
 
-# Mongo Database Configuration
-# MONGO_DATABASE_NAME = fidesinnova
-# MONGO_USER = Administrator
-# MONGO_PASSWORD = 'PASSWORD'
-# MONGO_PORT = 27017
-# MONGO_HOST = mongodb://127.0.0.1
-MONGO_CONNECTION = mongodb://127.0.0.1:27017/fidesinnova
+MONGO_CONNECTION='mongodb://127.0.0.1:27017/fidesinnova'
 
 # Multer Configuration     # Multer is a node.js middleware for handling multipart/form-data, which is primarily used for uploading files.
-MULTER_MEDIA_PATH = ./storages/resources
-MULTER_MEDIA_SIZE = 10000000    # 10 MB
+MULTER_MEDIA_PATH='./storages/resources'
+MULTER_MEDIA_SIZE=10000000    # 10 MB
 ```
 
 Update these parameters:
 ```
-NODE_ID = "your-node-url" # Set this to your node URL
-NODE_NAME = "your-node-name"
-HOST_NAME_OR_IP = 'explorer.YOUR_DOMAIN'
+NODE_ID="your-node-url" # Set this to your node URL
+NODE_NAME="your-node-name"
+HOST_NAME_OR_IP='explorer.YOUR_DOMAIN'
 ```
 -------------------------------------------------------------------------------------------------
 

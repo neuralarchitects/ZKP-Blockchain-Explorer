@@ -90,6 +90,7 @@ export default function Dashboard() {
       <div
         className={`status-chart-container ${removeMoveUp ? "" : "move-up"}`}
       >
+      
         <StatusBoxes
           serviceDeviceCount={serviceDeviceCount}
           totalOperations={totalOperations}

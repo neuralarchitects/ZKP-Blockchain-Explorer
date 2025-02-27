@@ -24,6 +24,8 @@ async def process(data: InputData):
         result = verifier(proof_data)
         return {"output": result}
     except Exception as e:
+        print(f"Error: {e}")
+        print(traceback.format_exc())  # Log the full traceback
         raise HTTPException(status_code=500, detail=str(e))
 
 

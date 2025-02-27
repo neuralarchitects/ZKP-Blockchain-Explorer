@@ -10,8 +10,6 @@ import { MqttLogService } from './modules/broker/services/mqtt-log.service';
 import { readFileSync } from 'fs';
 
 async function bootstrap() {
-  // const app = await NestFactory.create(AppModule);
-
   const httpsOptions = {
     key: readFileSync('/etc/nginx/ssl/privkey.pem'),
     cert: readFileSync('/etc/nginx/ssl/fullchain.pem'),

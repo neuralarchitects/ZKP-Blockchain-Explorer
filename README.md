@@ -346,9 +346,10 @@ To automate the setup and build processes for both the backend and frontend appl
    cd /home/zkp-explorer/
    sudo chmod +x initial_setup_backfrontend.sh
    sudo chmod +x initial_setup_python.sh
-   ./initial_setup_backfrontend.sh
+   sudo ./initial_setup_backfrontend.sh
    ./initial_setup_python.sh
    ```
+  Note: the last command must be used without 'sudo'.
 ## Maintenance: ZKP Explorer Code or Config Change
 - Every time Fidesinnova core development team push a new version of the code on GitHub.
 ```

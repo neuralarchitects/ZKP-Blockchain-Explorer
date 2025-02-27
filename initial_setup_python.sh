@@ -1,6 +1,5 @@
 echo "Navigating to python-files directory and starting Python Sources..."
 
-sudo su
 sudo apt update && sudo apt install python3-venv python3-full -y
 sudo python3 -m venv web3env
 source web3env/bin/activate

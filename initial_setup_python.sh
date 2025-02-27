@@ -12,7 +12,7 @@ pip install fastapi uvicorn
 echo "Starting the source files ..."
 sudo pm2 start python-files/monitor_blocks.py --name "monitor_blocks.py" --interpreter web3env/bin/python3
 sudo pm2 start python-files/SC-commitment.py --name "SC-commitment.py" --interpreter web3env/bin/python3
-sudo pm2 start python-files/SC-serv-dev.py --name "SC-serv-dev.py" --interpreter web3env/bin/python3
+sudo pm2 start python-files/SC-service-device.py --name "SC-service-device.py" --interpreter web3env/bin/python3
 sudo pm2 start python-files/SC-zkp.py --name "SC-zkp.py" --interpreter web3env/bin/python3
 
 echo "Installing ZKP verifier python libraries and starting the source ..."

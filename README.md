@@ -410,3 +410,11 @@ python -c "import web3; print(web3.__version__)"
 
 deactivate
 ```
+
+- Python files description
+  -- monitor_blocks.py: write the newly created blocks to blockchain_data/blocks
+  -- polynomial.py: a math library to be used by verifier.py
+  -- SC-commitment.py: read commitment from the protocol smart contract and write into the database
+  -- SC-service-device.py: read the published services from the protocol smart contract and shared devices into the database.
+  -- SC-zkp.py: read the zkp from the protocol smart contract and wrtie them into the database.
+  -- verifier.py: bring the 'fastapi' module up to provide the 'app' api for zkp verification purposes.

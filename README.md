@@ -22,6 +22,10 @@ sudo apt update && sudo apt install python3-venv python3-full -y
 sudo python3 -m venv web3env
 source web3env/bin/activate
 sudo pip install web3
+pip install pymongo
+pip install polynomial
+pip install numpy sympy
+pip install fastapi
 python -c "import web3; print(web3.__version__)"
 ```
 

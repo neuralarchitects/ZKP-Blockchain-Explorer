@@ -85,36 +85,38 @@ def verifier(proof_data: JSONType) -> bool:
     # Read proof
    # with open("ZKP-NEW/final_proof.json", "r") as proof_file:
     #    proof_data = json.load(proof_file)
-    sigma1 = proof_data["P1AHP"]
-    w_hat_x = proof_data["P2AHP"]
-    z_hatA = proof_data["P3AHP"]
-    z_hatB = proof_data["P4AHP"]
-    z_hatC = proof_data["P5AHP"]
-    h_0_x = proof_data["P6AHP"]
-    s_x = proof_data["P7AHP"]
-    g_1_x = proof_data["P8AHP"]
-    h_1_x = proof_data["P9AHP"]
-    sigma2 = proof_data["P10AHP"]
-    g_2_x = proof_data["P11AHP"]
-    h_2_x = proof_data["P12AHP"]
-    sigma3 = proof_data["P13AHP"]
-    g_3_x = proof_data["P14AHP"]
-    h_3_x = proof_data["P15AHP"]
-    y_prime = proof_data["P16AHP"]
-    p_17_AHP = proof_data["P17AHP"]
-    Com1_AHP_x = proof_data["Com1_AHP_x"]   #   Added by Moka
-    Com2_AHP_x = proof_data["Com2_AHP_x"]
-    Com3_AHP_x = proof_data["Com3_AHP_x"]
-    Com4_AHP_x = proof_data["Com4_AHP_x"]
-    Com5_AHP_x = proof_data["Com5_AHP_x"]
-    Com6_AHP_x = proof_data["Com6_AHP_x"]
-    Com7_AHP_x = proof_data["Com7_AHP_x"]
-    Com8_AHP_x = proof_data["Com8_AHP_x"]
-    Com9_AHP_x = proof_data["Com9_AHP_x"]
-    Com10_AHP_x = proof_data["Com10_AHP_x"]
-    Com11_AHP_x = proof_data["Com11_AHP_x"]
-    Com12_AHP_x = proof_data["Com12_AHP_x"]
-    Com13_AHP_x = proof_data["Com13_AHP_x"]
+    sigma1 = proof_data.get("P1AHP", proof_data.get("P_AHP1"))
+    w_hat_x = proof_data.get("P2AHP", proof_data.get("P_AHP2"))
+    z_hatA = proof_data.get("P3AHP", proof_data.get("P_AHP3"))
+    z_hatB = proof_data.get("P4AHP", proof_data.get("P_AHP4"))
+    z_hatC = proof_data.get("P5AHP", proof_data.get("P_AHP5"))
+    h_0_x = proof_data.get("P6AHP", proof_data.get("P_AHP6"))
+    s_x = proof_data.get("P7AHP", proof_data.get("P_AHP7"))
+    g_1_x = proof_data.get("P8AHP", proof_data.get("P_AHP8"))
+    h_1_x = proof_data.get("P9AHP", proof_data.get("P_AHP9"))
+    sigma2 = proof_data.get("P10AHP", proof_data.get("P_AHP10"))
+    g_2_x = proof_data.get("P11AHP", proof_data.get("P_AHP11"))
+    h_2_x = proof_data.get("P12AHP", proof_data.get("P_AHP12"))
+    sigma3 = proof_data.get("P13AHP", proof_data.get("P_AHP13"))
+    g_3_x = proof_data.get("P14AHP", proof_data.get("P_AHP14"))
+    h_3_x = proof_data.get("P15AHP", proof_data.get("P_AHP15"))
+    y_prime = proof_data.get("P16AHP", proof_data.get("P_AHP16"))
+    p_17_AHP = proof_data.get("P17AHP", proof_data.get("P_AHP17"))
+
+    Com1_AHP_x = proof_data.get("Com1_AHP_x", proof_data.get("Com_AHP1_x"))   #   Added by Moka
+    
+    Com2_AHP_x = proof_data.get("Com2_AHP_x", proof_data.get("Com_AHP2_x"))
+    Com3_AHP_x = proof_data.get("Com3_AHP_x", proof_data.get("Com_AHP3_x"))
+    Com4_AHP_x = proof_data.get("Com4_AHP_x", proof_data.get("Com_AHP4_x"))
+    Com5_AHP_x = proof_data.get("Com5_AHP_x", proof_data.get("Com_AHP5_x"))
+    Com6_AHP_x = proof_data.get("Com6_AHP_x", proof_data.get("Com_AHP6_x"))
+    Com7_AHP_x = proof_data.get("Com7_AHP_x", proof_data.get("Com_AHP7_x"))
+    Com8_AHP_x = proof_data.get("Com8_AHP_x", proof_data.get("Com_AHP8_x"))
+    Com9_AHP_x = proof_data.get("Com9_AHP_x", proof_data.get("Com_AHP9_x"))
+    Com10_AHP_x = proof_data.get("Com10_AHP_x", proof_data.get("Com_AHP10_x"))
+    Com11_AHP_x = proof_data.get("Com11_AHP_x", proof_data.get("Com_AHP11_x"))
+    Com12_AHP_x = proof_data.get("Com12_AHP_x", proof_data.get("Com_AHP12_x"))
+    Com13_AHP_x = proof_data.get("Com13_AHP_x", proof_data.get("Com_AHP13_x"))
     commitment_id_proof = proof_data["commitment_id"]
 
 
@@ -140,16 +142,16 @@ def verifier(proof_data: JSONType) -> bool:
     # with open("program_commitment.json", "r") as commitment_file:
     # commitment_data = json.load(commitment_file)
 
-    rowA_x = commitment_data["RowA"]
-    colA_x = commitment_data["ColA"]
-    valA_x = commitment_data["ValA"]
-    rowB_x = commitment_data["RowB"]
-    colB_x = commitment_data["ColB"]
-    valB_x = commitment_data["ValB"]
-    rowC_x = commitment_data["RowC"]
-    colC_x = commitment_data["ColC"]
-    valC_x = commitment_data["ValC"]
-    Class = commitment_data["class"]
+    rowA_x = commitment_data.get("RowA", commitment_data.get("row_AHP_A"))
+    colA_x = commitment_data.get("ColA", commitment_data.get("col_AHP_A"))
+    valA_x = commitment_data.get("ValA", commitment_data.get("val_AHP_A"))
+    rowB_x = commitment_data.get("RowB", commitment_data.get("row_AHP_B"))
+    colB_x = commitment_data.get("ColB", commitment_data.get("col_AHP_B"))
+    valB_x = commitment_data.get("ValB", commitment_data.get("val_AHP_B"))
+    rowC_x = commitment_data.get("RowC", commitment_data.get("row_AHP_C"))
+    colC_x = commitment_data.get("ColC", commitment_data.get("col_AHP_C"))
+    valC_x = commitment_data.get("ValC", commitment_data.get("val_AHP_C"))
+    Class = commitment_data["class"] 
 
 
     vk = Polynomial.get_vk(Class, mappings)

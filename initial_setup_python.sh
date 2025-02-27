@@ -12,7 +12,8 @@ sudo pm2 start python-files/SC-service-device.py --name "SC-service-device.py" -
 sudo pm2 start python-files/SC-zkp.py --name "SC-zkp.py" --interpreter web3env/bin/python3
 
 echo "Installing ZKP verifier python libraries and starting the source ..."
-pm2 start "uvicorn python-files/verifier:app --host 0.0.0.0 --port 7000" --name Verifier
+cd python-files || { echo "Error: Failed to navigate to python-files directory."; exit 1; }
+pm2 start "uvicorn verifier:app --host 0.0.0.0 --port 7000" --name Verifier
 
 # Save PM2 process list and ensure PM2 startup
 echo "Saving PM2 process list and setting up PM2 startup..."

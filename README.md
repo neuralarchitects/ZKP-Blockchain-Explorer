@@ -143,6 +143,12 @@ sudo cp /etc/letsencrypt/live/explorer.YOUR_DOMAIN/privkey.pem /etc/nginx/ssl/
 
 ## A.4. Update the `nginx.conf` file
 - Replace the following configuration in your `nginx.conf` file located at `/etc/nginx/nginx.conf`.
+- Remove the existing nginx.conf and create an empty one:
+```
+sudo rm -rf /etc/nginx/nginx.conf
+sudo nano /etc/nginx/nginx.conf
+```
+- This is the nginx.conf file:
 ```
 user www-data;
 worker_processes auto;

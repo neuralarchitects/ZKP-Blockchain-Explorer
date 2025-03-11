@@ -307,7 +307,7 @@ export default function TransactionsTable({
       navigateTo(`/tx/${encodedHash}`);
     } else {
       console.log("tempData:", tempData);
-      
+
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
       try {
         const { commitment_id } = JSON.parse(tempData.zkp_payload);
@@ -603,28 +603,38 @@ export default function TransactionsTable({
             />
             <div className="holder service">
               <p>
-                IoT Server Id: <span>{modalData?.nodeId}</span>
-              </p>
-              <p>
                 Event Type: <span>{modalData?.eventType}</span>
               </p>
               <p>
+                Node Id: <span>{modalData?.nodeId}</span>
+              </p>
+              {/* <p>
                 Device Name:{" "}
                 <span>{modalData?.serviceName || modalData?.name}</span>
-              </p>
+              </p> */}
               <p>
                 Device Id: <span>{modalData?.deviceId}</span>
+              </p>
+              <p>
+                Device Id Type: <span></span>
               </p>
               <p>
                 Device Type: <span>{modalData?.deviceType}</span>
               </p>
               <p>
-                Owner Id: <span>{modalData?.ownerId}</span>
+                Device Model: <span></span>
               </p>
               <p>
-                Transaction Date:{" "}
+                Manufacturer: <span></span>
+              </p>
+              <p>
+                Device Owner: <span>{modalData?.ownerId}</span>
+              </p>
+              <p>
+                Transaction Timestamp:{" "}
                 <span>
-                  {formatDateTime(new Date(modalData?.timestamp * 1000))}
+                  {modalData?.timestamp}
+                  {/* {formatDateTime(new Date(modalData?.timestamp * 1000))} */}
                 </span>
               </p>
             </div>

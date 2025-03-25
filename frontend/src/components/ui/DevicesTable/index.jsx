@@ -6,19 +6,18 @@ import { formatDateTime } from "../../../utility/functions";
 import useFetchData from "../../../services/api/useFetchData";
 
 function getDeviceUrlByType(nodes, type) {
-	const regex = new RegExp(`^${type.replace(/[-_]/g, "[-_]")}$`, "i"); // Match both - and _
-	
-	// Iterate over each domain's device list
-	for (const deviceList of Object.values(nodes)) {
-	  // Find a matching device within each list
-	  const device = deviceList.find((device) => regex.test(device.type));
-	  
-	  if (device) return device.url; // Return URL if found
-	}
-  
-	return null; // Return null if no match is found
+  const regex = new RegExp(`^${type.replace(/[-_]/g, "[-_]")}$`, "i"); // Match both - and _
+
+  // Iterate over each domain's device list
+  for (const deviceList of Object.values(nodes)) {
+    // Find a matching device within each list
+    const device = deviceList.find((device) => regex.test(device.type));
+
+    if (device) return device.url; // Return URL if found
   }
-  
+
+  return null; // Return null if no match is found
+}
 
 export default function DevicesTable({ data }) {
   const { fetchData } = useFetchData();

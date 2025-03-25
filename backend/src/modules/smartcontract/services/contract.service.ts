@@ -46,7 +46,7 @@ export class ContractService implements OnApplicationBootstrap {
     console.log('ContractService initialization complete.');
   }
   private pythonApiUrl = 'http://localhost:7000/process'; // FastAPI URL
-  private readonly rpcUrl = 'https://fidesf1-rpc.fidesinnova.io';
+  private readonly rpcUrl = process.env.RPC_URL;
   private readonly chainId = 706883;
   private readonly faucetAmount = 5;
   private readonly minFaucetAmount = 0.5;

@@ -127,7 +127,7 @@ export class ContractService implements OnApplicationBootstrap {
         status: 'tested',
         blocklyJson: '',
         code: service[9],
-        devices: service[5],
+        devices: JSON.parse(service[5]),
         insertDate: service[10],
         updateDate: service[11],
         published: true,
@@ -156,31 +156,37 @@ export class ContractService implements OnApplicationBootstrap {
     });
 
     this.contracts.serviceDevice.on('DeviceCreated', (id, device) => {
-      let newDevice = {
-        nodeId: device[0],
-        nodeDeviceId: device[1],
-        userId: device[2],
-        isShared: true,
-        deviceName: device[3],
-        deviceType: device[4],
-        deviceEncryptedId: device[5],
-        hardwareVersion: device[6],
-        firmwareVersion: device[7],
-        parameters: device[8].map((str) => JSON.parse(str)),
-        costOfUse: device[9],
-        location: { coordinates: device[10] },
-        insertDate: device[11],
-        updateDate: device[11],
-      };
-
-      this.deviceService.insertDevice(newDevice);
+      console.log("DeviceCreated",device);
+      try {
+        let newDevice = {
+          nodeId: device[0],
+          nodeDeviceId: device[1],
+          isShared: true,
+          deviceName: device[2],
+          deviceType: device[2],
+          deviceEncryptedId: device[3],
+          hardwareVersion: String(device[4]).split('/')[0],
+          firmwareVersion: String(device[4]).split('/')[1],
+          parameters: device[6].map((str) => JSON.parse(str)),
+          costOfUse: device[7],
+          location: { coordinates: device[8] },
+          insertDate: new Date(String(device[10])),
+          updateDate: new Date(String(device[10])),
+        };
+        
+        this.deviceService.insertDevice(newDevice);
+      } catch (error) {
+        console.log("DeviceCreated",error);
+      }
+      
     });
 
+  
     this.contracts.serviceDevice.on('DeviceRemoved', (id, device) => {
       this.deviceService.deleteOtherNodeDeviceByNodeIdAndDeviceId(
         device[0],
         device[1],
-        device[5],
+        device[3],
       );
     });
   }

@@ -35,23 +35,23 @@ MONGO_URI = "mongodb://localhost:27017/"  # Replace with your MongoDB URI
 DATABASE_NAME = "smartcontract_db"
 COLLECTION_NAME = "commitment_smartcontract"
 
-def get_commitment_from_db(commitment_id):
+def get_commitment_from_db(commitmentId):
     # Establish MongoDB connection
     client = MongoClient(MONGO_URI)
     db = client[DATABASE_NAME]
     collection = db[COLLECTION_NAME]
     
-    # Query the collection for the specified commitment_id
-    document = collection.find_one({"commitmentID": commitment_id})
+    # Query the collection for the specified commitmentId
+    document = collection.find_one({"commitmentId": commitmentId})
     if not document:
-        raise ValueError(f"No document found with commitment_id: {commitment_id}")
+        raise ValueError(f"No document found with commitmentId: {commitmentId}")
     
-    # Retrieve the commitmentData field
-    commitmentData = document.get("commitmentData")
-    if not commitmentData:
-        raise ValueError(f"'commitmentData' not found for commitment_id: {commitment_id}")
+    # Retrieve the commitment field
+    commitment = document.get("commitment")
+    if not commitment:
+        raise ValueError(f"'commitment' not found for commitmentId: {commitmentId}")
     
-    return commitmentData
+    return commitment
 
 
 
@@ -117,21 +117,21 @@ def verifier(proof_data: JSONType) -> bool:
     Com11_AHP_x = proof_data.get("Com11_AHP_x", proof_data.get("Com_AHP11_x"))
     Com12_AHP_x = proof_data.get("Com12_AHP_x", proof_data.get("Com_AHP12_x"))
     Com13_AHP_x = proof_data.get("Com13_AHP_x", proof_data.get("Com_AHP13_x"))
-    commitment_id_proof = proof_data["commitment_id"]
+    commitmentId_proof = proof_data["commitmentId"]
 
 
    
-    # Replace this with the input commitment_id
+    # Replace this with the input commitmentId
     try:
         # Fetch commitment data from MongoDB
-        commitment_data = get_commitment_from_db(commitment_id_proof)
+        commitment_data = get_commitment_from_db(commitmentId_proof)
         commitment_data = json.loads(commitment_data)
         
         print("Type of commitment_data:", type(commitment_data))
 
         print("Commitment data retrieved successfully:", commitment_data)
         
-        print("rowA_x:", commitment_data["RowA"])
+        # print("rowA_x:", commitment_data["RowA"])
     except Exception as e:
         print(f"Error fetching commitment: {e}")
     
@@ -142,15 +142,15 @@ def verifier(proof_data: JSONType) -> bool:
     # with open("program_commitment.json", "r") as commitment_file:
     # commitment_data = json.load(commitment_file)
 
-    rowA_x = commitment_data.get("RowA", commitment_data.get("row_AHP_A"))
-    colA_x = commitment_data.get("ColA", commitment_data.get("col_AHP_A"))
-    valA_x = commitment_data.get("ValA", commitment_data.get("val_AHP_A"))
-    rowB_x = commitment_data.get("RowB", commitment_data.get("row_AHP_B"))
-    colB_x = commitment_data.get("ColB", commitment_data.get("col_AHP_B"))
-    valB_x = commitment_data.get("ValB", commitment_data.get("val_AHP_B"))
-    rowC_x = commitment_data.get("RowC", commitment_data.get("row_AHP_C"))
-    colC_x = commitment_data.get("ColC", commitment_data.get("col_AHP_C"))
-    valC_x = commitment_data.get("ValC", commitment_data.get("val_AHP_C"))
+    rowA_x = commitment_data.get("row_AHP_A", commitment_data.get("row_AHP_A"))
+    colA_x = commitment_data.get("col_AHP_A", commitment_data.get("col_AHP_A"))
+    valA_x = commitment_data.get("val_AHP_A", commitment_data.get("val_AHP_A"))
+    rowB_x = commitment_data.get("row_AHP_B", commitment_data.get("row_AHP_B"))
+    colB_x = commitment_data.get("col_AHP_B", commitment_data.get("col_AHP_B"))
+    valB_x = commitment_data.get("val_AHP_B", commitment_data.get("val_AHP_B"))
+    rowC_x = commitment_data.get("row_AHP_C", commitment_data.get("row_AHP_C"))
+    colC_x = commitment_data.get("col_AHP_C", commitment_data.get("col_AHP_C"))
+    valC_x = commitment_data.get("val_AHP_C", commitment_data.get("val_AHP_C"))
     Class = commitment_data["class"] 
 
 

@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 # Connect to the blockchain via the RPC link
-rpc_url = "https://fidesf1-rpc.fidesinnova.io/"
+rpc_url = "https://rpc1.fidesinnova.io/"
 web3 = Web3(Web3.HTTPProvider(rpc_url))
 
 # Check connection
@@ -19,8 +19,8 @@ else:
     exit()
 
 # Contract address and ABI (Update with actual ABI)
-# contract_address = '0x0caf2cdaefa7a2c553f1fe45add08d812dacc35e'
-contract_address = Web3.to_checksum_address('0x0caf2cdaefa7a2c553f1fe45add08d812dacc35e')
+# contract_address = '0x4b08ea934e6bfb7c72a376c842c911e1dd2aa74f'
+contract_address = Web3.to_checksum_address('0x4b08ea934e6bfb7c72a376c842c911e1dd2aa74f')
 
 
 contract_abi = [
@@ -38,37 +38,18 @@ contract_abi = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			}
-		],
-		"name": "AccessManagers__IsAlreadyManager",
-		"type": "error"
-	},
-	{
-		"inputs": [
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
 			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
+				"internalType": "string",
+				"name": "deviceId",
+				"type": "string"
 			}
 		],
-		"name": "AccessManagers__IsNotManager",
+		"name": "DeviceManagement__DeviceIdNotExist",
 		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			}
-		],
-		"name": "addManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -81,142 +62,48 @@ contract_abi = [
 				"internalType": "string",
 				"name": "deviceId",
 				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "ownerId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "deviceType",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "encryptedID",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "hardwareVersion",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "firmwareVersion",
-				"type": "string"
-			},
-			{
-				"internalType": "string[]",
-				"name": "parameters",
-				"type": "string[]"
-			},
-			{
-				"internalType": "string",
-				"name": "useCost",
-				"type": "string"
-			},
-			{
-				"internalType": "string[]",
-				"name": "locationGPS",
-				"type": "string[]"
-			},
-			{
-				"internalType": "string",
-				"name": "installationDate",
-				"type": "string"
 			}
 		],
-		"name": "createDevice",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"name": "DeviceManagement__DuplicatedId",
+		"type": "error"
 	},
 	{
 		"inputs": [
 			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "NodeManagers__IsAlreadyManager",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "NodeManagers__IsNotManager",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			},
+			{
 				"internalType": "string",
 				"name": "nodeId",
 				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "serviceId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "serviceType",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "devices",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "installationPrice",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "executionPrice",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "imageURL",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "program",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "creationDate",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "publishedDate",
-				"type": "string"
 			}
 		],
-		"name": "createService",
-		"outputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"name": "NodeManagers__NodeIdMismatch",
+		"type": "error"
 	},
 	{
 		"inputs": [
@@ -244,62 +131,6 @@ contract_abi = [
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "targetNodeId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "targetDeviceId",
-				"type": "string"
-			}
-		],
-		"name": "removeDevice",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "account",
-				"type": "address"
-			}
-		],
-		"name": "removeManager",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "targetNodeId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "targetServiceId",
-				"type": "string"
-			}
-		],
-		"name": "removeService",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "renounceOwnership",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
 				"name": "nodeId",
 				"type": "string"
 			},
@@ -309,7 +140,7 @@ contract_abi = [
 				"type": "string"
 			}
 		],
-		"name": "ServiceMarket__DuplicatedId",
+		"name": "ServiceManagement__DuplicatedId",
 		"type": "error"
 	},
 	{
@@ -325,39 +156,7 @@ contract_abi = [
 				"type": "string"
 			}
 		],
-		"name": "ServiceMarket__ServiceIdNotExist",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "nodeId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "deviceId",
-				"type": "string"
-			}
-		],
-		"name": "SharedDevice__DeviceIdNotExist",
-		"type": "error"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "nodeId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "deviceId",
-				"type": "string"
-			}
-		],
-		"name": "SharedDevice__DuplicatedId",
+		"name": "ServiceManagement__ServiceIdNotExist",
 		"type": "error"
 	},
 	{
@@ -383,32 +182,22 @@ contract_abi = [
 					},
 					{
 						"internalType": "string",
-						"name": "ownerId",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
 						"name": "deviceType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "encryptedID",
+						"name": "deviceIdType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "hardwareVersion",
+						"name": "deviceModel",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "firmwareVersion",
+						"name": "manufacturer",
 						"type": "string"
 					},
 					{
@@ -423,17 +212,27 @@ contract_abi = [
 					},
 					{
 						"internalType": "string[]",
-						"name": "locationGPS",
+						"name": "deviceCoordination",
 						"type": "string[]"
 					},
 					{
 						"internalType": "string",
-						"name": "installationDate",
+						"name": "ownernershipId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "sharedDateTime",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "softwareVersion",
 						"type": "string"
 					}
 				],
 				"indexed": False,
-				"internalType": "struct Device",
+				"internalType": "struct DeviceSharingManagement.Device",
 				"name": "device",
 				"type": "tuple"
 			}
@@ -464,32 +263,22 @@ contract_abi = [
 					},
 					{
 						"internalType": "string",
-						"name": "ownerId",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
 						"name": "deviceType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "encryptedID",
+						"name": "deviceIdType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "hardwareVersion",
+						"name": "deviceModel",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "firmwareVersion",
+						"name": "manufacturer",
 						"type": "string"
 					},
 					{
@@ -504,22 +293,64 @@ contract_abi = [
 					},
 					{
 						"internalType": "string[]",
-						"name": "locationGPS",
+						"name": "deviceCoordination",
 						"type": "string[]"
 					},
 					{
 						"internalType": "string",
-						"name": "installationDate",
+						"name": "ownernershipId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "sharedDateTime",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "softwareVersion",
 						"type": "string"
 					}
 				],
 				"indexed": False,
-				"internalType": "struct Device",
+				"internalType": "struct DeviceSharingManagement.Device",
 				"name": "device",
 				"type": "tuple"
 			}
 		],
 		"name": "DeviceRemoved",
+		"type": "event"
+	},
+	{
+		"anonymous": False,
+		"inputs": [
+			{
+				"indexed": True,
+				"internalType": "address",
+				"name": "manager",
+				"type": "address"
+			},
+			{
+				"indexed": False,
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			}
+		],
+		"name": "ManagerAdded",
+		"type": "event"
+	},
+	{
+		"anonymous": False,
+		"inputs": [
+			{
+				"indexed": True,
+				"internalType": "address",
+				"name": "manager",
+				"type": "address"
+			}
+		],
+		"name": "ManagerRemoved",
 		"type": "event"
 	},
 	{
@@ -594,7 +425,7 @@ contract_abi = [
 					},
 					{
 						"internalType": "string",
-						"name": "imageURL",
+						"name": "imageUrl",
 						"type": "string"
 					},
 					{
@@ -614,7 +445,7 @@ contract_abi = [
 					}
 				],
 				"indexed": False,
-				"internalType": "struct Service",
+				"internalType": "struct ServiceManagement.Service",
 				"name": "service",
 				"type": "tuple"
 			}
@@ -675,7 +506,7 @@ contract_abi = [
 					},
 					{
 						"internalType": "string",
-						"name": "imageURL",
+						"name": "imageUrl",
 						"type": "string"
 					},
 					{
@@ -695,7 +526,7 @@ contract_abi = [
 					}
 				],
 				"indexed": False,
-				"internalType": "struct Service",
+				"internalType": "struct ServiceManagement.Service",
 				"name": "service",
 				"type": "tuple"
 			}
@@ -707,12 +538,165 @@ contract_abi = [
 		"inputs": [
 			{
 				"internalType": "address",
-				"name": "newOwner",
+				"name": "account",
 				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
 			}
 		],
-		"name": "transferOwnership",
+		"name": "addManager",
 		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceIdType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceModel",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "manufacturer",
+				"type": "string"
+			},
+			{
+				"internalType": "string[]",
+				"name": "parameters",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string",
+				"name": "useCost",
+				"type": "string"
+			},
+			{
+				"internalType": "string[]",
+				"name": "deviceCoordination",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string",
+				"name": "ownernershipId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "sharedDateTime",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "softwareVersion",
+				"type": "string"
+			}
+		],
+		"name": "createDevice",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "serviceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "serviceType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "devices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "installationPrice",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "executionPrice",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "imageUrl",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "program",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "creationDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "publishedDate",
+				"type": "string"
+			}
+		],
+		"name": "createService",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"stateMutability": "nonpayable",
 		"type": "function"
 	},
@@ -734,32 +718,22 @@ contract_abi = [
 					},
 					{
 						"internalType": "string",
-						"name": "ownerId",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "string",
 						"name": "deviceType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "encryptedID",
+						"name": "deviceIdType",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "hardwareVersion",
+						"name": "deviceModel",
 						"type": "string"
 					},
 					{
 						"internalType": "string",
-						"name": "firmwareVersion",
+						"name": "manufacturer",
 						"type": "string"
 					},
 					{
@@ -774,16 +748,101 @@ contract_abi = [
 					},
 					{
 						"internalType": "string[]",
-						"name": "locationGPS",
+						"name": "deviceCoordination",
 						"type": "string[]"
 					},
 					{
 						"internalType": "string",
-						"name": "installationDate",
+						"name": "ownernershipId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "sharedDateTime",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "softwareVersion",
 						"type": "string"
 					}
 				],
-				"internalType": "struct Device[]",
+				"internalType": "struct DeviceSharingManagement.Device[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "fetchAllDevicesPerNode",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "nodeId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "deviceId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "deviceType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "deviceIdType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "deviceModel",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "manufacturer",
+						"type": "string"
+					},
+					{
+						"internalType": "string[]",
+						"name": "parameters",
+						"type": "string[]"
+					},
+					{
+						"internalType": "string",
+						"name": "useCost",
+						"type": "string"
+					},
+					{
+						"internalType": "string[]",
+						"name": "deviceCoordination",
+						"type": "string[]"
+					},
+					{
+						"internalType": "string",
+						"name": "ownernershipId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "sharedDateTime",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "softwareVersion",
+						"type": "string"
+					}
+				],
+				"internalType": "struct DeviceSharingManagement.Device[]",
 				"name": "",
 				"type": "tuple[]"
 			}
@@ -839,7 +898,7 @@ contract_abi = [
 					},
 					{
 						"internalType": "string",
-						"name": "imageURL",
+						"name": "imageUrl",
 						"type": "string"
 					},
 					{
@@ -858,9 +917,121 @@ contract_abi = [
 						"type": "string"
 					}
 				],
-				"internalType": "struct Service[]",
+				"internalType": "struct ServiceManagement.Service[]",
 				"name": "",
 				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "fetchAllServicesPerNode",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "nodeId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "serviceType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "devices",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "installationPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "executionPrice",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "imageUrl",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "program",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "creationDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "publishedDate",
+						"type": "string"
+					}
+				],
+				"internalType": "struct ServiceManagement.Service[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getAllManagers",
+		"outputs": [
+			{
+				"internalType": "address[]",
+				"name": "",
+				"type": "address[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "",
+				"type": "string[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "getManagerNodeId",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -878,6 +1049,85 @@ contract_abi = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "targetNodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "targetDeviceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			}
+		],
+		"name": "removeDevice",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "removeManager",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "targetNodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "targetServiceId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			}
+		],
+		"name": "removeService",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
 
@@ -886,8 +1136,35 @@ contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
 # MongoDB connection setup
 mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = mongo_client["smartcontract_db"]  # Use your database name
-collection = db["services_devices_smartcontract"]  # Use your collection name
+
+# Database name
+db_name = "smartcontract_db"
+
+# Collection name
+collection_name = "services_devices_smartcontract"
+
+# Check if database exists, if not create it by accessing it
+if db_name not in mongo_client.list_database_names():
+    print(f"Database '{db_name}' does not exist. Creating it...")
+    # Just accessing the database will create it when data is inserted
+    db = mongo_client[db_name]
+else:
+    db = mongo_client[db_name]
+    # print(f"Database '{db_name}' already exists.")
+
+# Check if collection exists, if not create it by accessing it
+if collection_name not in db.list_collection_names():
+    print(f"Collection '{collection_name}' does not exist. Creating it...")
+    # Just accessing the collection will create it when data is inserted
+    collection = db[collection_name]
+else:
+    collection = db[collection_name]
+    # print(f"Collection '{collection_name}' already exists.")
+
+
+
+# db = mongo_client["smartcontract_db"]  # Use your database name
+# collection = db["services_devices_smartcontract"]  # Use your collection name
 
 
 
@@ -981,12 +1258,11 @@ def listen_for_events():
                         "devices": service_data.get('devices', []),
                         "installationPrice": service_data.get('installationPrice', 0),
                         "executionPrice": service_data.get('executionPrice', 0),
-                        "imageURL": service_data.get('imageURL', ''),
+                        "imageUrl": service_data.get('imageUrl', ''),
                         "program": service_data.get('program', ''),
                         "creationDate": service_data.get('creationDate', 'Unknown'),
                         "publishedDate": service_data.get('publishedDate', 'Unknown'),
                         "eventType": "ServiceCreated"
-
                     }
                     logger.info(f"Processed Service event: {event_data}")
                     save_latest_data(event_data, tx_details)
@@ -1007,16 +1283,15 @@ def listen_for_events():
                     event_data = {
                         "nodeId": device_data.get('nodeId', 'Unknown'),
                         "deviceId": device_data.get('deviceId', 'Unknown'),
-                        "ownerId": device_data.get('ownerId', 'Unknown'),
-                        "name": device_data.get('name', 'Unknown'),
                         "deviceType": device_data.get('deviceType', 'Unknown'),
-                        "encryptedID": device_data.get('encryptedID', 'Unknown'),
-                        "hardwareVersion": device_data.get('hardwareVersion', 'Unknown'),
-                        "firmwareVersion": device_data.get('firmwareVersion', 'Unknown'),
+                        "deviceIdType": device_data.get('deviceIdType', 'Unknown'),
+                        "deviceModel": device_data.get('deviceModel', 'Unknown'),
+                        "manufacturer": device_data.get('manufacturer', 'Unknown'),
                         "parameters": device_data.get('parameters', []),
                         "useCost": device_data.get('useCost', 0),
-                        "locationGPS": device_data.get('locationGPS', 'Unknown'),
-                        "installationDate": device_data.get('installationDate', 'Unknown'),
+                        "deviceCoordination": device_data.get('deviceCoordination', 'Unknown'),
+                        "sharedDateTime": device_data.get('sharedDateTime', 'Unknown'),
+                        "softwareVersion": device_data.get('softwareVersion', 'Unknown'),
                         "eventType": "DeviceCreated"
                     }
                     logger.info(f"Processed Device event: {event_data}")
@@ -1041,12 +1316,12 @@ def listen_for_events():
                         "devices": service_data.get('devices', []),
                         "installationPrice": service_data.get('installationPrice', 0),
                         "executionPrice": service_data.get('executionPrice', 0),
-                        "imageURL": service_data.get('imageURL', ''),
+                        "imageUrl": service_data.get('imageUrl', ''),
                         "program": service_data.get('program', ''),
                         "creationDate": service_data.get('creationDate', 'Unknown'),
                         "publishedDate": service_data.get('publishedDate', 'Unknown'),
-						"eventType": "ServiceRemoved"
-						}
+                        "eventType": "ServiceRemoved"
+                    }
                     save_latest_data(event_data, tx_details)
                 except Exception as e:
                     logger.error(f"Error processing ServiceRemoved event: {e}")
@@ -1062,18 +1337,17 @@ def listen_for_events():
                     event_data = {
                         "nodeId": device_data.get('nodeId', 'Unknown'),
                         "deviceId": device_data.get('deviceId', 'Unknown'),
-                        "ownerId": device_data.get('ownerId', 'Unknown'),
-                        "name": device_data.get('name', 'Unknown'),
                         "deviceType": device_data.get('deviceType', 'Unknown'),
-                        "encryptedID": device_data.get('encryptedID', 'Unknown'),
-                        "hardwareVersion": device_data.get('hardwareVersion', 'Unknown'),
-                        "firmwareVersion": device_data.get('firmwareVersion', 'Unknown'),
+                        "deviceIdType": device_data.get('deviceIdType', 'Unknown'),
+                        "deviceModel": device_data.get('deviceModel', 'Unknown'),
+                        "manufacturer": device_data.get('manufacturer', 'Unknown'),
                         "parameters": device_data.get('parameters', []),
                         "useCost": device_data.get('useCost', 0),
-                        "locationGPS": device_data.get('locationGPS', 'Unknown'),
-                        "installationDate": device_data.get('installationDate', 'Unknown'),
-						"eventType": "DeviceRemoved"					
-						}
+                        "deviceCoordination": device_data.get('deviceCoordination', 'Unknown'),
+                        "sharedDateTime": device_data.get('sharedDateTime', 'Unknown'),
+                        "softwareVersion": device_data.get('softwareVersion', 'Unknown'),
+                        "eventType": "DeviceRemoved"
+                    }
                     save_latest_data(event_data, tx_details)
                 except Exception as e:
                     logger.error(f"Error processing DeviceRemoved event: {e}")

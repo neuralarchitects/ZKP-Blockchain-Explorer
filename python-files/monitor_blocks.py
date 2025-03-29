@@ -5,7 +5,7 @@ import time
 from eth_utils import to_hex
 
 # Setting Blockchain
-RPC_URL = "https://fidesf1-rpc.fidesinnova.io"  
+RPC_URL = "https://rpc1.fidesinnova.io"  
 web3 = Web3(Web3.HTTPProvider(RPC_URL))
 
 # Inject the PoA middleware
@@ -17,9 +17,49 @@ if not web3.is_connected():
 # Setting Mongo
 MONGO_URI = "mongodb://localhost:27017/"
 mongo_client = MongoClient(MONGO_URI)
-db = mongo_client["blockchain_data"]
-blocks_collection = db["blocks"]
-transactions_collection = db["transactions"]
+
+
+
+# Database name
+db_name = "blockchain_data"
+
+# Collection name
+blocks_collection_name = "blocks"
+transactions_collection_name = "blocks"
+
+
+# Check if database exists, if not create it by accessing it
+if db_name not in mongo_client.list_database_names():
+    print(f"Database '{db_name}' does not exist. Creating it...")
+    # Just accessing the database will create it when data is inserted
+    db = mongo_client[db_name]
+else:
+    db = mongo_client[db_name]
+    # print(f"Database '{db_name}' already exists.")
+
+# Check if collection exists, if not create it by accessing it
+if blocks_collection_name not in db.list_collection_names():
+    print(f"Collection '{blocks_collection_name}' does not exist. Creating it...")
+    # Just accessing the collection will create it when data is inserted
+    blocks_collection = db[blocks_collection_name]
+else:
+    blocks_collection = db[blocks_collection_name]
+    # print(f"Collection '{blocks_collection_name}' already exists.")
+
+# Check if collection exists, if not create it by accessing it
+if transactions_collection_name not in db.list_collection_names():
+    print(f"Collection '{transactions_collection_name}' does not exist. Creating it...")
+    # Just accessing the collection will create it when data is inserted
+    transactions_collection = db[transactions_collection_name]
+else:
+    transactions_collection = db[transactions_collection_name]
+    # print(f"Collection '{transactions_collection_name}' already exists.")
+
+
+
+# db = mongo_client["blockchain_data"]
+# blocks_collection = db["blocks"]
+# transactions_collection = db["transactions"]
 
 # Store Block in mongo
 def process_new_block(block_number):

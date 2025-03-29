@@ -3,7 +3,7 @@ import pymongo
 import time
 
 # Connect to the blockchain via the RPC link
-rpc_url = "https://fidesf1-rpc.fidesinnova.io/"
+rpc_url = "https://rpc1.fidesinnova.io/"
 web3 = Web3(Web3.HTTPProvider(rpc_url))
 
 # Check connection
@@ -14,8 +14,8 @@ else:
     exit()
 
 # Contract address and ABI
-# contract_address = '0x9d7704502745723cf7363268ad7aac54e9c3a093'
-contract_address = Web3.to_checksum_address('0x9d7704502745723cf7363268ad7aac54e9c3a093')
+# contract_address = '0x96259fba1f845b42c257f72088dd38c7e8540504'
+contract_address = Web3.to_checksum_address('0x96259fba1f845b42c257f72088dd38c7e8540504')
 
 contract_abi = [
 	{
@@ -24,7 +24,7 @@ contract_abi = [
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "commitmentID",
+				"name": "commitmentId",
 				"type": "string"
 			},
 			{
@@ -49,7 +49,7 @@ contract_abi = [
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "commitmentID",
+				"name": "commitmentId",
 				"type": "string"
 			},
 			{
@@ -61,31 +61,37 @@ contract_abi = [
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "iot_manufacturer_name",
+				"name": "deviceType",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "iot_device_name",
+				"name": "deviceIdType",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "device_hardware_version",
+				"name": "deviceModel",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "firmware_version",
+				"name": "manufacturer",
 				"type": "string"
 			},
 			{
 				"indexed": False,
 				"internalType": "string",
-				"name": "commitmentData",
+				"name": "softwareVersion",
+				"type": "string"
+			},
+			{
+				"indexed": False,
+				"internalType": "string",
+				"name": "commitment",
 				"type": "string"
 			},
 			{
@@ -102,78 +108,11 @@ contract_abi = [
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "commitmentID",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "nodeId",
-				"type": "string"
-			}
-		],
-		"name": "removeCommitment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "commitmentID",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "nodeId",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "iot_manufacturer_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "iot_device_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "device_hardware_version",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "firmware_version",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "commitmentData",
-				"type": "string"
-			}
-		],
-		"name": "storeCommitment",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
 				"name": "",
 				"type": "string"
 			}
 		],
-		"name": "commitmentIDs",
+		"name": "commitmentIds",
 		"outputs": [
 			{
 				"internalType": "bool",
@@ -196,7 +135,7 @@ contract_abi = [
 		"outputs": [
 			{
 				"internalType": "string",
-				"name": "commitmentID",
+				"name": "commitmentId",
 				"type": "string"
 			},
 			{
@@ -206,27 +145,32 @@ contract_abi = [
 			},
 			{
 				"internalType": "string",
-				"name": "iot_manufacturer_name",
+				"name": "deviceType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_device_name",
+				"name": "deviceIdType",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "device_hardware_version",
+				"name": "deviceModel",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "firmware_version",
+				"name": "manufacturer",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "commitmentData",
+				"name": "softwareVersion",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "commitment",
 				"type": "string"
 			},
 			{
@@ -239,10 +183,70 @@ contract_abi = [
 		"type": "function"
 	},
 	{
+		"inputs": [],
+		"name": "getAllCommitmentsData",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "commitmentId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "nodeId",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "deviceType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "deviceIdType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "deviceModel",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "manufacturer",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "softwareVersion",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "commitment",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct CommitmentStorage.Commitment[]",
+				"name": "",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [
 			{
 				"internalType": "string",
-				"name": "commitmentID",
+				"name": "commitmentId",
 				"type": "string"
 			},
 			{
@@ -255,42 +259,47 @@ contract_abi = [
 		"outputs": [
 			{
 				"internalType": "string",
-				"name": "commitmentIDResult",
+				"name": "",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "nodeIdResult",
+				"name": "",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_manufacturer_name",
+				"name": "",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "iot_device_name",
+				"name": "",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "device_hardware_version",
+				"name": "",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "firmware_version",
+				"name": "",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "commitmentData",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "",
 				"type": "string"
 			},
 			{
 				"internalType": "uint256",
-				"name": "timestamp",
+				"name": "",
 				"type": "uint256"
 			}
 		],
@@ -309,6 +318,83 @@ contract_abi = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "commitmentId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			}
+		],
+		"name": "removeCommitment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "commitmentId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "nodeId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceIdType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "deviceModel",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "manufacturer",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "softwareVersion",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "commitment",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "storeCommitment",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
 
@@ -317,8 +403,36 @@ contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
 # MongoDB connection setup
 mongo_client = pymongo.MongoClient("mongodb://localhost:27017/")
-db = mongo_client["smartcontract_db"]
-collection = db["commitment_smartcontract"]
+
+# Database name
+db_name = "smartcontract_db"
+
+# Collection name
+collection_name = "commitment_smartcontract"
+
+
+# Check if database exists, if not create it by accessing it
+if db_name not in mongo_client.list_database_names():
+    print(f"Database '{db_name}' does not exist. Creating it...")
+    # Just accessing the database will create it when data is inserted
+    db = mongo_client[db_name]
+else:
+    db = mongo_client[db_name]
+    # print(f"Database '{db_name}' already exists.")
+
+# Check if collection exists, if not create it by accessing it
+if collection_name not in db.list_collection_names():
+    print(f"Collection '{collection_name}' does not exist. Creating it...")
+    # Just accessing the collection will create it when data is inserted
+    collection = db[collection_name]
+else:
+    collection = db[collection_name]
+    # print(f"Collection '{collection_name}' already exists.")
+
+# Now you can use the collection for your operations
+
+# db = mongo_client["smartcontract_db"]
+# collection = db["commitment_smartcontract"]
 
 
 def get_transaction_details(tx_hash):
@@ -369,13 +483,14 @@ def listen_for_events():
             for event in stored_event_filter.get_new_entries():
                 tx_hash = event.transactionHash
                 event_data = {
-					"commitmentID": event.args.commitmentID,
+					"commitmentId": event.args.commitmentId,
 					"nodeId": event.args.nodeId,
-					"iot_manufacturer_name": event.args.iot_manufacturer_name,
-					"iot_device_name": event.args.iot_device_name if event.args.iot_device_name else event.args.iot_device_type,
-					"device_hardware_version": event.args.device_hardware_version,
-					"firmware_version": event.args.firmware_version,
-					"commitmentData": event.args.commitmentData,
+					"deviceType": event.args.deviceType,
+					"deviceIdType": event.args.deviceIdType,
+					"deviceModel": event.args.deviceModel,
+					"manufacturer": event.args.manufacturer,
+					"softwareVersion": event.args.softwareVersion,
+					"commitment": event.args.commitment,
 					"timestamp": event.args.timestamp,
 					"eventType": "CommitmentStored"
 				}
@@ -387,14 +502,15 @@ def listen_for_events():
             for event in removed_event_filter.get_new_entries():
                 tx_hash = event.transactionHash.hex()
                 event_data = {
-                    "commitmentID": event.args.commitmentID,
+                    "commitmentId": event.args.commitmentId,
                     "nodeId": event.args.nodeId,
-                    "iot_manufacturer_name": event.args.iot_manufacturer_name,
-					"iot_device_name": event.args.iot_device_name if event.args.iot_device_name else event.args.iot_device_type,
-                    "device_hardware_version": event.args.device_hardware_version,
-                    "firmware_version": event.args.firmware_version,
-                    "commitmentData": event.args.commitmentData,
-                    "timestamp": event.args.timestamp,
+                    "deviceType": event.args.deviceType,
+                    "deviceIdType": event.args.deviceIdType,
+                    "deviceModel": event.args.deviceModel,
+                    "manufacturer": event.args.manufacturer,
+                    "softwareVersion": event.args.softwareVersion,
+                    "commitment": event.args.commitment,
+					"timestamp": event.args.timestamp,
                     "eventType": "CommitmentRemoved"
                 }
                 print(f"New CommitmentRemoved event: {event_data}")

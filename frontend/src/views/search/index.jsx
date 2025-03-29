@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import "./style.scss";
 import useFetchData from "../../services/api/useFetchData";
 import { HiX } from "react-icons/hi";
@@ -7,7 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import TransactionsTable from "../../components/ui/TransactionsTable";
 import SearchBar from "../../components/containers/SearchBar";
 import Pagination from "../../components/ui/pagination";
-import ZkpTable from "../../components/ui/ZKPTable";
+
 
 export default function SearchPage() {
   const [apiData, setApiData] = useState([]);
@@ -76,7 +76,7 @@ export default function SearchPage() {
         <SearchBar initialValue={String(searchTextString)} />
       </div>
 
-      {((apiData.length === 0 && !loading) || loading) && (
+      {(((apiData.length === 0 && !loading) || loading) && (
         <div className="message-container">
           {apiData.length === 0 && !loading && (
             <>
@@ -86,33 +86,40 @@ export default function SearchPage() {
           )}
           {loading && <Spinner type="rotate" />}
         </div>
-      )}
-      {searchFilterString === "zkp" && (
-        <div className="zkp-table-padding">
-          <TransactionsTable transactions={apiData} zkpTransaction={true} />
-        </div>
-      )}
-      {searchFilterString === "commitment" && (
-        <div className="zkp-table-padding">
-          <TransactionsTable transactions={apiData} commitmentTransaction={true} />
-        </div>
-      )}
-      {searchFilterString !== "zkp" && searchFilterString !== "commitment" && (
+      )) || (
         <>
-          <div className="transaction-list">
-            {apiData.length > 0 && !loading && (
-              <TransactionsTable transactions={apiData} />
+          {searchFilterString === "zkp" && (
+            <div className="zkp-table-padding">
+              <TransactionsTable transactions={apiData} zkpTransaction={true} />
+            </div>
+          )}
+          {searchFilterString === "commitment" && (
+            <div className="zkp-table-padding">
+              <TransactionsTable
+                transactions={apiData}
+                commitmentTransaction={true}
+              />
+            </div>
+          )}
+          {searchFilterString !== "zkp" &&
+            searchFilterString !== "commitment" && (
+              <>
+                <div className="transaction-list">
+                  {apiData.length > 0 && !loading && (
+                    <TransactionsTable transactions={apiData} />
+                  )}
+                </div>
+              </>
             )}
-          </div>
+          <Pagination
+            eachPageCount={itemsPerPage}
+            initialPage={currentPage}
+            totalCount={totalResults}
+            setNowPage={handlePageChange} // Pass handlePageChange directly
+            className="page-pagination"
+          />
         </>
       )}
-      <Pagination
-        eachPageCount={itemsPerPage}
-        initialPage={currentPage}
-        totalCount={totalResults}
-        setNowPage={handlePageChange} // Pass handlePageChange directly
-        className="page-pagination"
-      />
     </main>
   );
 }

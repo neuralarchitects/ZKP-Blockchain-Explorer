@@ -27,7 +27,7 @@ function transformZkpToArray(zkps) {
     }
 
     return [
-      zkp.deviceType,
+      zkp.deviceType || "",
       zkp.deviceId || "",
       formatDateTime(new Date(zkp.timestamp * 1000)) || "",
       zkp.nodeId || "",

@@ -81,10 +81,10 @@ function findItemByTransactionHash(data, transactionHash) {
     (item) => item.transactionHash === transactionHash
   );
 
-  // Check if any of them have zkp_payload and prioritize it
-  const withZkpPayload = matchingItems.find((item) => item.zkp_payload);
+  // Check if any of them have zkpPayload and prioritize it
+  const withZkpPayload = matchingItems.find((item) => item.zkpPayload);
 
-  // Return the one with zkp_payload if it exists, otherwise return the first matching item
+  // Return the one with zkpPayload if it exists, otherwise return the first matching item
   return withZkpPayload || matchingItems[0];
 }
 
@@ -194,13 +194,15 @@ export default function TransactionsTable({
     setProofModal(true);
     let theProof = "";
     try {
-      theProof = JSON.parse(theData?.zkp_payload);
+      theProof = JSON.parse(theData?.zkpPayload);
     } catch (error) {
-      theProof = theData?.zkp_payload;
+      theProof = theData?.zkpPayload;
     }
 
+    console.log("The Proof:", theProof);
+
     try {
-      const result = await verifyProofWithTimer(theProof);
+      const result = await verifyProofWithTimer((theProof));
       setHackerAnimation(true);
       if (result.data === true) {
         setProofResult("Proof is Verified");
@@ -269,8 +271,8 @@ export default function TransactionsTable({
     };
 
     try {
-      if (tempData.zkp_payload) {
-        tempData.zkp_payload = JSON.parse(tempData.zkp_payload);
+      if (tempData.zkpPayload) {
+        tempData.zkpPayload = JSON.parse(tempData.zkpPayload);
       }
     } catch (error) {
       console.error(error);
@@ -279,8 +281,8 @@ export default function TransactionsTable({
     try {
       tempData = {
         ...tempData,
-        data_payload: {
-          ...JSON.parse(tempData.data_payload),
+        dataPayload: {
+          ...JSON.parse(tempData.dataPayload),
         },
       };
     } catch (error) {
@@ -296,7 +298,7 @@ export default function TransactionsTable({
       setIsZkpModalOpen(true);
     } else if (action === "Verify Proof") {
       try {
-        const { commitment_id } = JSON.parse(tempData.zkp_payload);
+        const { commitment_id } = JSON.parse(tempData.zkpPayload);
         getCommitmentData(commitment_id);
       } catch (error) {}
       handleVerifyButton(tempData);
@@ -310,12 +312,12 @@ export default function TransactionsTable({
 
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
       try {
-        const { commitment_id } = JSON.parse(tempData.zkp_payload);
+        const { commitment_id } = JSON.parse(tempData.zkpPayload);
         const comitData = await getCommitmentData(commitment_id);
         tempData = {
           ...tempData,
-          data_payload: {
-            ...tempData.data_payload,
+          dataPayload: {
+            ...tempData.dataPayload,
             HV: comitData.device_hardware_version,
             FV: comitData.firmware_version,
           },
@@ -431,7 +433,7 @@ export default function TransactionsTable({
       >
         {(isZKP && (
           <JsonDisplay
-            jsonData={(modalData?.zkp_payload && modalData?.zkp_payload) || ""}
+            jsonData={(modalData?.zkpPayload && modalData?.zkpPayload) || ""}
           />
         )) || (
           <h2 className="no-zkp">
@@ -466,8 +468,8 @@ export default function TransactionsTable({
         </div>
 
         <div className="iot-data">
-          {modalData?.data_payload &&
-            Object.entries(modalData?.data_payload)
+          {modalData?.dataPayload &&
+            Object.entries(modalData?.dataPayload)
               .sort(([keyA], [keyB]) => keyB.length - keyA.length)
               .map(([key, value]) => (
                 <p key={key}>
@@ -504,19 +506,20 @@ export default function TransactionsTable({
           <section className="main-data">
             <div className="holder">
               <ImageLoader src={deviceImage} className="img device" />
-              <p>
+
+              {/* <p>
                 Mac:{" "}
                 <span>
                   {modalData?.deviceId
                     ? Buffer.from(modalData.deviceId, "base64").toString("utf8")
                     : "Not Found"}
                 </span>
-              </p>
-              <p>
+              </p> */}
+              {/* <p>
                 Type: <span>{modalData?.deviceType}</span>
-              </p>
-              {modalData?.data_payload &&
-                Object.entries(modalData?.data_payload)
+              </p> */}
+              {modalData?.dataPayload &&
+                Object.entries(modalData?.dataPayload)
                   .sort(([keyA], [keyB]) => keyB.length - keyA.length)
                   .map(([key, value]) => (
                     <p key={key}>
@@ -540,7 +543,7 @@ export default function TransactionsTable({
               {isZKP && (
                 <JsonDisplay
                   jsonData={
-                    (modalData?.zkp_payload && modalData?.zkp_payload) || ""
+                    (modalData?.zkpPayload && modalData?.zkpPayload) || ""
                   }
                 />
               )}
@@ -616,20 +619,20 @@ export default function TransactionsTable({
                 Device Id: <span>{modalData?.deviceId}</span>
               </p>
               <p>
-                Device Id Type: <span></span>
+                Device Id Type: <span>{modalData?.deviceIdType}</span>
               </p>
               <p>
                 Device Type: <span>{modalData?.deviceType}</span>
               </p>
               <p>
-                Device Model: <span></span>
+                Device Model: <span>{modalData?.deviceModel}</span>
               </p>
               <p>
-                Manufacturer: <span></span>
+                Manufacturer: <span>{modalData?.manufacturer}</span>
               </p>
-              <p>
+              {/* <p>
                 Device Owner: <span>{modalData?.ownerId}</span>
-              </p>
+              </p> */}
               <p>
                 Transaction Timestamp:{" "}
                 <span>

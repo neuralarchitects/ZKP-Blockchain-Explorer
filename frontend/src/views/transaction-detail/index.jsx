@@ -61,12 +61,12 @@ export default function TransactionDetail() {
 
     if (res.data.length > 0) {
       let selectedItem =
-        res.data.find((item) => item.commitmentData || item.zkp_payload) ||
+        res.data.find((item) => item.commitment || item.zkpPayload) ||
         res.data[0];
 
       try {
-        if (selectedItem.data_payload) {
-          selectedItem.data_payload = JSON.parse(selectedItem.data_payload);
+        if (selectedItem.dataPayload) {
+          selectedItem.dataPayload = JSON.parse(selectedItem.dataPayload);
           if (selectedItem.deviceType) {
             getDeviceImagesFromNode(
               selectedItem.nodeId,
@@ -178,7 +178,7 @@ export default function TransactionDetail() {
             <p className="title">Transaction fee</p>
             <p className="right-data">{formatBigInt(detailData.gasFee)} FDS</p>
 
-            {detailData?.zkp_payload && (
+            {detailData?.zkpPayload && (
               <>
                 <div className="line"></div>
                 <h1>ZKP Details</h1>
@@ -190,8 +190,8 @@ export default function TransactionDetail() {
                   {/* <ImageLoader src={deviceImage} className="device-image" /> */}
                 </p>
 
-                {detailData?.data_payload &&
-                  Object.entries(detailData?.data_payload)
+                {detailData?.dataPayload &&
+                  Object.entries(detailData?.dataPayload)
                     .sort(([keyA], [keyB]) => keyB.length - keyA.length)
                     .map(([key, value]) => (
                       <>
@@ -205,12 +205,12 @@ export default function TransactionDetail() {
                     ))}
                 <p className="title">ZKP Payload</p>
                 <p className="right-data commitment-data">
-                  <JsonDisplay jsonData={JSON.parse(detailData.zkp_payload)} />
+                  <JsonDisplay jsonData={JSON.parse(detailData.zkpPayload)} />
                 </p>
               </>
             )}
 
-            {detailData?.commitmentData && (
+            {detailData?.commitment && (
               <>
                 <div className="line"></div>
 
@@ -218,30 +218,28 @@ export default function TransactionDetail() {
                 <p></p>
 
                 <p className="title">Commitment ID</p>
-                <p className="right-data">{detailData.commitmentID}</p>
+                <p className="right-data">{detailData.commitmentId}</p>
 
-                <p className="title">IoT Developer Name</p>
-                <p className="right-data">{detailData.iot_manufacturer_name}</p>
+                <p className="title">Manufacturer</p>
+                <p className="right-data">{detailData.manufacturer}</p>
+
+                <p className="title">IoT Device Id Type</p>
+                <p className="right-data">{detailData.deviceIdType}</p>
 
                 <p className="title">IoT Device Type</p>
-                <p className="right-data">
-                  {detailData?.iot_device_name
-                    ? detailData?.iot_device_name
-                    : detailData?.iot_device_type}
-                </p>
+                <p className="right-data">{detailData?.deviceType}</p>
 
-                <p className="title">Device Hardware Version</p>
-                <p className="right-data">
-                  {detailData.device_hardware_version}
-                </p>
+                <p className="title">IoT Device Model</p>
+                <p className="right-data">{detailData.deviceModel}</p>
 
-                <p className="title">Device Firmware Version</p>
-                <p className="right-data">{detailData.firmware_version}</p>
+                <p className="title">Software Version</p>
+                <p className="right-data">{detailData.softwareVersion}</p>
+
                 <p className="title">Commitment Data</p>
                 <p className="right-data commitment-data">
                   <JsonDisplay
                     jsonData={JSON.parse(
-                      String(detailData.commitmentData).replace(
+                      String(detailData.commitment).replace(
                         "iot_device_name",
                         "iot_device_type"
                       )

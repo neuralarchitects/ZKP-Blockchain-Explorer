@@ -26,7 +26,7 @@ export default function DevicesTable({ data }) {
   function transformDevicesToArray(devices) {
     return devices.map((device) => {
       return [
-        <div style={{display: "flex", gap:"16px"}}>
+        <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
           <figure className="image-holder">
             <ImageLoader
               src={getDeviceUrlByType(nodeImages, String(device.deviceType))}
@@ -37,10 +37,8 @@ export default function DevicesTable({ data }) {
         device.deviceEncryptedId || "",
         formatDateTime(device.insertDate) || "",
         device.nodeId || "",
-        <div className="fw-hw-holder">
-          <p>FW: {device.firmwareVersion || 0}</p>
-          <p>HW: {device.hardwareVersion || 0}</p>
-        </div>,
+        device.hardwareVersion || 0,
+        device.firmwareVersion || 0,
       ];
     });
   }
@@ -80,7 +78,8 @@ export default function DevicesTable({ data }) {
         "Device Id",
         "Submission Timestamp",
         "Node Id",
-        "Firmware/Hardware Version",
+        "Device Model",
+        "Software Version",
       ]}
       pagination={true}
       data={[...transformDevicesToArray(data)]}

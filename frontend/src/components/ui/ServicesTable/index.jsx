@@ -6,7 +6,7 @@ import { formatDateTime } from "../../../utility/functions";
 
 function transformServicesToArray(services) {
   return services.map((service) => [
-    <div style={{display: "flex", gap:"16px"}}>
+    <div style={{display: "flex", gap:"16px", alignItems: "center"}}>
       <ImageLoader
         width={100}
         height={65}

@@ -333,6 +333,8 @@ const ResponsiveTable = ({
                         }
                       }}
                       style={{
+                        display: "flex",
+                        alignItems: "center",
                         width: column.getSize(),
                         overflow: "hidden",
                         textOverflow: "ellipsis",

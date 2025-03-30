@@ -353,7 +353,7 @@ export default function TransactionsTable({
           key={`ResponsiveTable-${refreshTable}`}
           titles={[
             "Transaction Id",
-            "Transaction Date",
+            "Transaction Timestamp",
             "Node Id",
             "Event Type",
           ]}
@@ -588,7 +588,7 @@ export default function TransactionsTable({
                 Event Type: <span>{modalData?.eventType}</span>
               </p>
               <p>
-                Transaction Date:{" "}
+              Transaction Timestamp:{" "}
                 <span>
                   {formatDateTime(new Date(modalData?.timestamp * 1000))}
                 </span>

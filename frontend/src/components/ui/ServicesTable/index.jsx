@@ -6,14 +6,16 @@ import { formatDateTime } from "../../../utility/functions";
 
 function transformServicesToArray(services) {
   return services.map((service) => [
-    <ImageLoader
-      width={100}
-      height={65}
-      src={service.serviceImage}
-      defaultImage="/img/default-service.jpg"
-      className="service-image"
-    />,
-    service.serviceName || "",
+    <div style={{display: "flex", gap:"16px"}}>
+      <ImageLoader
+        width={100}
+        height={65}
+        src={service.serviceImage}
+        defaultImage="/img/default-service.jpg"
+        className="service-image"
+      />
+      {service.serviceName || ""}
+    </div>,
     service.nodeServiceId || "",
     service.description || "",
     formatDateTime(service.insertDate) || "",
@@ -25,11 +27,10 @@ export default function ServicesTable({ data }) {
   return (
     <ResponsiveTable
       titles={[
-        "Service",
-        "Name",
+        "Service Name",
         "Service Id",
         "Description",
-        "Creation Date",
+        "Published Timestamp",
         "Node Id",
       ]}
       pagination={true}

@@ -27,11 +27,13 @@ function transformCommitmentToArray(commitments) {
     }
     return [
       commitment?.deviceType || "",
-      commitment.manufacturer || "",
-      commitment.commitmentId || "",
-      formatDateTime(new Date(commitment.timestamp * 1000)) || "",
-      commitment.nodeId || "",
-      commitment.transactionHash || "",
+      commitment?.commitmentId || "",
+      formatDateTime(new Date(commitment?.timestamp * 1000)) || "",
+      commitment?.nodeId || "",
+      commitment?.transactionHash || "",
+      commitment?.manufacturer || "",
+      commitment?.deviceModel || "",
+      commitment?.softwareVersion || "",
       [
         isZKP && !isDevice && "IoT Data & ZKP",
         /* isZKP && "ZKP",
@@ -53,7 +55,7 @@ export default function CommitmentTable({ data, ...props }) {
   const navigateTo = useNavigate();
 
   function handleCellClick(row, col, item, fullRowData) {
-    if (col === 5 /* && fullRowData[4].props.children === 'Transaction' */) {
+    if (col === 4 /* && fullRowData[4].props.children === 'Transaction' */) {
       const encodedHash = encodeURIComponent(item);
       navigateTo(`/tx/${encodedHash}`);
     }
@@ -64,18 +66,20 @@ export default function CommitmentTable({ data, ...props }) {
       conditionalOverrides={[
         {
           rowExist: true,
-          columnToApplyClass: 5,
+          columnToApplyClass: 4,
           className: "transaction-hash-label",
         },
       ]}
       onCellClick={handleCellClick}
       titles={[
         "Device Type",
-        "Manufacturer",
         "Commitment Id",
-        "Creation Date",
+        "Submission Timestamp",
         "Node Id",
         "Transaction Id",
+        "Manufacturer",
+        "Device Model",
+        "Software Version",
       ]}
       pagination={false}
       data={[...transformCommitmentToArray(data)]}

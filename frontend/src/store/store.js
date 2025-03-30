@@ -32,6 +32,13 @@ export const usePageStore = create((set) => ({
       Icon: SiGoogledataflow,
     },
     {
+      route: "/device-commitments",
+      title: "Device Commitments",
+      key: "device commitments",
+      component: <CommitmentData />,
+      Icon: HiOutlineDocumentText,
+    },
+    {
       route: "/shared-devices",
       title: "Shared Devices",
       key: "devices",
@@ -45,14 +52,6 @@ export const usePageStore = create((set) => ({
       component: <Services />,
       Icon: GrBusinessService,
     },
-    {
-      route: "/device-commitments",
-      title: "Device Commitments",
-      key: "device commitments",
-      component: <CommitmentData />,
-      Icon: HiOutlineDocumentText,
-    },
-
     {
       route: "/search",
       key: "search",

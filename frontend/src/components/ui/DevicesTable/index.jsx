@@ -26,13 +26,14 @@ export default function DevicesTable({ data }) {
   function transformDevicesToArray(devices) {
     return devices.map((device) => {
       return [
-        <figure className="image-holder">
-          <ImageLoader
-            src={getDeviceUrlByType(nodeImages, String(device.deviceType))}
-          />
-        </figure>,
-        device.deviceType || "",
-        device.deviceName || "",
+        <div style={{display: "flex", gap:"16px"}}>
+          <figure className="image-holder">
+            <ImageLoader
+              src={getDeviceUrlByType(nodeImages, String(device.deviceType))}
+            />
+          </figure>
+          {device.deviceType || ""}
+        </div>,
         device.deviceEncryptedId || "",
         formatDateTime(device.insertDate) || "",
         device.nodeId || "",
@@ -75,11 +76,9 @@ export default function DevicesTable({ data }) {
   return (
     <ResponsiveTable
       titles={[
-        "Device",
-        "Type",
-        "Name",
+        "Device Type",
         "Device Id",
-        "Installation Date",
+        "Submission Timestamp",
         "Node Id",
         "Firmware/Hardware Version",
       ]}

@@ -202,7 +202,7 @@ export default function TransactionsTable({
     console.log("The Proof:", theProof);
 
     try {
-      const result = await verifyProofWithTimer((theProof));
+      const result = await verifyProofWithTimer(theProof);
       setHackerAnimation(true);
       if (result.data === true) {
         setProofResult("Proof is Verified");
@@ -478,7 +478,7 @@ export default function TransactionsTable({
                 </p>
               ))}
           <p>
-            Submission Date:{" "}
+            Submission Timestamp:{" "}
             <span>{formatDateTime(new Date(modalData?.timestamp * 1000))}</span>
           </p>
         </div>
@@ -529,7 +529,7 @@ export default function TransactionsTable({
                   ))}
 
               <p>
-                Submission Date:{" "}
+                Submission Timestamp:{" "}
                 <span>
                   {formatDateTime(new Date(modalData?.timestamp * 1000))}
                 </span>

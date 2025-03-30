@@ -3,6 +3,7 @@ import ResponsiveTable from "../Table";
 import { formatDateTime } from "../../../utility/functions";
 import "./style.scss";
 import { useNavigate } from "react-router-dom";
+import useFetchData from "../../../services/api/useFetchData";
 
 function transformZkpToArray(zkps) {
   return zkps.map((zkp) => {
@@ -27,7 +28,7 @@ function transformZkpToArray(zkps) {
     }
 
     return [
-      zkp.deviceType || "",
+      JSON.parse(zkp?.zkpPayload)?.commitmentId || "",
       zkp.deviceId || "",
       formatDateTime(new Date(zkp.timestamp * 1000)) || "",
       zkp.nodeId || "",
@@ -51,11 +52,27 @@ function transformZkpToArray(zkps) {
 
 export default function ZkpTable({ data, ...props }) {
   const navigateTo = useNavigate();
+  const { fetchData, loading } = useFetchData();
 
-  function handleCellClick(row, col, item, fullRowData) {
+  async function handleCellClick(row, col, item, fullRowData) {
     if (col === 4 /* && fullRowData[4].props.children === 'Transaction' */) {
       const encodedHash = encodeURIComponent(item);
       navigateTo(`/tx/${encodedHash}`);
+    } else if (col === 0) {
+      if (loading) {
+        console.log("Wait");
+        return false;
+      }
+      const res = await fetchData(
+        `contract/search-data?search=${encodeURIComponent(
+          item
+        )}&page=${1}&limit=${10}`
+      );
+      res.data.data.forEach((item) => {
+        if (item.commitment && item.commitmentId) {
+          navigateTo(`/tx/${item.transactionHash}`);
+        }
+      });
     }
   }
   return (
@@ -67,12 +84,17 @@ export default function ZkpTable({ data, ...props }) {
           columnToApplyClass: 4,
           className: "transaction-hash-label",
         },
+        {
+          rowExist: true,
+          columnToApplyClass: 0,
+          className: "transaction-hash-label",
+        },
       ]}
       onCellClick={handleCellClick}
       titles={[
-        "Device Type",
+        "Commitment Id",
         "Device Id",
-        "Submission Date",
+        "Submission Timestamp",
         "Node Id",
         "Transaction Id",
       ]}

@@ -8,25 +8,17 @@ import useFetchData from "../../../services/api/useFetchData";
 function transformZkpToArray(zkps) {
   return zkps.map((zkp) => {
     const eventType = zkp.eventType || "";
-    let theZKP = ''
+    let theZKP = "";
     try {
-      theZKP = JSON.parse(zkp?.zkpPayload)
+      theZKP = JSON.parse(zkp?.zkpPayload);
     } catch (error) {
       console.log("Error while parsing zkp payload:", error);
     }
     try {
-      theZKP = JSON.parse(zkp?.zkpPayload)
+      theZKP = JSON.parse(theZKP);
     } catch (error) {
       console.log("Error while parsing zkp payload:", error);
     }
-    try {
-      theZKP = JSON.parse(zkp?.zkpPayload)
-    } catch (error) {
-      console.log("Error while parsing zkp payload:", error);
-    }
-
-    console.log("Testing:", typeof theZKP);
-    
 
     let isZKP = false;
     let isDevice = false;

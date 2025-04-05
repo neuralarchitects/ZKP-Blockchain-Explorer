@@ -34,6 +34,7 @@ export default function DevicesTable({ data }) {
           </figure>
           {device.deviceType || ""}
         </div>,
+        "MAC",
         atob(device.deviceEncryptedId),
         formatDateTime(device.insertDate) || "",
         device.nodeId || "",
@@ -75,6 +76,7 @@ export default function DevicesTable({ data }) {
     <ResponsiveTable
       titles={[
         "Device Type",
+        "Device Id Type",
         "Device Id",
         "Submission Timestamp",
         "Node Id",

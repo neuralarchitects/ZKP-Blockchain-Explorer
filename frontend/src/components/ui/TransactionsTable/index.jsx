@@ -155,6 +155,7 @@ export default function TransactionsTable({
         method: "GET",
       });
       console.log("res.data:", res.data);
+      console.log("deviceType:", deviceType);
 
       setDeviceImage(getDeviceUrlByType(res.data, String(deviceType)));
     } catch (error) {
@@ -502,7 +503,7 @@ export default function TransactionsTable({
         {isZKP && (
           <section className="main-data">
             <div className="holder">
-              <ImageLoader src={deviceImage} className="img device" />
+              {/* <ImageLoader src={deviceImage} className="img device" /> */}
 
               {/* <p>
                 Mac:{" "}

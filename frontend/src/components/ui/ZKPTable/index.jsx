@@ -101,6 +101,7 @@ export default function ZkpTable({ data, ...props }) {
           className: "transaction-hash-label",
         },
       ]}
+      actions={true}
       onCellClick={handleCellClick}
       titles={[
         "Commitment Id",

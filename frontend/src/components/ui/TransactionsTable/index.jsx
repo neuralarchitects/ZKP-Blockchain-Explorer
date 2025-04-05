@@ -251,10 +251,10 @@ export default function TransactionsTable({
     //console.log("transactions", transactions);
     //console.log("action, items:", action, items);
 
-    if (isValidHexOrBase64(items[0])) {
-      itemHash = items[0];
-    } else if (isValidHexOrBase64(items[4])) {
+    if (isValidHexOrBase64(items[4])) {
       itemHash = items[4];
+    } else if (isValidHexOrBase64(items[0])) {
+      itemHash = items[0];
     } else if (isValidHexOrBase64(items[5])) {
       itemHash = items[5];
     }
@@ -303,6 +303,8 @@ export default function TransactionsTable({
       } catch (error) {}
       handleVerifyButton(tempData);
       setProofModal(true);
+      console.log("tempData:", tempData);
+      
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
     } else if (action == "Transaction Details" || action == "Commitment Data") {
       const encodedHash = encodeURIComponent(itemHash);

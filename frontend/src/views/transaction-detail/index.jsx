@@ -75,6 +75,7 @@ export default function TransactionDetail() {
           }
         }
       } catch (error) {}
+      console.log("selectedItem:", selectedItem);
 
       setDetailData(selectedItem);
     } else {
@@ -184,9 +185,9 @@ export default function TransactionDetail() {
                 <h1>ZKP Details</h1>
                 <p></p>
 
-                <p className="title">Device</p>
+                <p className="title">Device Id</p>
                 <p className="right-data">
-                  {String(detailData?.deviceType).replace("_", " ")}
+                  {detailData?.deviceId[detailData?.deviceId.length - 1] == "=" ? atob(detailData?.deviceId) : detailData?.deviceId}
                   {/* <ImageLoader src={deviceImage} className="device-image" /> */}
                 </p>
 

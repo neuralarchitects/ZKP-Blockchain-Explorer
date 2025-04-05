@@ -40,7 +40,7 @@ function transformZkpToArray(zkps) {
 
     return [
       theZKP?.commitmentId || "",
-      zkp.deviceId || "",
+      zkp?.deviceId[zkp?.deviceId.length - 1] == "=" ? atob(zkp?.deviceId) : zkp?.deviceId,
       formatDateTime(new Date(zkp.timestamp * 1000)) || "",
       zkp.nodeId || "",
       zkp.transactionHash || "",

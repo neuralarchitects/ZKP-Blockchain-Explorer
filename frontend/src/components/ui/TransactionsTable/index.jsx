@@ -290,7 +290,6 @@ export default function TransactionsTable({
     }
 
     setModalData(tempData);
-
     setIsZKP(tempData.isZKP);
     setIsDevice(tempData.isDevice);
 
@@ -304,14 +303,12 @@ export default function TransactionsTable({
       handleVerifyButton(tempData);
       setProofModal(true);
       console.log("tempData:", tempData);
-      
+
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
     } else if (action == "Transaction Details" || action == "Commitment Data") {
       const encodedHash = encodeURIComponent(itemHash);
       navigateTo(`/tx/${encodedHash}`);
     } else {
-      console.log("tempData:", tempData);
-
       await getDeviceImagesFromNode(tempData?.nodeId, tempData?.deviceType);
       try {
         const { commitment_id } = JSON.parse(tempData.zkpPayload);
@@ -326,13 +323,11 @@ export default function TransactionsTable({
         };
         setModalData(tempData);
       } catch (error) {}
+
+      console.log("tempData:", tempData);
       setIsDataModalOpen(true);
     }
   }
-
-  /* const handleActionClick = async (action, items) => {
-    
-  }; */
 
   return (
     <>
@@ -559,7 +554,7 @@ export default function TransactionsTable({
               width={200}
               height={100}
               defaultImage="/img/default-service.jpg"
-              src={modalData?.imageURL}
+              src={modalData?.imageUrl}
               className="img"
             />
 
@@ -584,13 +579,13 @@ export default function TransactionsTable({
                 <span>{modalData?.installationPrice} FDS</span>
               </p>
               <p>
-                IoT Server Id: <span>{modalData?.nodeId}</span>
+                IoT/ML Node Id: <span>{modalData?.nodeId}</span>
               </p>
               <p>
                 Event Type: <span>{modalData?.eventType}</span>
               </p>
               <p>
-              Transaction Timestamp:{" "}
+                Transaction Timestamp:{" "}
                 <span>
                   {formatDateTime(new Date(modalData?.timestamp * 1000))}
                 </span>
@@ -618,16 +613,21 @@ export default function TransactionsTable({
                 <span>{modalData?.serviceName || modalData?.name}</span>
               </p> */}
               <p>
-                Device Id: <span>{modalData?.deviceId}</span>
+                Device Id Type: <span>MAC</span>
               </p>
               <p>
-                Device Id Type: <span>{modalData?.deviceIdType}</span>
+                Device Id: <span>{atob(modalData?.deviceIdType)}</span>
               </p>
               <p>
                 Device Type: <span>{modalData?.deviceType}</span>
               </p>
               <p>
-                Device Model: <span>{modalData?.deviceModel}</span>
+                Device Model:{" "}
+                <span>{String(modalData?.deviceModel).split("/")[0]}</span>
+              </p>
+              <p>
+                Software Version:{" "}
+                <span>{String(modalData?.deviceModel).split("/")[1]}</span>
               </p>
               <p>
                 Manufacturer: <span>{modalData?.manufacturer}</span>
@@ -638,7 +638,7 @@ export default function TransactionsTable({
               <p>
                 Transaction Timestamp:{" "}
                 <span>
-                  {modalData?.timestamp}
+                  {formatDateTime(new Date(modalData?.timestamp * 1000))}
                   {/* {formatDateTime(new Date(modalData?.timestamp * 1000))} */}
                 </span>
               </p>

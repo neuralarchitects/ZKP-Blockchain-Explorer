@@ -34,7 +34,7 @@ export default function DevicesTable({ data }) {
           </figure>
           {device.deviceType || ""}
         </div>,
-        device.deviceEncryptedId || "",
+        atob(device.deviceEncryptedId),
         formatDateTime(device.insertDate) || "",
         device.nodeId || "",
         device.hardwareVersion || 0,

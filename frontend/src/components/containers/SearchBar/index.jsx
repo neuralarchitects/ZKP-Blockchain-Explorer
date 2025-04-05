@@ -91,7 +91,7 @@ export default function SearchBar({ initialValue = "" }) {
             handleSearch(inputValue);
           }
         }}
-        placeholder="Search by IoT Server Id / Service Contract Name / Service Contract Id / Device Name / Device Id"
+        placeholder="Search by IoT-ML Node Id / Service Contract Name / Service Contract Id / Device Type / Device Id"
       />
 
       {/* Search button */}

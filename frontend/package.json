@@ -1,7 +1,7 @@
 {
   "name": "fidesinnova-explorer",
   "proxy": "https://fidesinnova.io",
-  "version": "2.9.4",
+  "version": "3.0.6",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.13.3",

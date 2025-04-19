@@ -430,9 +430,9 @@ deactivate
 
 --------
 
-# 🔐 Automated Web App Security Scan with OWASP ZAP (Docker)
+# 🔐 Automated Explorer Security Scan with OWASP ZAP (Docker)
 
-This guide walks you through setting up Java, and Docker, and running a baseline security scan using OWASP ZAP against a web application endpoint. Ultimately, you'll get a nicely formatted `zap-report.html` you can open in any browser.
+This guide walks you through setting up Java, and Docker, and running a baseline security scan using OWASP ZAP against a explorer endpoint. Ultimately, you'll get a nicely formatted `zap-report.html` you can open in any browser.
 
 ## 📦 1. Install Java Runtime Environment (JRE)
 

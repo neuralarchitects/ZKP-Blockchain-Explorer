@@ -29,7 +29,10 @@ export default function DevicesTable({ data }) {
         <div style={{ display: "flex", gap: "16px", alignItems: "center" }}>
           <figure className="image-holder">
             <ImageLoader
-              src={getDeviceUrlByType(nodeImages, String(device.deviceType))}
+              src={
+                getDeviceUrlByType(nodeImages, String(device.deviceType)) ||
+                "/img/default-device.png"
+              }
             />
           </figure>
           {device.deviceType || ""}

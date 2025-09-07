@@ -36,7 +36,7 @@ async function bootstrap() {
   // app.enableCors();
   app.enableCors({
     origin: [
-      'https://fidesf3-explorer.fidesinnova.io',
+      'https://explorer.fidesinnova.io',
       'http://localhost:3000',
     ],
     allowedHeaders: [

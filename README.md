@@ -224,8 +224,8 @@ http {
 		}
 
 		# This section is for Server Backend on port 3000
-		location /app {
-			proxy_pass http://localhost:3000;
+		location /app/ {
+			proxy_pass https://localhost:3000;
 			add_header Access-Control-Allow-Origin *;
 		}
 	}
@@ -305,7 +305,7 @@ ADMIN_WALLET_PRIVATE_KEY='xxxxx'
 
 # Server Configuration
 HOST_PROTOCOL='https://'
-HOST_NAME_OR_IP='explorer2.fidesinnova.io'
+HOST_NAME_OR_IP='explorer2.fidesinnova.io' # Set this with your node URL
 HOST_PORT=3000
 HOST_SUB_DIRECTORY='app'
 
@@ -366,8 +366,8 @@ sudo git pull
 - Every time you pull a new version of the server code from GitHub or you make a change to any `.env` files in the system, you should apply the changes to your production server via update script.
 ```
 cd /home/zkp-explorer/
-sudo chmod +x update.sh
-sudo ./update.sh
+sudo chmod +x update_build.sh
+sudo ./update_build.sh
 ```
 
 - Useful commands for troubleshooting

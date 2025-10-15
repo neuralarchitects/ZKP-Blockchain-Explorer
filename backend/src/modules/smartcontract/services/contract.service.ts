@@ -156,7 +156,7 @@ export class ContractService implements OnApplicationBootstrap {
     });
 
     this.contracts.serviceDevice.on('DeviceCreated', (id, device) => {
-      console.log("DeviceCreated",device);
+      console.log('DeviceCreated', device);
       try {
         let newDevice = {
           nodeId: device[0],
@@ -173,15 +173,13 @@ export class ContractService implements OnApplicationBootstrap {
           insertDate: new Date(String(device[10])),
           updateDate: new Date(String(device[10])),
         };
-        
+
         this.deviceService.insertDevice(newDevice);
       } catch (error) {
-        console.log("DeviceCreated",error);
+        console.log('DeviceCreated', error);
       }
-      
     });
 
-  
     this.contracts.serviceDevice.on('DeviceRemoved', (id, device) => {
       this.deviceService.deleteOtherNodeDeviceByNodeIdAndDeviceId(
         device[0],
@@ -384,30 +382,29 @@ export class ContractService implements OnApplicationBootstrap {
     const dailyCountsMap: Record<string, number> = {};
 
     // Initialize dates in the range with a count of 0
-    for (
-      let date = new Date(start);
-      date <= end;
-      date.setDate(date.getDate() + 1)
-    ) {
-      const dateString = date.toISOString().split('T')[0];
+    const currentDate = new Date(start);
+    while (currentDate <= end) {
+      const dateString = currentDate.toISOString().split('T')[0];
       dailyCountsMap[dateString] = 0;
+      currentDate.setDate(currentDate.getDate() + 1);
     }
 
     // Process each transaction to aggregate counts by day
-    this.transactionDataArray.forEach((transaction) => {
+    this.sortedRecords.forEach((transaction) => {
       const transactionDate = new Date(transaction.timestamp * 1000)
         .toISOString()
-        .split('T')[0]; // Convert UNIX timestamp to YYYY-MM-DD
+        .split('T')[0];
 
+      // Increment count if date is within range
       if (dailyCountsMap.hasOwnProperty(transactionDate)) {
         dailyCountsMap[transactionDate] += 1;
       }
     });
 
-    // Convert the map to an array of daily counts
-    const dailyCounts: DailyCount[] = Object.entries(dailyCountsMap).map(
-      ([date, count]) => ({ date, count }),
-    );
+    // Convert the map to an array of daily counts (sorted by date)
+    const dailyCounts: DailyCount[] = Object.entries(dailyCountsMap)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([date, count]) => ({ date, count }));
 
     return {
       startDate,
@@ -602,7 +599,7 @@ export class ContractService implements OnApplicationBootstrap {
   private isMatch = (obj: any, searchString: string): boolean => {
     const hexSearchString = base64ToHex(searchString).toLowerCase(); // Convert to hex if needed
     const lowercaseSearchString = searchString.toLowerCase(); // Standard lowercase comparison
-  
+
     return Object.values(obj).some((value: any) => {
       if (typeof value === 'object' && value !== null) {
         // Handle binary values like transactionHash
@@ -613,12 +610,11 @@ export class ContractService implements OnApplicationBootstrap {
         // Recursive check for nested objects
         return this.isMatch(value, searchString);
       }
-  
+
       // Convert value to string and check if it includes search string
       return String(value).toLowerCase().includes(lowercaseSearchString);
     });
   };
-  
 
   searchData = async (
     searchString: string,
